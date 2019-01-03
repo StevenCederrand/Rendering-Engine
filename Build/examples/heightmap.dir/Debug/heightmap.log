@@ -1,0 +1,6 @@
+﻿  Building Custom Rule C:/Users/Steven/Documents/Projects/3D Prog/8HP projekt/glfw-3.2.1/examples/CMakeLists.txt
+  CMake does not need to re-run because C:/Users/Steven/Documents/Projects/3D Prog/8HP projekt/Build/examples/CMakeFiles/generate.stamp is up-to-date.
+  heightmap.c
+  glad.c
+  Generating Code...
+  heightmap.vcxproj -> C:\Users\Steven\Documents\Projects\3D Prog\8HP projekt\Build\examples\Debug\heightmap.exe

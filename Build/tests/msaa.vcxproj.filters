@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\Steven\Documents\Projects\3D Prog\8HP projekt\glfw-3.2.1\tests\msaa.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Steven\Documents\Projects\3D Prog\8HP projekt\glfw-3.2.1\deps\getopt.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Steven\Documents\Projects\3D Prog\8HP projekt\glfw-3.2.1\deps\glad.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\Steven\Documents\Projects\3D Prog\8HP projekt\glfw-3.2.1\deps\getopt.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Steven\Documents\Projects\3D Prog\8HP projekt\glfw-3.2.1\deps\glad\glad.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Steven\Documents\Projects\3D Prog\8HP projekt\glfw-3.2.1\tests\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{E6D94CDF-19BB-3C99-9C18-FC08C3B8CB80}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{F952E604-293F-3094-BCEB-C9BA96965999}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
