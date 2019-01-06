@@ -169,6 +169,9 @@ void Application::update() {
 	this->setupShaders();
 	this->setupTriangle();
 
+	this->setupOBJ();
+
+
 	glUseProgram(gShaderProg);
 	this->start();
 
@@ -254,7 +257,9 @@ void Application::rotate(float deltaTime) {
 }
 
 void Application::setupOBJ() {
-	bool res = this->loadOBJ("", this->vertices, this->uv, this->normals);
+	//bool res = this->loadOBJ("", this->vertices, this->uv, this->normals);
+	Fileloader loader;
+	loader.loadFile("Rendering - Engine\\Objects\\temp.obj");
 }
 
 bool Application::loadOBJ(std::string path, std::vector<glm::vec3>& outVertices, std::vector<glm::vec2>& outUV, std::vector<glm::vec3>& outNormals) {

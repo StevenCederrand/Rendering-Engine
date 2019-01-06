@@ -1,8 +1,3 @@
 ﻿  Application.cpp
-d:\programming\opengl\8hp projekt\opengl_project\opengl_p\opengl_p\application.cpp(188): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-  WND.cpp
-d:\programming\opengl\8hp projekt\opengl_project\opengl_p\opengl_p\wnd.cpp(19): warning C4150: deletion of pointer to incomplete type 'GLFWwindow'; no destructor called
-  d:\programming\opengl\8hp projekt\opengl_project\opengl_p\includes\glfw\glfw3.h(789): note: see declaration of 'GLFWwindow'
-  Window.cpp
-  Generating Code...
-  Opengl_P.vcxproj -> D:\Programming\OpenGL\8HP projekt\Opengl_Project\Opengl_P\Debug\Opengl_P.exe
+d:\programming\opengl\rendering-engine\opengl_project\opengl_p\opengl_p\application.cpp(188): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  Opengl_P.vcxproj -> D:\Programming\OpenGL\Rendering-Engine\Opengl_Project\Opengl_P\Debug\Opengl_P.exe

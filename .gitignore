@@ -1,0 +1,8 @@
+#Ignore folders
+Opengl_Project/Opengl_P/.vs/*
+Opengl_Project/Opengl_P/Debug/*
+
+#Ignore files
+*.ipch
+*vcxproj
+

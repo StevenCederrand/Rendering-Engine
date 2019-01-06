@@ -142,6 +142,7 @@
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Fileloader.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="WND.cpp" />
@@ -154,6 +155,7 @@
     <ClInclude Include="Application.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Containers.h" />
+    <ClInclude Include="Fileloader.h" />
     <ClInclude Include="WND.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
