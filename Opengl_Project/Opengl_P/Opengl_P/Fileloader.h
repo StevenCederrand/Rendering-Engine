@@ -16,8 +16,7 @@ public:
 	void loadFile(std::string path);
 
 private:
-	bool validType(std::string path);
-
+	std::string getExtension(std::string path);
 
 
 private:
