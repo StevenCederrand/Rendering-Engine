@@ -2,6 +2,88 @@
 
 using ms = std::chrono::duration<float, std::milli>;
 
+// Our vertices. Three consecutive floats give a 3D vertex; Three consecutive vertices give a triangle.
+// A cube has 6 faces with 2 triangles each, so this makes 6*2=12 triangles, and 12*3 vertices
+static const GLfloat g_vertex_buffer_data[] = {
+	-1.0f,-1.0f,-1.0f, // triangle 1 : begin
+	-1.0f,-1.0f, 1.0f,
+	-1.0f, 1.0f, 1.0f, // triangle 1 : end
+	1.0f, 1.0f,-1.0f, // triangle 2 : begin
+	-1.0f,-1.0f,-1.0f,
+	-1.0f, 1.0f,-1.0f, // triangle 2 : end
+	1.0f,-1.0f, 1.0f,
+	-1.0f,-1.0f,-1.0f,
+	1.0f,-1.0f,-1.0f,
+	1.0f, 1.0f,-1.0f,
+	1.0f,-1.0f,-1.0f,
+	-1.0f,-1.0f,-1.0f,
+	-1.0f,-1.0f,-1.0f,
+	-1.0f, 1.0f, 1.0f,
+	-1.0f, 1.0f,-1.0f,
+	1.0f,-1.0f, 1.0f,
+	-1.0f,-1.0f, 1.0f,
+	-1.0f,-1.0f,-1.0f,
+	-1.0f, 1.0f, 1.0f,
+	-1.0f,-1.0f, 1.0f,
+	1.0f,-1.0f, 1.0f,
+	1.0f, 1.0f, 1.0f,
+	1.0f,-1.0f,-1.0f,
+	1.0f, 1.0f,-1.0f,
+	1.0f,-1.0f,-1.0f,
+	1.0f, 1.0f, 1.0f,
+	1.0f,-1.0f, 1.0f,
+	1.0f, 1.0f, 1.0f,
+	1.0f, 1.0f,-1.0f,
+	-1.0f, 1.0f,-1.0f,
+	1.0f, 1.0f, 1.0f,
+	-1.0f, 1.0f,-1.0f,
+	-1.0f, 1.0f, 1.0f,
+	1.0f, 1.0f, 1.0f,
+	-1.0f, 1.0f, 1.0f,
+	1.0f,-1.0f, 1.0f
+};
+
+// One color for each vertex. They were generated randomly.
+static const GLfloat g_color_buffer_data[] = {
+	0.583f,  0.771f,  0.014f,
+	0.609f,  0.115f,  0.436f,
+	0.327f,  0.483f,  0.844f,
+	0.822f,  0.569f,  0.201f,
+	0.435f,  0.602f,  0.223f,
+	0.310f,  0.747f,  0.185f,
+	0.597f,  0.770f,  0.761f,
+	0.559f,  0.436f,  0.730f,
+	0.359f,  0.583f,  0.152f,
+	0.483f,  0.596f,  0.789f,
+	0.559f,  0.861f,  0.639f,
+	0.195f,  0.548f,  0.859f,
+	0.014f,  0.184f,  0.576f,
+	0.771f,  0.328f,  0.970f,
+	0.406f,  0.615f,  0.116f,
+	0.676f,  0.977f,  0.133f,
+	0.971f,  0.572f,  0.833f,
+	0.140f,  0.616f,  0.489f,
+	0.997f,  0.513f,  0.064f,
+	0.945f,  0.719f,  0.592f,
+	0.543f,  0.021f,  0.978f,
+	0.279f,  0.317f,  0.505f,
+	0.167f,  0.620f,  0.077f,
+	0.347f,  0.857f,  0.137f,
+	0.055f,  0.953f,  0.042f,
+	0.714f,  0.505f,  0.345f,
+	0.783f,  0.290f,  0.734f,
+	0.722f,  0.645f,  0.174f,
+	0.302f,  0.455f,  0.848f,
+	0.225f,  0.587f,  0.040f,
+	0.517f,  0.713f,  0.338f,
+	0.053f,  0.959f,  0.120f,
+	0.393f,  0.621f,  0.362f,
+	0.673f,  0.211f,  0.457f,
+	0.820f,  0.883f,  0.371f,
+	0.982f,  0.099f,  0.879f
+};
+
+
 //Start(): 
 //Creates a default window. 
 Application::Application() {
@@ -43,6 +125,8 @@ void Application::start() {
 		glUniformMatrix4fv(uniformLoc, 1, GL_FALSE, &this->prjMatrix[0][0]);
 	}
 	this->currentKey = ValidKeys::DUMMY;
+
+	
 }
 
 void Application::setupShaders() {
@@ -114,6 +198,7 @@ void Application::setupShaders() {
 }
 
 void Application::setupTriangle() {
+
 	TriangleData triangle[3] = {
 		//		VERTEX				COLOR			 UV
 	{ 0.5f, -0.5f, 0.0f,	1.0f, 0.0f, 0.0f,	0, 0 },
@@ -121,12 +206,6 @@ void Application::setupTriangle() {
 	{ 0.0f, 0.5f, 0.0f,		0.0f, 0.0f, 1.0f,	0, 0 },
 	};
 
-	/*
-	bool res = this->loadOBJ("D:\\Programming\\OpenGL\\8HP projekt\\Objects\\temp.obj", this->vertices, this->uv, this->normals);
-	if (!res) {
-		std::cout << "Couldn't load file!" << std::endl;
-		return;
-	}*/
 
 	glGenVertexArrays(1, &this->vertexAttrib);
 	glBindVertexArray(this->vertexAttrib);
@@ -135,30 +214,37 @@ void Application::setupTriangle() {
 
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-
 	glGenBuffers(1, &this->vertexBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, this->vertexBuffer);
+	//glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);	
+	//glBufferData(GL_ARRAY_BUFFER, sizeof(triangle), triangle, GL_STATIC_DRAW);
 	
-	//glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
-	
-	glBufferData(GL_ARRAY_BUFFER, sizeof(triangle), triangle, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
+		
 	//Assign where in memory the positions are located	
 	GLint vertexPos = glGetAttribLocation(this->gShaderProg, "position");
 	if (vertexPos == -1) {
 		std::cout << "Couldn't find vertexPos" << std::endl;
 		return;
 	}
-	glVertexAttribPointer(vertexPos, 3, GL_FLOAT, GL_FALSE, sizeof(TriangleData), BUFFER_OFFSET(0));
+	glVertexAttribPointer(vertexPos, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
+
+	glEnableVertexAttribArray(1);
+
+	glGenBuffers(1, &this->colorBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, this->colorBuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(g_color_buffer_data), g_color_buffer_data, GL_STATIC_DRAW);
 	//Assign where in memory the colorData is located
 	GLint vertexCol = glGetAttribLocation(this->gShaderProg, "colorData");
 	if (vertexCol == -1) {
 		std::cout << "Couldn't find colorData" << std::endl;
 		return;
 	}
+	
+	glVertexAttribPointer(vertexCol, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
-	glVertexAttribPointer(vertexCol, 3, GL_FLOAT, GL_FALSE, sizeof(TriangleData), BUFFER_OFFSET(sizeof(float) * 3));
+	//glVertexAttribPointer(vertexCol, 3, GL_FLOAT, GL_FALSE, sizeof(TriangleData), BUFFER_OFFSET(sizeof(float) * 3));
 	std::cout << this->vertexAttrib << std::endl;
 
 	
@@ -169,8 +255,10 @@ void Application::update() {
 	this->setupShaders();
 	this->setupTriangle();
 
-	this->setupOBJ();
+	//this->setupOBJ();
 
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
 
 	glUseProgram(gShaderProg);
 	this->start();
@@ -217,7 +305,8 @@ void Application::render() {
 		glBindVertexArray(this->vertexAttrib);
 	}
 
-	glDrawArrays(GL_TRIANGLES, 0, 3);
+	//12*3 is used here because we are inputing 12 triangles -- change this later
+	glDrawArrays(GL_TRIANGLES, 0, 12*3);
 
 }
 
@@ -256,8 +345,16 @@ void Application::rotate(float deltaTime) {
 	}
 }
 
+/*
 void Application::setupOBJ() {
 	//bool res = this->loadOBJ("", this->vertices, this->uv, this->normals);
+	
+	std::string paths = OBJECTSPATH + "temp.obj";
+	std::string path = "Rendering - Engine\\Objects\\temp.obj";
+	Object obj = Object();
+	obj.loadModel(paths);
+
+	
 	Fileloader loader;
 	loader.loadFile("Rendering - Engine\\Objects\\temp.obj");
 }
@@ -332,3 +429,4 @@ bool Application::loadOBJ(std::string path, std::vector<glm::vec3>& outVertices,
 		
 	return true;
 }
+*/

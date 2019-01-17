@@ -29,21 +29,31 @@ std::string Fileloader::getExtension(std::string path) {
 	for (int i = 0; i < extension.length(); i++) {
 		correct.push_back(extension.at(extension.length() - i - 1));
 	}
+	return correct;
 
 }
 
-void Fileloader::loadFile(std::string path) {
-	std::string extension = this->getExtension(path);
-	bool validExtension = false;
-	//Check extension validity
-	for (int i = 0; i < validFiletypes.size() && validExtension == false; i++) {
-		if (validFiletypes.at(i) == extension) {
-			validExtension = true;
-		}
-	}
-	if(validExtension) { 
-		if (extension == ".obj") {
+void Fileloader::loadObj(std::string path, std::vector<Color>& color, std::vector<Vertex>& vertices, std::vector<UV>& uv, std::vector<glm::vec3>& normals) {
 
-		}
+	std::fstream file;
+	file.open(path.c_str(), std::ios::in);
+
+	if (!file.is_open()) {
+		printf("%s%s\n", "Couldn't open the file at path: ", path);
+		return;
 	}
+	else {
+		printf("%s\n", "File found and opened");
+	}
+	std::string line;
+	uint8_t nrOfLines = 0;
+	while (std::getline(file, line)) {
+		
+		
+		nrOfLines++;
+	}
+	printf("%s%d\n", "Number of lines: ", nrOfLines);
+
+
+	file.close();
 }

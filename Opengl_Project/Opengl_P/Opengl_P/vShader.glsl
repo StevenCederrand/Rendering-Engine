@@ -13,5 +13,6 @@ out vec3 color;
 void main() {
 	
 	color = colorData;
-	gl_Position =  prjMatrix * viewMatrix * worldMatrix * vec4(position, 1.0f);
+	gl_Position = prjMatrix * viewMatrix * worldMatrix * vec4(position, 1.0f);
+	//
 }

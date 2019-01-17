@@ -6,10 +6,22 @@ Simple container file. Used to contain general enums that may be/are used in the
 
 #ifndef	CONTAINERS_h
 #define CONTAINERS_h
-
+#include <string>
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm\glm.hpp>
 #include <glm\gtx\transform.hpp>
+
+const std::string OBJECTSPATH = "..\\..\\..\\Objects\\";
+
+struct Vertex {
+	glm::vec3 vertex;
+};
+struct Color {
+	glm::vec4 color;
+};
+struct UV {
+	glm::vec2 uv;
+};
 
 
 struct TriangleData {

@@ -11,7 +11,7 @@
 #include "WND.h" //GLFW handler
 #include "Containers.h"
 #include "Fileloader.h"
-
+#include "Object.h"""
 
 #include <fstream>
 #include <iostream>
@@ -36,8 +36,8 @@ public:
 	void rotate(float deltaTime);	
 	
 
-	void setupOBJ();
-	bool loadOBJ(std::string path, std::vector<glm::vec3>& outVertices, std::vector<glm::vec2>& outUV, std::vector<glm::vec3>& outNormals);
+	/*void setupOBJ();
+	bool loadOBJ(std::string path, std::vector<glm::vec3>& outVertices, std::vector<glm::vec2>& outUV, std::vector<glm::vec3>& outNormals);*/
 //Private functions
 private:
 	void start(); //Exists to reduce duplication
@@ -49,7 +49,8 @@ private:
 	GLuint vertexAttrib = 0;
 	GLuint vertexBuffer = 0;
 	GLuint gShaderProg = 0;
-	
+	GLuint colorBuffer = 0;
+
 	//the world matrix is used as a modelmatrix
 	glm::mat4 worldMatrix = glm::mat4(1.f);
 	glm::mat4 viewMatrix = glm::mat4(1.f);
