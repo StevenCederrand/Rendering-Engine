@@ -15,12 +15,14 @@ const std::string OBJECTSPATH = "..\\..\\..\\Objects\\";
 
 struct Vertex {
 	glm::vec3 vertex;
+	uint8_t occupied;
 };
 struct Color {
 	glm::vec4 color;
 };
 struct UV {
 	glm::vec2 uv;
+	uint8_t occupied;
 };
 
 

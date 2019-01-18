@@ -15,7 +15,7 @@ public:
 	~Fileloader();
 
 	void loadObj(std::string path, std::vector<Color> &color, std::vector<Vertex> &vertices, 
-		std::vector<UV> &uv, std::vector<glm::vec3> &normals);
+		std::vector<UV> &uv, std::vector<Vertex> &normals);
 	
 	std::string getExtension(std::string path);
 	//Private functions

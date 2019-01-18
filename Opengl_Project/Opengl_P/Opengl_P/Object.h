@@ -11,25 +11,19 @@ public:
 	Object();
 	Object(std::string path);
 	~Object();
-	
+	//Automatically load the data from a file into the object. 
 	void loadModel(std::string path);
 	
 	std::vector<Color> getColors() const;
 	std::vector<UV> getUV() const;
-	std::vector<glm::vec3> getNormals() const;
+	std::vector<Vertex> getNormals() const;
 	std::vector<Vertex> getVertices() const;
 
 private:
-
-	
-
-
 	std::vector<Color> colors;
 	std::vector<UV> uvs;
-	std::vector<glm::vec3> normals;
+	std::vector<Vertex> normals;
 	std::vector<Vertex> vertices;
-	
-	
 };
 
 

@@ -199,63 +199,66 @@ void Application::setupShaders() {
 
 void Application::setupTriangle() {
 
-	TriangleData triangle[3] = {
+	/*TriangleData triangle[3] = {
 		//		VERTEX				COLOR			 UV
 	{ 0.5f, -0.5f, 0.0f,	1.0f, 0.0f, 0.0f,	0, 0 },
 	{ -0.5f, -0.5f, 0.0f,	0.0f, 1.0f, 0.0f,	0, 0 },
 	{ 0.0f, 0.5f, 0.0f,		0.0f, 0.0f, 1.0f,	0, 0 },
 	};
+	*/
+	std::chrono::high_resolution_clock timer;
 
+	auto start = timer.now();
+	Object object(OBJECTSPATH + "temp.obj");
+	auto end = timer.now();
 
+	std::chrono::duration<double> dt = std::chrono::high_resolution_clock::now() - start;
+	auto deltaTime = std::chrono::duration_cast<ms>(end - start).count(); // in ms
+	std::cout << deltaTime << std::endl;
+	std::cout << deltaTime << std::endl;
+	
 	glGenVertexArrays(1, &this->vertexAttrib);
+	
 	glBindVertexArray(this->vertexAttrib);
-
-
-
+	//Wireframe mode
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
 	glEnableVertexAttribArray(0);
 	glGenBuffers(1, &this->vertexBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, this->vertexBuffer);
-	//glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);	
-	//glBufferData(GL_ARRAY_BUFFER, sizeof(triangle), triangle, GL_STATIC_DRAW);
-	
+	//Load the vertices 
 	glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
-		
+
 	//Assign where in memory the positions are located	
 	GLint vertexPos = glGetAttribLocation(this->gShaderProg, "position");
 	if (vertexPos == -1) {
 		std::cout << "Couldn't find vertexPos" << std::endl;
 		return;
 	}
+	//Set the vertices in the glsl-code
 	glVertexAttribPointer(vertexPos, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
-
+	//Set colours
 	glEnableVertexAttribArray(1);
-
 	glGenBuffers(1, &this->colorBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, this->colorBuffer);
+	glm::vec3 red = glm::vec3(0, 255, 0);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(g_color_buffer_data), g_color_buffer_data, GL_STATIC_DRAW);
-	//Assign where in memory the colorData is located
+	//glBufferData(GL_ARRAY_BUFFER, sizeof(red), red, GL_STATIC_DRAW);
+	//Assign where in memory the colorData is located -- 
 	GLint vertexCol = glGetAttribLocation(this->gShaderProg, "colorData");
 	if (vertexCol == -1) {
 		std::cout << "Couldn't find colorData" << std::endl;
 		return;
 	}
-	
-	glVertexAttribPointer(vertexCol, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-	//glVertexAttribPointer(vertexCol, 3, GL_FLOAT, GL_FALSE, sizeof(TriangleData), BUFFER_OFFSET(sizeof(float) * 3));
-	std::cout << this->vertexAttrib << std::endl;
-
-	
+	//Set the colours in the glsl-code
+	glVertexAttribPointer(vertexCol, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);	
 }
 
 //Runs every tick while the window is open
 void Application::update() {
 	this->setupShaders();
 	this->setupTriangle();
-
-	//this->setupOBJ();
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
@@ -296,12 +299,10 @@ void Application::render() {
 
 
 	if (this->gShaderProg != 0) {
-		//std::cout << "Setup shader" << std::endl;
 		glUseProgram(this->gShaderProg);
 	}
 
 	if (this->vertexAttrib != 0) {
-		//std::cout << "Setup VAO" << std::endl;
 		glBindVertexArray(this->vertexAttrib);
 	}
 

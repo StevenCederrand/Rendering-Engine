@@ -35,7 +35,7 @@ std::vector<Color> Object::getColors() const {
 std::vector<UV> Object::getUV() const {
 	return this->uvs;
 }
-std::vector<glm::vec3> Object::getNormals() const {
+std::vector<Vertex> Object::getNormals() const {
 	return this->normals;
 }
 std::vector<Vertex> Object::getVertices() const {

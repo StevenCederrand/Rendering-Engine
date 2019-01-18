@@ -33,7 +33,7 @@ std::string Fileloader::getExtension(std::string path) {
 
 }
 
-void Fileloader::loadObj(std::string path, std::vector<Color>& color, std::vector<Vertex>& vertices, std::vector<UV>& uv, std::vector<glm::vec3>& normals) {
+void Fileloader::loadObj(std::string path, std::vector<Color>& color, std::vector<Vertex>& vertices, std::vector<UV>& uv, std::vector<Vertex>& normals) {
 
 	std::fstream file;
 	file.open(path.c_str(), std::ios::in);
@@ -46,14 +46,68 @@ void Fileloader::loadObj(std::string path, std::vector<Color>& color, std::vecto
 		printf("%s\n", "File found and opened");
 	}
 	std::string line;
-	uint8_t nrOfLines = 0;
+	int nrOfLines = 0;
+	int nrOfVerts = 0;
+	int nrOfUV = 0;
 	while (std::getline(file, line)) {
-		
+		if (line[0] == 'v' ) {
+			std::string val = line;
+			std::cout << val << std::endl;
+
+			//Get each vertex position
+			if (line[1] == ' ') {
+				Vertex vert = Vertex();
+				std::string val = "";
+
+				//Read the line
+				for (int i = 2; i < line.length(); i++) {
+					if (line[i] == ' ' || i == line.length() - 1) {
+						//Set the vertex x, y, z
+						vert.vertex[vert.occupied] = std::stof(val);
+						vert.occupied++;
+
+						val = "";
+					}
+					else {
+						val += line[i];
+					}
+				}
+				//Save the vertex to the vertex vector
+				vertices.push_back(vert);
+				nrOfVerts++;
+			}
+			//If we're dealing with a vertex texture
+			else if (line[1] == 't') {
+				UV tempUV = UV();
+				std::string val = "";
+				for (int i = 3; i < line.length(); i++) {
+				
+					if (line[i] == ' ' || i == line.length() - 1) {
+						std::cout << val << std::endl;
+						tempUV.uv[tempUV.occupied] = std::stof(val);
+						/*std::cout << uv.uv[uv.occupied] << std::endl;
+						uv.occupied++;*/
+						val = "";
+					}
+					else {
+						val += line[i];
+					}
+				}
+				uv.push_back(tempUV);
+				nrOfUV++;
+			}
+			//If we're dealing with vertex normals
+			else if (line[1] == 'n') {
+				
+			}
+
+		}
 		
 		nrOfLines++;
 	}
 	printf("%s%d\n", "Number of lines: ", nrOfLines);
-
+	printf("%s%d\n", "Number of vertices: ", nrOfVerts);
+	printf("%s%d\n", "Number of UVs: ", nrOfUV);
 
 	file.close();
 }
