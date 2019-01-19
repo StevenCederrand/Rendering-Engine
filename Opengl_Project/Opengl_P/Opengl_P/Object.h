@@ -24,6 +24,7 @@ private:
 	std::vector<UV> uvs;
 	std::vector<Vertex> normals;
 	std::vector<Vertex> vertices;
+	std::vector<Triangle> triangles;
 };
 
 
