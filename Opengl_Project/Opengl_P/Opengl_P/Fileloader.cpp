@@ -49,6 +49,7 @@ void Fileloader::loadObj(std::string path, std::vector<Color>& color, std::vecto
 	int nrOfLines = 0;
 	int nrOfVerts = 0;
 	int nrOfUV = 0;
+	int nrOfNormals = 0;
 	while (std::getline(file, line)) {
 		if (line[0] == 'v' ) {
 			std::string val = line;
@@ -81,33 +82,48 @@ void Fileloader::loadObj(std::string path, std::vector<Color>& color, std::vecto
 				UV tempUV = UV();
 				std::string val = "";
 				for (int i = 3; i < line.length(); i++) {
-				
+					//Between each texture coordinate
 					if (line[i] == ' ' || i == line.length() - 1) {
-						std::cout << val << std::endl;
+						//add a uv.x or y onto the UV struct
 						tempUV.uv[tempUV.occupied] = std::stof(val);
-						/*std::cout << uv.uv[uv.occupied] << std::endl;
-						uv.occupied++;*/
+						tempUV.occupied++;
 						val = "";
 					}
 					else {
 						val += line[i];
 					}
 				}
+				//at the end of the line
 				uv.push_back(tempUV);
 				nrOfUV++;
 			}
 			//If we're dealing with vertex normals
 			else if (line[1] == 'n') {
-				
+				Vertex tempNormal = Vertex();
+				std::string val = "";
+				for (int i = 3; i < line.length(); i++) {
+					if (line[i] == ' ' || i == line.length() - 1) {
+						//Set the tempNormal
+						tempNormal.vertex[tempNormal.occupied] = std::stof(val);
+						tempNormal.occupied++;
+						val = "";
+					}
+					else {
+						val += line[i];
+					}
+				}
+				//At the end of line
+				normals.push_back(tempNormal);
+				nrOfNormals++;
 			}
-
 		}
 		
 		nrOfLines++;
 	}
+
 	printf("%s%d\n", "Number of lines: ", nrOfLines);
 	printf("%s%d\n", "Number of vertices: ", nrOfVerts);
 	printf("%s%d\n", "Number of UVs: ", nrOfUV);
-
+	printf("%s%d\n", "Number of Normals: ", nrOfNormals);
 	file.close();
 }
