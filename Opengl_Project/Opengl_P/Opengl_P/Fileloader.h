@@ -16,11 +16,10 @@ public:
 
 	void loadObj(std::string path, std::vector<Color> &color, std::vector<Vertex> &vertices, 
 		std::vector<UV> &uv, std::vector<Vertex> &normals);
-	
-	std::string getExtension(std::string path);
-	//Private functions
-private:
+	void loadObj(std::string path, std::vector<Triangle> &triangles);
 
+	std::string getExtension(std::string path);
+		
 	//Private variables
 private:
 	std::vector<std::string> validFiletypes;

@@ -19,7 +19,8 @@ void Object::loadModel(std::string path) {
 	Fileloader fileloader;
 	
 	if (fileloader.getExtension(path) == ".obj") {
-		fileloader.loadObj(path, this->colors, this->vertices, this->uvs, this->normals);
+		
+		fileloader.loadObj(path, this->triangles);
 	}
 	else {
 		printf("%s\n", "Filetype not supported");
