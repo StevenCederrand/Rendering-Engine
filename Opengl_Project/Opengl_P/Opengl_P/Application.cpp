@@ -338,12 +338,14 @@ void Application::rotate(float deltaTime) {
 		this->zRotation += rotationVal / deltaTime;
 		rotations.getZRotationAtAngle(this->zRotation, this->worldMatrix);
 	}
-	this->currentKey = ValidKeys::DUMMY;
 	//This does need to be called everyframe. Otherwise the new rotation won't be sent to the GPU
 	GLint worldMatrixLoc = glGetUniformLocation(gShaderProg, "worldMatrix");
 	if (worldMatrixLoc != -1) {
 		glUniformMatrix4fv(worldMatrixLoc, 1, GL_FALSE, &this->worldMatrix[0][0]);
 	}
+
+
+	this->currentKey = ValidKeys::DUMMY;
 }
 
 /*

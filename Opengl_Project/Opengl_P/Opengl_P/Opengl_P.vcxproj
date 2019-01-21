@@ -70,8 +70,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>D:\Programming\OpenGL\8HP projekt\Opengl_Project\Opengl_P\includes;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Programming\OpenGL\8HP projekt\Opengl_Project\Opengl_P\libs;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(Solutiondir)\includes;$(IncludePath)</IncludePath>
+    <LibraryPath>$(Solutiondir)\libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>C:\Users\Steven\Documents\Projects\3D Prog\8HP projekt\Opengl_Project\Opengl_P\includes;$(IncludePath)</IncludePath>

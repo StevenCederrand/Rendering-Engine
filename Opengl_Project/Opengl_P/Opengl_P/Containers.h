@@ -46,7 +46,6 @@ enum ValidKeys {
 	Q, 
 	E,
 	DUMMY, 
-
 };
 
 //Struct of functions that make rotations a lot more conveniant --- the struct can be removed. But we may find it a little bit more comfortable.
