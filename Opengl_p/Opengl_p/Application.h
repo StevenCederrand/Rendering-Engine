@@ -53,7 +53,6 @@ private:
 
 	//the world matrix is used as a modelmatrix
 	glm::mat4 worldMatrix = glm::mat4(1.f);
-	glm::mat4 viewMatrix = glm::mat4(1.f);
 	glm::mat4 prjMatrix = glm::mat4(1.f);
 
 	Rotations rotations;

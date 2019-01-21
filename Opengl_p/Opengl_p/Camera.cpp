@@ -25,17 +25,19 @@ void Camera::resetCamera(glm::vec3 eye, glm::vec3 center, glm::vec3 up) {
 
 void Camera::handleKeys(ValidKeys currentKey) {
 	if (currentKey == ValidKeys::W) {
-		cameraPosition += cameraSpeed * cameraFront;
+		this->cameraPosition += this->cameraSpeed * this->cameraFront;
 	}
 	else if (currentKey == ValidKeys::S) {
-		cameraPosition -= cameraSpeed * cameraFront;
+		this->cameraPosition -= this->cameraSpeed * this->cameraFront;
 	}
 	else if (currentKey == ValidKeys::A) {
-		cameraPosition += glm::normalize(glm::cross(cameraUp, cameraFront))*cameraSpeed;
+		this->cameraPosition += glm::normalize(glm::cross(this->cameraUp, this->cameraFront))*this->cameraSpeed;
 	}
 	else if (currentKey == ValidKeys::D) {
-		cameraPosition -= glm::normalize(glm::cross(cameraUp, cameraFront))*cameraSpeed;
+		this->cameraPosition -= glm::normalize(glm::cross(this->cameraUp, this->cameraFront))*this->cameraSpeed;
 	}
+
+	this->viewMatrix = glm::lookAt(this->cameraPosition, this->cameraPosition + this->cameraFront, this->cameraUp);
 }
 
 glm::vec3 Camera::getCameraPosition() const
@@ -52,9 +54,6 @@ glm::vec3 Camera::getCameraFront() const
 {
 	return this->cameraFront;
 }
-
-
-
 
 glm::mat4 Camera::getViewMatrix() const {
 	return this->viewMatrix;

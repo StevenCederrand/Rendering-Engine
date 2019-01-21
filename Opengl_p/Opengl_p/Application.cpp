@@ -117,19 +117,16 @@ void Application::start() {
 		glUniformMatrix4fv(uniformLoc, 1, GL_FALSE, &this->worldMatrix[0][0]);
 	}
 	//Set view matrix
-	this->viewMatrix = camera->getViewMatrix();
 	uniformLoc = glGetUniformLocation(this->gShaderProg, "viewMatrix");
 	if (uniformLoc != -1) {
-		glUniformMatrix4fv(uniformLoc, 1, GL_FALSE, &this->viewMatrix[0][0]);
+		glUniformMatrix4fv(uniformLoc, 1, GL_FALSE, &this->camera->getViewMatrix()[0][0]);
 	}
 	//Set projection matrix
 	uniformLoc = glGetUniformLocation(this->gShaderProg, "prjMatrix");
 	if (uniformLoc != -1) {
 		glUniformMatrix4fv(uniformLoc, 1, GL_FALSE, &this->prjMatrix[0][0]);
 	}
-	this->currentKey = ValidKeys::DUMMY;
-
-	
+	this->currentKey = ValidKeys::DUMMY;	
 }
 
 void Application::setupShaders() {
@@ -221,7 +218,7 @@ void Application::setupObjects() {
 				vertices.push_back(this->objs.at(k).getTriangles().at(i).vertices.at(j).vertex);
 			}
 		}
-	}
+	}	
 	
 	int totalSize = 0;
 	for (int i = 0; i < this->objs.size(); i++) {
@@ -286,8 +283,9 @@ void Application::update() {
 		//Check input
 		this->window->inputKey(this->currentKey);
 
+		//If no key is pressed
 		if (this->currentKey != ValidKeys::DUMMY) {
-			this->rotate(deltaTime);
+			this->cameraHandler();
 		}
 
 		//Render the VAO with the loaded shader
@@ -322,34 +320,23 @@ void Application::render() {
 }
 
 //Have this be in an object class
-void Application::rotate(float deltaTime) {
+void Application::cameraHandler() {
 
-	if (this->currentKey == ValidKeys::W) {
-		cameraPosition += cameraSpeed * cameraFront;
-	}
-	else if (this->currentKey == ValidKeys::S) {
-		cameraPosition -= cameraSpeed * cameraFront;
-	}
-	else if (this->currentKey == ValidKeys::A) {
-		cameraPosition += glm::normalize(glm::cross(cameraUp, cameraFront))*cameraSpeed;
-	}
-	else if (this->currentKey == ValidKeys::D) {
-		cameraPosition -= glm::normalize(glm::cross(cameraUp, cameraFront))*cameraSpeed;
-	}
+	camera->handleKeys(this->currentKey);
+
+	this->currentKey = ValidKeys::DUMMY;
 
 	//This does need to be called everyframe. Otherwise the new rotation won't be sent to the GPU
 	GLint worldMatrixLoc = glGetUniformLocation(gShaderProg, "worldMatrix");
 	if (worldMatrixLoc != -1) {
 		glUniformMatrix4fv(worldMatrixLoc, 1, GL_FALSE, &this->worldMatrix[0][0]);
 	}
-
-	this->currentKey = ValidKeys::DUMMY;
+	
 	// This is so that we can "walk" with wasd keys
-	// Camera(cameraPosition, cameraPosition + cameraFront, cameraUp);
-	this->viewMatrix = glm::lookAt(cameraPosition, cameraPosition + cameraFront, cameraUp);
+	//this->viewMatrix = this->camera->getViewMatrix(); //glm::lookAt(cameraPosition, cameraPosition + cameraFront, cameraUp);
 	GLint viewMatrixLoc = glGetUniformLocation(this->gShaderProg, "viewMatrix");
 	if (viewMatrixLoc != -1) {
-		glUniformMatrix4fv(viewMatrixLoc, 1, GL_FALSE, &this->viewMatrix[0][0]);
+		glUniformMatrix4fv(viewMatrixLoc, 1, GL_FALSE, &this->camera->getViewMatrix()[0][0]);
 	}
 }
 
