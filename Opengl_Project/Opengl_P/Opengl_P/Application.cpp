@@ -332,37 +332,62 @@ void Application::render() {
 void Application::rotate(float deltaTime) {
 
 	if (this->currentKey == ValidKeys::W) {
-		this->xRotation += rotationVal / deltaTime;
-		rotations.getXRotationAtAngle(this->xRotation, this->worldMatrix);
+		//this->xRotation += rotationVal / deltaTime;
+		//rotations.getXRotationAtAngle(this->xRotation, this->worldMatrix);
+
+		cameraPosition += cameraSpeed * cameraFront;
 	}
 	else if (this->currentKey == ValidKeys::S) {
-		this->xRotation -= rotationVal / deltaTime;
-		rotations.getXRotationAtAngle(this->xRotation, this->worldMatrix);
+		//this->xRotation -= rotationVal / deltaTime;
+		//rotations.getXRotationAtAngle(this->xRotation, this->worldMatrix);
+
+		cameraPosition -= cameraSpeed * cameraFront;
 	}
 	else if (this->currentKey == ValidKeys::A) {
-		this->yRotation -= rotationVal / deltaTime;
-		rotations.getYRotationAtAngle(this->yRotation, this->worldMatrix);
+		//this->yRotation -= rotationVal / deltaTime;
+		//rotations.getYRotationAtAngle(this->yRotation, this->worldMatrix);
+
+		cameraPosition += glm::normalize(glm::cross(cameraUp, cameraFront))*cameraSpeed;
 	}
 	else if (this->currentKey == ValidKeys::D) {
+		//this->yRotation += rotationVal / deltaTime;
+		//rotations.getYRotationAtAngle(this->yRotation, this->worldMatrix);
+
+		cameraPosition -= glm::normalize(glm::cross(cameraUp, cameraFront))*cameraSpeed;
+	}
+	else if (this->currentKey == ValidKeys::Q) {
+		//this->zRotation -= rotationVal / deltaTime;
+		//rotations.getZRotationAtAngle(this->zRotation, this->worldMatrix);
+
+		//cameraPosition += cameraUp * cameraSpeed;
+
 		this->yRotation += rotationVal / deltaTime;
 		rotations.getYRotationAtAngle(this->yRotation, this->worldMatrix);
 	}
-	else if (this->currentKey == ValidKeys::Q) {
-		this->zRotation -= rotationVal / deltaTime;
-		rotations.getZRotationAtAngle(this->zRotation, this->worldMatrix);
-	}
 	else if (this->currentKey == ValidKeys::E) {
-		this->zRotation += rotationVal / deltaTime;
-		rotations.getZRotationAtAngle(this->zRotation, this->worldMatrix);
+		//this->zRotation += rotationVal / deltaTime;
+		//rotations.getZRotationAtAngle(this->zRotation, this->worldMatrix);
+
+		//cameraPosition -= cameraUp * cameraSpeed;
+
+		this->yRotation -= rotationVal / deltaTime;
+		rotations.getYRotationAtAngle(this->yRotation, this->worldMatrix);
 	}
+	
 	//This does need to be called everyframe. Otherwise the new rotation won't be sent to the GPU
 	GLint worldMatrixLoc = glGetUniformLocation(gShaderProg, "worldMatrix");
 	if (worldMatrixLoc != -1) {
 		glUniformMatrix4fv(worldMatrixLoc, 1, GL_FALSE, &this->worldMatrix[0][0]);
 	}
 
-
 	this->currentKey = ValidKeys::DUMMY;
+	// This is so that we can "walk" with wasd keys
+	// Camera(cameraPosition, cameraPosition + cameraFront, cameraUp);
+	this->viewMatrix = glm::lookAt(cameraPosition, cameraPosition + cameraFront, cameraUp);
+	GLint viewMatrixLoc = glGetUniformLocation(this->gShaderProg, "viewMatrix");
+	if (viewMatrixLoc != -1) {
+		glUniformMatrix4fv(viewMatrixLoc, 1, GL_FALSE, &this->viewMatrix[0][0]);
+	}
 }
 
 /*

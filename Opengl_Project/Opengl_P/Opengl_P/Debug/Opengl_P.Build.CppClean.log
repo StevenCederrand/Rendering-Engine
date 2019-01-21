@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 c:\users\stce17\onedrive - bth student\desktop\rendering-engine\opengl_project\opengl_p\opengl_p\debug\vc141.pdb
 c:\users\stce17\onedrive - bth student\desktop\rendering-engine\opengl_project\opengl_p\opengl_p\debug\vc141.idb
 c:\users\stce17\onedrive - bth student\desktop\rendering-engine\opengl_project\opengl_p\opengl_p\debug\wnd.obj
@@ -16,3 +17,44 @@ c:\users\stce17\onedrive - bth student\desktop\rendering-engine\opengl_project\o
 c:\users\stce17\onedrive - bth student\desktop\rendering-engine\opengl_project\opengl_p\opengl_p\debug\opengl_p.tlog\link.command.1.tlog
 c:\users\stce17\onedrive - bth student\desktop\rendering-engine\opengl_project\opengl_p\opengl_p\debug\opengl_p.tlog\link.read.1.tlog
 c:\users\stce17\onedrive - bth student\desktop\rendering-engine\opengl_project\opengl_p\opengl_p\debug\opengl_p.tlog\link.write.1.tlog
+=======
+<<<<<<< HEAD
+d:\annat skit\programering lp 2\3d\rendering-engine\opengl_project\opengl_p\opengl_p\debug\vc141.pdb
+d:\annat skit\programering lp 2\3d\rendering-engine\opengl_project\opengl_p\opengl_p\debug\vc141.idb
+d:\annat skit\programering lp 2\3d\rendering-engine\opengl_project\opengl_p\opengl_p\debug\wnd.obj
+d:\annat skit\programering lp 2\3d\rendering-engine\opengl_project\opengl_p\opengl_p\debug\window.obj
+d:\annat skit\programering lp 2\3d\rendering-engine\opengl_project\opengl_p\opengl_p\debug\object.obj
+d:\annat skit\programering lp 2\3d\rendering-engine\opengl_project\opengl_p\opengl_p\debug\fileloader.obj
+d:\annat skit\programering lp 2\3d\rendering-engine\opengl_project\opengl_p\opengl_p\debug\camera.obj
+d:\annat skit\programering lp 2\3d\rendering-engine\opengl_project\opengl_p\opengl_p\debug\application.obj
+d:\annat skit\programering lp 2\3d\rendering-engine\opengl_project\opengl_p\opengl_p\debug\glad.obj
+d:\annat skit\programering lp 2\3d\rendering-engine\opengl_project\opengl_p\debug\opengl_p.exe
+d:\annat skit\programering lp 2\3d\rendering-engine\opengl_project\opengl_p\debug\opengl_p.ilk
+d:\annat skit\programering lp 2\3d\rendering-engine\opengl_project\opengl_p\debug\opengl_p.pdb
+d:\annat skit\programering lp 2\3d\rendering-engine\opengl_project\opengl_p\opengl_p\debug\opengl_p.tlog\cl.command.1.tlog
+d:\annat skit\programering lp 2\3d\rendering-engine\opengl_project\opengl_p\opengl_p\debug\opengl_p.tlog\cl.read.1.tlog
+d:\annat skit\programering lp 2\3d\rendering-engine\opengl_project\opengl_p\opengl_p\debug\opengl_p.tlog\cl.write.1.tlog
+d:\annat skit\programering lp 2\3d\rendering-engine\opengl_project\opengl_p\opengl_p\debug\opengl_p.tlog\link.command.1.tlog
+d:\annat skit\programering lp 2\3d\rendering-engine\opengl_project\opengl_p\opengl_p\debug\opengl_p.tlog\link.read.1.tlog
+d:\annat skit\programering lp 2\3d\rendering-engine\opengl_project\opengl_p\opengl_p\debug\opengl_p.tlog\link.write.1.tlog
+=======
+d:\programming\opengl\rendering-engine\opengl_project\opengl_p\opengl_p\debug\vc141.pdb
+d:\programming\opengl\rendering-engine\opengl_project\opengl_p\opengl_p\debug\vc141.idb
+d:\programming\opengl\rendering-engine\opengl_project\opengl_p\opengl_p\debug\wnd.obj
+d:\programming\opengl\rendering-engine\opengl_project\opengl_p\opengl_p\debug\window.obj
+d:\programming\opengl\rendering-engine\opengl_project\opengl_p\opengl_p\debug\object.obj
+d:\programming\opengl\rendering-engine\opengl_project\opengl_p\opengl_p\debug\fileloader.obj
+d:\programming\opengl\rendering-engine\opengl_project\opengl_p\opengl_p\debug\camera.obj
+d:\programming\opengl\rendering-engine\opengl_project\opengl_p\opengl_p\debug\application.obj
+d:\programming\opengl\rendering-engine\opengl_project\opengl_p\opengl_p\debug\glad.obj
+d:\programming\opengl\rendering-engine\opengl_project\opengl_p\debug\opengl_p.exe
+d:\programming\opengl\rendering-engine\opengl_project\opengl_p\debug\opengl_p.ilk
+d:\programming\opengl\rendering-engine\opengl_project\opengl_p\debug\opengl_p.pdb
+d:\programming\opengl\rendering-engine\opengl_project\opengl_p\opengl_p\debug\opengl_p.tlog\cl.command.1.tlog
+d:\programming\opengl\rendering-engine\opengl_project\opengl_p\opengl_p\debug\opengl_p.tlog\cl.read.1.tlog
+d:\programming\opengl\rendering-engine\opengl_project\opengl_p\opengl_p\debug\opengl_p.tlog\cl.write.1.tlog
+d:\programming\opengl\rendering-engine\opengl_project\opengl_p\opengl_p\debug\opengl_p.tlog\link.command.1.tlog
+d:\programming\opengl\rendering-engine\opengl_project\opengl_p\opengl_p\debug\opengl_p.tlog\link.read.1.tlog
+d:\programming\opengl\rendering-engine\opengl_project\opengl_p\opengl_p\debug\opengl_p.tlog\link.write.1.tlog
+>>>>>>> 87510df79942c2164431f6523a1c9450b29ed937
+>>>>>>> 304e72ebf55e812128c30f211dc8756a9d93aea8
