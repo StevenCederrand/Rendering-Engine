@@ -101,12 +101,14 @@ Application::Application(int WNDW, int WNDH) {
 
 Application::~Application() {
 	delete this->window;
+	delete this->camera;
 }
 //Setup the matrixes
 void Application::start() {
 
-	this->viewMatrix = glm::lookAt(glm::vec3(0, 0, 3), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
-	
+	//this->viewMatrix = glm::lookAt(glm::vec3(0, 0, 3), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+	this->camera = new Camera(glm::vec3(0, 0, 3), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+
 	this->prjMatrix = glm::perspective(glm::radians(65.0f), (float)this->window->getResolution().first / (float)this->window->getResolution().second, 0.1f, 20.0f);
 	
 	//Set world matrix
@@ -115,6 +117,7 @@ void Application::start() {
 		glUniformMatrix4fv(uniformLoc, 1, GL_FALSE, &this->worldMatrix[0][0]);
 	}
 	//Set view matrix
+	this->viewMatrix = camera->getViewMatrix();
 	uniformLoc = glGetUniformLocation(this->gShaderProg, "viewMatrix");
 	if (uniformLoc != -1) {
 		glUniformMatrix4fv(uniformLoc, 1, GL_FALSE, &this->viewMatrix[0][0]);

@@ -44,6 +44,7 @@ private:
 //Private data
 private:
 	WND* window;
+	Camera* camera;
 
 	GLuint vertexAttrib = 0;
 	GLuint vertexBuffer = 0;
