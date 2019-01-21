@@ -102,7 +102,7 @@ Application::Application(int WNDW, int WNDH) {
 Application::~Application() {
 	delete this->window;
 }
-
+//Setup the matrixes
 void Application::start() {
 
 	this->viewMatrix = glm::lookAt(glm::vec3(0, 0, 3), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
@@ -197,7 +197,7 @@ void Application::setupShaders() {
 	glDeleteShader(fShader);
 }
 
-void Application::setupTriangle() {
+void Application::setupObjects() {
 	//Wireframe mode
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); 
 
@@ -206,10 +206,16 @@ void Application::setupTriangle() {
 	Object object(OBJECTSPATH + "temp.obj");
 	auto end = timer.now();
 
+	//Calculate the time it took to load
 	std::chrono::duration<double> dt = std::chrono::high_resolution_clock::now() - start;
 	auto loadTime = std::chrono::duration_cast<ms>(end - start).count(); // in ms
 	std::cout << "Loadtime(ms): " + std::to_string(loadTime) << std::endl;
 
+
+	//Load the object into the objs vector
+	this->objs.push_back(object);
+			
+	
 	//Load the vertices into memory
 	glGenVertexArrays(1, &this->vertexAttrib);
 	glBindVertexArray(this->vertexAttrib);
@@ -219,13 +225,22 @@ void Application::setupTriangle() {
 
 	//Optimize this or find a better solution! This is n^2
 	std::vector<glm::vec3> vertices;
-	for (int i = 0; i < object.getTriangles().size(); i++) {
-		for (int j = 0; j < object.getTriangles().at(i).vertices.size(); j++) {
-			vertices.push_back(object.getTriangles().at(i).vertices.at(j).vertex); 
+	for (int k = 0; k < objs.size(); k++) {
+		for (int i = 0; i < objs.at(k).getTriangles().size(); i++) {
+			for (int j = 0; j < objs.at(k).getTriangles().at(i).vertices.size(); j++) {
+				//vertices.push_back(objs.at(k).getTriangles().)
+				vertices.push_back(objs.at(k).getTriangles().at(i).vertices.at(j).vertex);
+			}
 		}
 	}
-	std::cout << vertices.size() << std::endl;
-	glBufferData(GL_ARRAY_BUFFER, object.getByteSize(), &vertices[0], GL_STATIC_DRAW);
+	
+	int totalSize = 0;
+	for (int i = 0; i < objs.size(); i++) {
+		totalSize += objs.at(i).getByteSize();
+	}
+	//Load vertices into the buffer
+	glBufferData(GL_ARRAY_BUFFER, totalSize, &vertices[0], GL_STATIC_DRAW);
+
 	//Load the vertices 
 	//glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
 
@@ -243,8 +258,9 @@ void Application::setupTriangle() {
 	glEnableVertexAttribArray(1);
 	glGenBuffers(1, &this->colorBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, this->colorBuffer);
+	glm::vec3 col = glm::vec3(0, 244, 0);
+	//glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3), &col[0], GL_STATIC_DRAW);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(g_color_buffer_data), g_color_buffer_data, GL_STATIC_DRAW);
-	//glBufferData(GL_ARRAY_BUFFER, sizeof(red), red, GL_STATIC_DRAW);
 	//Assign where in memory the colorData is located -- 
 	GLint vertexCol = glGetAttribLocation(this->gShaderProg, "colorData");
 	if (vertexCol == -1) {
@@ -258,7 +274,7 @@ void Application::setupTriangle() {
 //Runs every tick while the window is open
 void Application::update() {
 	this->setupShaders();
-	this->setupTriangle();
+	this->setupObjects();
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
@@ -286,6 +302,7 @@ void Application::update() {
 		this->window->update();
 		stop = timer.now();
 
+		//Deltatime in ms
 		std::chrono::duration<double> dt = std::chrono::high_resolution_clock::now() - frameTime;
 		deltaTime = std::chrono::duration_cast<ms>(stop - frameTime).count() / 1000; 
 		

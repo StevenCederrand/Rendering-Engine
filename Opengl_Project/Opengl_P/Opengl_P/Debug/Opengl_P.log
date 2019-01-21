@@ -1,1 +1,7 @@
-﻿
+﻿  Application.cpp
+c:\users\stce17\onedrive - bth student\desktop\rendering-engine\opengl_project\opengl_p\opengl_p\application.cpp(227): warning C4018: '<': signed/unsigned mismatch
+c:\users\stce17\onedrive - bth student\desktop\rendering-engine\opengl_project\opengl_p\opengl_p\application.cpp(228): warning C4018: '<': signed/unsigned mismatch
+c:\users\stce17\onedrive - bth student\desktop\rendering-engine\opengl_project\opengl_p\opengl_p\application.cpp(229): warning C4018: '<': signed/unsigned mismatch
+c:\users\stce17\onedrive - bth student\desktop\rendering-engine\opengl_project\opengl_p\opengl_p\application.cpp(237): warning C4018: '<': signed/unsigned mismatch
+c:\users\stce17\onedrive - bth student\desktop\rendering-engine\opengl_project\opengl_p\opengl_p\application.cpp(297): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  Opengl_P.vcxproj -> C:\Users\stce17\OneDrive - BTH Student\Desktop\Rendering-Engine\Opengl_Project\Opengl_P\Debug\Opengl_P.exe

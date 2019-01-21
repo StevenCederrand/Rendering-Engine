@@ -24,13 +24,11 @@ std::string Fileloader::getExtension(std::string path) {
 			break;
 		}
 	}
-	std::cout << extension << std::endl;
 	std::string correct;
 	for (int i = 0; i < extension.length(); i++) {
 		correct.push_back(extension.at(extension.length() - i - 1));
 	}
 	return correct;
-
 }
 
 void Fileloader::loadObj(std::string path, std::vector<Triangle>& triangles) {
@@ -327,27 +325,7 @@ void Fileloader::loadObj(std::string path, std::vector<Vertex>& vertices, std::v
 
 
 		}
-		nrOfLines++;
-		
+		nrOfLines++;		
 	}
-	/*
-	printf("%s%d\n", "Number of loaded Vertices: ", tempTriangle.vertices.size());
-	for (int i = 0; i < tempTriangle.vertices.size(); i++) {
-
-		if (i % 3 == 0) {
-			std::cout << "New Triangle" << std::endl;
-		}
-		std::cout << tempTriangle.vertices.at(i).vertex.x;
-		std::cout << " ";
-		std::cout << tempTriangle.vertices.at(i).vertex.y;
-		std::cout << " ";
-		std::cout << tempTriangle.vertices.at(i).vertex.z << std::endl;
-	}
-
-
-	printf("%s%d\n", "Number of lines: ", nrOfLines);
-	printf("%s%d\n", "Number of vertices: ", nrOfVerts);
-	printf("%s%d\n", "Number of UVs: ", nrOfUV);
-	printf("%s%d\n", "Number of Normals: ", nrOfNormals);*/
 	file.close();
 }

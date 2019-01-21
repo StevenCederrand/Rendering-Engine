@@ -27,7 +27,7 @@ public:
 	~Application();
 
 	void setupShaders();
-	void setupTriangle();
+	void setupObjects();
 
 	
 	void update();
@@ -54,6 +54,7 @@ private:
 
 	Rotations rotations;
 	ValidKeys currentKey;
+	std::vector<Object> objs;
 
 	float rotationVal = 0.05f;
 	float xRotation = 0;
