@@ -4,3 +4,4 @@ Opengl_p/Opengl_p/Debug/*
 
 #Ignore files
 *.ipch
+*.db
