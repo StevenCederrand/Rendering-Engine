@@ -15,12 +15,11 @@ public:
 	~Fileloader();
 
 	void loadObj(std::string path, std::vector<Color> &color, std::vector<Vertex> &vertices, 
-		std::vector<UV> &uv, std::vector<glm::vec3> &normals);
-	
-	std::string getExtension(std::string path);
-	//Private functions
-private:
+		std::vector<UV> &uv, std::vector<Vertex> &normals);
+	void loadObj(std::string path, std::vector<Triangle> &triangles);
 
+	std::string getExtension(std::string path);
+		
 	//Private variables
 private:
 	std::vector<std::string> validFiletypes;

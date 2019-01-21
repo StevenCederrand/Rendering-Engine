@@ -10,20 +10,27 @@ Simple container file. Used to contain general enums that may be/are used in the
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm\glm.hpp>
 #include <glm\gtx\transform.hpp>
+#include <vector>
 
 const std::string OBJECTSPATH = "..\\..\\..\\Objects\\";
 
 struct Vertex {
 	glm::vec3 vertex;
+	uint8_t occupied;
 };
 struct Color {
 	glm::vec4 color;
 };
 struct UV {
 	glm::vec2 uv;
+	uint8_t occupied;
 };
 
-
+struct Triangle {
+	std::vector<Vertex> vertices;
+	std::vector<UV> uvs;
+	std::vector<Vertex> normals;
+};
 struct TriangleData {
 	float x, y, z;
 	float r, g, b;

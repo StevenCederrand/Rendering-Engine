@@ -13,6 +13,8 @@
 #include "Fileloader.h"
 #include "Object.h"
 #include "Camera.h"
+#include "Object.h"	//Contains basic 3D object class
+
 
 #include <fstream>
 #include <iostream>
@@ -36,9 +38,6 @@ public:
 	void render();
 	void rotate(float deltaTime);	
 	
-
-	/*void setupOBJ();
-	bool loadOBJ(std::string path, std::vector<glm::vec3>& outVertices, std::vector<glm::vec2>& outUV, std::vector<glm::vec3>& outNormals);*/
 //Private functions
 private:
 	void start(); //Exists to reduce duplication
@@ -74,5 +73,6 @@ private:
 	std::vector<glm::vec3> vertices;
 	std::vector<glm::vec2> uv;
 	std::vector<glm::vec3> normals;
+
 };
 #endif
