@@ -32,8 +32,7 @@ public:
 
 	void setupShaders();
 	void setupObjects();
-
-	
+		
 	void update();
 	void render();
 	void rotate(float deltaTime);	
@@ -41,7 +40,7 @@ public:
 //Private functions
 private:
 	void start(); //Exists to reduce duplication
-
+	void loadObjects();
 //Private data
 private:
 	WND* window;
@@ -58,7 +57,6 @@ private:
 
 	Rotations rotations;
 	ValidKeys currentKey;
-	std::vector<Object> objs;
 
 	float rotationVal = 0.05f;
 	float xRotation = 0;
@@ -70,10 +68,10 @@ private:
 	glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 	glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 		
-	//For the object parser
-	std::vector<glm::vec3> vertices;
-	std::vector<glm::vec2> uv;
-	std::vector<glm::vec3> normals;
+
+	std::vector<Object> objs;
+	int nrOfObjects = 0;
+	int nrOfTriangles= 0;
 
 };
 #endif
