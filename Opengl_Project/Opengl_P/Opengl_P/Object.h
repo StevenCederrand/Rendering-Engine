@@ -18,7 +18,9 @@ public:
 	std::vector<UV> getUV() const;
 	std::vector<Vertex> getNormals() const;
 	std::vector<Vertex> getVertices() const;
-
+	std::vector<Triangle> getTriangles() const;
+	//Get the size of the object
+	int getByteSize();
 private:
 	std::vector<Color> colors;
 	std::vector<UV> uvs;

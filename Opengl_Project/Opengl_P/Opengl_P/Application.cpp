@@ -198,36 +198,37 @@ void Application::setupShaders() {
 }
 
 void Application::setupTriangle() {
+	//Wireframe mode
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); 
 
-	/*TriangleData triangle[3] = {
-		//		VERTEX				COLOR			 UV
-	{ 0.5f, -0.5f, 0.0f,	1.0f, 0.0f, 0.0f,	0, 0 },
-	{ -0.5f, -0.5f, 0.0f,	0.0f, 1.0f, 0.0f,	0, 0 },
-	{ 0.0f, 0.5f, 0.0f,		0.0f, 0.0f, 1.0f,	0, 0 },
-	};
-	*/
 	std::chrono::high_resolution_clock timer;
-
 	auto start = timer.now();
 	Object object(OBJECTSPATH + "temp.obj");
 	auto end = timer.now();
 
 	std::chrono::duration<double> dt = std::chrono::high_resolution_clock::now() - start;
-	auto deltaTime = std::chrono::duration_cast<ms>(end - start).count(); // in ms
-	std::cout << deltaTime << std::endl;
-	std::cout << deltaTime << std::endl;
-	
-	glGenVertexArrays(1, &this->vertexAttrib);
-	
-	glBindVertexArray(this->vertexAttrib);
-	//Wireframe mode
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	auto loadTime = std::chrono::duration_cast<ms>(end - start).count(); // in ms
+	std::cout << "Loadtime(ms): " + std::to_string(loadTime) << std::endl;
 
+	//Load the vertices into memory
+	glGenVertexArrays(1, &this->vertexAttrib);
+	glBindVertexArray(this->vertexAttrib);
 	glEnableVertexAttribArray(0);
 	glGenBuffers(1, &this->vertexBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, this->vertexBuffer);
+
+	//Optimize this or find a better solution! This is n^2
+	std::vector<glm::vec3> vertices;
+	for (int i = 0; i < object.getTriangles().size(); i++) {
+		for (int j = 0; j < object.getTriangles().at(i).vertices.size(); j++) {
+			vertices.push_back(object.getTriangles().at(i).vertices.at(j).vertex); 
+		}
+	}
+	std::cout << vertices.size() << std::endl;
+	glBufferData(GL_ARRAY_BUFFER, object.getByteSize(), &vertices[0], GL_STATIC_DRAW);
 	//Load the vertices 
-	glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
+	//glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
+
 
 	//Assign where in memory the positions are located	
 	GLint vertexPos = glGetAttribLocation(this->gShaderProg, "position");
@@ -236,13 +237,12 @@ void Application::setupTriangle() {
 		return;
 	}
 	//Set the vertices in the glsl-code
-	glVertexAttribPointer(vertexPos, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+	glVertexAttribPointer(vertexPos, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(sizeof(float) * 0));
 
 	//Set colours
 	glEnableVertexAttribArray(1);
 	glGenBuffers(1, &this->colorBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, this->colorBuffer);
-	glm::vec3 red = glm::vec3(0, 255, 0);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(g_color_buffer_data), g_color_buffer_data, GL_STATIC_DRAW);
 	//glBufferData(GL_ARRAY_BUFFER, sizeof(red), red, GL_STATIC_DRAW);
 	//Assign where in memory the colorData is located -- 
@@ -252,7 +252,7 @@ void Application::setupTriangle() {
 		return;
 	}
 	//Set the colours in the glsl-code
-	glVertexAttribPointer(vertexCol, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);	
+	glVertexAttribPointer(vertexCol, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(sizeof(float)*0));
 }
 
 //Runs every tick while the window is open
@@ -280,15 +280,15 @@ void Application::update() {
 		this->window->inputKey(this->currentKey);
 
 		this->rotate(deltaTime);
-		
+
 		//Render the VAO with the loaded shader
 		this->render();
 		this->window->update();
-	
 		stop = timer.now();
 
 		std::chrono::duration<double> dt = std::chrono::high_resolution_clock::now() - frameTime;
 		deltaTime = std::chrono::duration_cast<ms>(stop - frameTime).count() / 1000; 
+		
 	}
 	glfwTerminate();
 }

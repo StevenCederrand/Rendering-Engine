@@ -20,7 +20,7 @@ void Object::loadModel(std::string path) {
 	
 	if (fileloader.getExtension(path) == ".obj") {
 		
-		fileloader.loadObj(path, this->triangles);
+		fileloader.loadObj(path, this->vertices, this->uvs, this->normals, this->triangles);
 	}
 	else {
 		printf("%s\n", "Filetype not supported");
@@ -29,6 +29,11 @@ void Object::loadModel(std::string path) {
 
 }
 
+
+int Object::getByteSize() {
+	//this only looks at the byte size relation with the number of triangles
+	return sizeof(glm::vec3) * this->triangles.size() * 3;
+}
 
 std::vector<Color> Object::getColors() const {
 	return this->colors;
@@ -41,4 +46,7 @@ std::vector<Vertex> Object::getNormals() const {
 }
 std::vector<Vertex> Object::getVertices() const {
 	return this->vertices;
+}
+std::vector<Triangle> Object::getTriangles() const {
+	return this->triangles;
 }

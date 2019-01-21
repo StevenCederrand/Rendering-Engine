@@ -184,7 +184,7 @@ void Fileloader::loadObj(std::string path, std::vector<Triangle>& triangles) {
 	}
 }
 
-void Fileloader::loadObj(std::string path, std::vector<Color>& color, std::vector<Vertex>& vertices, std::vector<UV>& uv, std::vector<Vertex>& normals) {
+void Fileloader::loadObj(std::string path, std::vector<Vertex>& vertices, std::vector<UV>& uv, std::vector<Vertex>& normals, std::vector<Triangle>& triangles) {
 
 	std::fstream file;
 	file.open(path.c_str(), std::ios::in);
@@ -202,7 +202,6 @@ void Fileloader::loadObj(std::string path, std::vector<Color>& color, std::vecto
 	int nrOfVerts = 0;
 	int nrOfUV = 0;
 	int nrOfNormals = 0;
-	Triangle tempTriangle = Triangle();
 	while (std::getline(file, line)) {
 		if (line[0] == 'v' ) {
 			
@@ -274,6 +273,8 @@ void Fileloader::loadObj(std::string path, std::vector<Color>& color, std::vecto
 			std::string val = "";
 			//Number of slashes passed
 			uint8_t slashes = 0;
+
+			Triangle tempTriangle = Triangle();
 			
 
 			//std::cout << line << std::endl;
@@ -322,6 +323,8 @@ void Fileloader::loadObj(std::string path, std::vector<Color>& color, std::vecto
 					val += line[i];
 				}
 			}
+			triangles.push_back(tempTriangle);
+
 
 		}
 		nrOfLines++;
