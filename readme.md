@@ -3,6 +3,11 @@
 Task list 
 - [ ] Deferred Rendering
 - [ ] Obj Parsing - Steven 
+> The fileloader class contains the obj parser. Here we read the file, 
+line by line. Find and collect the different useful sets of data, i.e 
+vertices, uv's and even normals. We place them into their own 
+std::vector. When reading the faces we lookup the specific vertices, uvs 
+and normals, and place them into the std::vector for triangles. 
 - [ ] Height Map - Ludwig
 - [ ] Normal Mapping - Steven
 - [ ] Shadow Mapping - Ludwig 
