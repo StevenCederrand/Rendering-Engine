@@ -22,7 +22,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{1CE49EEA-2FDF-4920-B888-5CE694E919D7}</ProjectGuid>
     <RootNamespace>OpenglP</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -70,12 +70,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>D:\Programming\OpenGL\8HP projekt\Opengl_Project\Opengl_P\includes;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Programming\OpenGL\8HP projekt\Opengl_Project\Opengl_P\libs;$(LibraryPath)</LibraryPath>
+    <IncludePath>D:\Programming\OpenGL\8HP projekt\Opengl_Project\Opengl_P\includes;D:\annat skit\Programering lp 2\3d\Rendering-Engine\Opengl_Project\Opengl_P\includes;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\annat skit\Programering lp 2\3d\Rendering-Engine\Opengl_Project\Opengl_P\libs;D:\Programming\OpenGL\8HP projekt\Opengl_Project\Opengl_P\libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Users\Steven\Documents\Projects\3D Prog\8HP projekt\Opengl_Project\Opengl_P\includes;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\Steven\Documents\Projects\3D Prog\8HP projekt\Opengl_Project\Opengl_P\libs;$(LibraryPath)</LibraryPath>
+    <IncludePath>D:\annat skit\Programering lp 2\3d\Rendering-Engine\Opengl_Project\Opengl_P\includes;C:\Users\Steven\Documents\Projects\3D Prog\8HP projekt\Opengl_Project\Opengl_P\includes;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\annat skit\Programering lp 2\3d\Rendering-Engine\Opengl_Project\Opengl_P\libs;C:\Users\Steven\Documents\Projects\3D Prog\8HP projekt\Opengl_Project\Opengl_P\libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>D:\Programming\OpenGL\8HP projekt\Opengl_Project\Opengl_P\includes;$(IncludePath)</IncludePath>
@@ -100,9 +100,10 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS; GLFW_INCLUDE_NONE;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>C:\Users\Steven\Documents\Projects\3D Prog\8HP projekt\Opengl_Project\Opengl_P\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\annat skit\Programering lp 2\3d\Rendering-Engine\Opengl_Project\Opengl_P\libs;C:\Users\Steven\Documents\Projects\3D Prog\8HP projekt\Opengl_Project\Opengl_P\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>

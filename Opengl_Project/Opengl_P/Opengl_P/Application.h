@@ -11,7 +11,8 @@
 #include "WND.h" //GLFW handler
 #include "Containers.h"
 #include "Fileloader.h"
-#include "Object.h"""
+#include "Object.h"
+#include "Camera.h"
 
 #include <fstream>
 #include <iostream>
@@ -64,6 +65,11 @@ private:
 	float yRotation = 0;
 	float zRotation = 0;
 
+	float cameraSpeed = 0.05f;
+	glm::vec3 cameraPosition = glm::vec3(0.0f, 0.0f, 3.0f);
+	glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+	glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+		
 	//For the object parser
 	std::vector<glm::vec3> vertices;
 	std::vector<glm::vec2> uv;

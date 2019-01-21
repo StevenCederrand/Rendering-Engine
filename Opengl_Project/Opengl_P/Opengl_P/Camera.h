@@ -11,11 +11,12 @@ public:
 	Camera(glm::vec3 eye, glm::vec3 center, glm::vec3 up);
 	~Camera();
 
-
+	void update();
 	void resetCamera(glm::vec3 eye, glm::vec3 center, glm::vec3 up);
 	glm::mat4 getViewMatrix() const;
 private:
 	glm::mat4 viewMatrix;
+
 
 };
 

@@ -7,9 +7,15 @@ Camera::Camera() {
 Camera::Camera(glm::vec3 eye, glm::vec3 center, glm::vec3 up) {
 	this->viewMatrix = glm::lookAt(eye, center, up);
 
+
 }
 
 Camera::~Camera() {
+}
+
+void Camera::update()
+{
+
 }
 
 void Camera::resetCamera(glm::vec3 eye, glm::vec3 center, glm::vec3 up) {
