@@ -35,12 +35,13 @@ public:
 		
 	void update();
 	void render();
-	void rotate(float deltaTime);	
+	void cameraHandler();	
 	
 //Private functions
 private:
 	void start(); //Exists to reduce duplication
 	void loadObjects();
+	void objectHandler();
 //Private data
 private:
 	WND* window;

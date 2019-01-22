@@ -182,7 +182,8 @@ void Fileloader::loadObj(std::string path, std::vector<Triangle>& triangles) {
 	}
 }
 
-void Fileloader::loadObj(std::string path, std::vector<Vertex>& vertices, std::vector<UV>& uv, std::vector<Vertex>& normals, std::vector<Triangle>& triangles) {
+void Fileloader::loadObj(std::string path, std::vector<Vertex>& vertices, std::vector<UV>& uv, 
+	std::vector<Vertex>& normals, std::vector<Triangle>& triangles, std::vector<Vertex> &orderedVerts) {
 
 	std::fstream file;
 	file.open(path.c_str(), std::ios::in);
@@ -286,6 +287,7 @@ void Fileloader::loadObj(std::string path, std::vector<Vertex>& vertices, std::v
 							//Push the vertex at pos val - 1 into the triangles list of verts
 							//std::cout << val + " ";
 							tempTriangle.vertices.push_back(vertices.at(std::stoi(val)-1));
+							orderedVerts.push_back(vertices.at(std::stoi(val) - 1));
 							break;
 						case 1:
 							tempTriangle.uvs.push_back(uv.at(std::stoi(val) - 1));

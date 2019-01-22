@@ -15,7 +15,8 @@ public:
 	~Fileloader();
 
 	void loadObj(std::string path, std::vector<Vertex> &vertices, 
-		std::vector<UV> &uv, std::vector<Vertex> &normals, std::vector<Triangle> &triangles);
+		std::vector<UV> &uv, std::vector<Vertex> &normals, std::vector<Triangle> &triangles, 
+		std::vector<Vertex> &orderedVerts);
 	void loadObj(std::string path, std::vector<Triangle> &triangles);
 
 	std::string getExtension(std::string path);

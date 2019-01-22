@@ -211,15 +211,28 @@ void Application::setupObjects() {
 
 	//Optimize this or find a better solution! This is n^2
 	std::vector<glm::vec3> vertices;
+
+
+	for (int i = 0; i < this->objs.size(); i++) {
+		for (int j = 0; j < this->objs.at(i).getOrderedVertices().size(); j++) {
+			vertices.push_back(this->objs.at(i).getOrderedVertices().at(j).vertex);
+		}
+	}
+
+	/*
+	//This is clearly wrong
 	for (int k = 0; k < this->objs.size(); k++) {
+
 		for (int i = 0; i < this->objs.at(k).getTriangles().size(); i++) {
 			for (int j = 0; j < this->objs.at(k).getTriangles().at(i).vertices.size(); j++) {
 				//vertices.push_back(objs.at(k).getTriangles().)
-				vertices.push_back(this->objs.at(k).getTriangles().at(i).vertices.at(j).vertex);
+				vertices.push_back(this->objs.at(k).getOrderedVertices().at(i));
+				std::cout << "pushback" << std::endl;
 			}
 		}
-	}	
-	
+	}	*/
+
+	std::cout << "Color" << std::endl;
 	int totalSize = 0;
 	for (int i = 0; i < this->objs.size(); i++) {
 		totalSize += this->objs.at(i).getByteSize();
@@ -247,8 +260,8 @@ void Application::setupObjects() {
 	glBindBuffer(GL_ARRAY_BUFFER, this->colorBuffer);
 	glm::vec3 col = glm::vec3(0, 244, 0);
 	//glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3), &col[0], GL_STATIC_DRAW);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(g_color_buffer_data), g_color_buffer_data, GL_STATIC_DRAW);
-
+	
+	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3), &col[0], GL_STATIC_DRAW);
 	//Assign where in memory the colorData is located -- 
 	GLint vertexCol = glGetAttribLocation(this->gShaderProg, "colorData");
 	if (vertexCol == -1) {
@@ -276,6 +289,9 @@ void Application::update() {
 	auto stop = timer.now();
 
 	double deltaTime = 0.0f;
+
+
+
 
 	while (!glfwWindowShouldClose(this->window->getWindow())) {
 		frameTime = timer.now();
@@ -326,7 +342,7 @@ void Application::cameraHandler() {
 
 	this->currentKey = ValidKeys::DUMMY;
 
-	//This does need to be called everyframe. Otherwise the new rotation won't be sent to the GPU
+	//For model-based rotations
 	GLint worldMatrixLoc = glGetUniformLocation(gShaderProg, "worldMatrix");
 	if (worldMatrixLoc != -1) {
 		glUniformMatrix4fv(worldMatrixLoc, 1, GL_FALSE, &this->worldMatrix[0][0]);
@@ -348,9 +364,9 @@ void Application::loadObjects() {
 	auto start = timer.now();
 	
 	//Insert all of the objects here!
-	Object object(OBJECTSPATH + "temp.obj");
-	Object obj(OBJECTSPATH + "temp2.obj");
-	Object objj(OBJECTSPATH + "temp3.obj");
+	Object object(OBJECTSPATH + "Monkey.obj");
+	//Object obj(OBJECTSPATH + "temp2.obj");
+	//Object objj(OBJECTSPATH + "temp3.obj");
 	auto end = timer.now();
 
 	//Calculate the time it took to load
@@ -360,8 +376,8 @@ void Application::loadObjects() {
 	
 	//Load the object into the objs vector
 	this->objs.push_back(object);
-	this->objs.push_back(obj);
-	this->objs.push_back(objj);
+	//this->objs.push_back(obj);
+	//this->objs.push_back(objj);
 
 	for (int i = 0; i < this->objs.size(); i++) {
 		this->nrOfTriangles += this->objs.at(i).getTriangles().size();
