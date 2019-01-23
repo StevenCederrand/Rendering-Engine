@@ -30,6 +30,7 @@ std::string Fileloader::getExtension(std::string path) {
 	}
 	return correct;
 }
+/*
 //OBJ path, Vertices, UV's, Normals, Triangles, Ordered Vertices, Material
 void Fileloader::loadObj(std::string path, std::vector<Vertex>& vertices, std::vector<UV>& uv, 
 	std::vector<Vertex>& normals, std::vector<Triangle>& triangles, std::vector<Vertex> &orderedVerts, Material* materal) {
@@ -177,7 +178,7 @@ void Fileloader::loadObj(std::string path, std::vector<Vertex>& vertices, std::v
 		nrOfLines++;		
 	}
 	file.close();
-}
+}*/
 
 Object Fileloader::loadObj(std::string path) {
 	
@@ -194,7 +195,7 @@ Object Fileloader::loadObj(std::string path) {
 		printf("%s\n", "File found and opened");
 	}
 	std::string line;
-	
+	std::string mtlName;
 	std::vector<Vertex> orderedVerts;
 	std::vector<UV> uv;
 	std::vector<Vertex> normals;
@@ -202,7 +203,7 @@ Object Fileloader::loadObj(std::string path) {
 	std::vector<Triangle> triangles;
 
 	while (std::getline(file, line)) {
-		//!!!ADD A CHECK FOR MATERIALS!!!
+		
 		if (line[0] == 'v') {
 			//Get each vertex position
 			if (line[1] == ' ') {
@@ -263,6 +264,20 @@ Object Fileloader::loadObj(std::string path) {
 				normals.push_back(tempNormal);
 			}
 		}
+		//Get the material name --- We are assuming that the .mtl file is in the same folder as the .obj
+		else if (line[0] == 'm') {
+			bool recName = false;
+			std::cout << line << std::endl;
+			for (int i = 0; i < line.length(); i++) {
+				if (recName) {
+					mtlName += line[i];
+				}
+				//When reaching the middle part of the text
+				if (line[i] == ' ') {
+					recName = true;
+				}
+			}
+		}
 		//Now we have to figure out a way to handle faces
 		else if (line[0] == 'f') {
 			std::string val = "";
@@ -321,6 +336,16 @@ Object Fileloader::loadObj(std::string path) {
 	tempObject.setTriangles(triangles);
 	tempObject.setUV(uv);
 	tempObject.setVertices(vertices);
-
+	//Set the material
+	tempObject.setMaterial(this->loadMaterial(OBJECTSPATH + mtlName));
 	return tempObject;
+}
+
+Material* Fileloader::loadMaterial(std::string path) {
+	Material* tempMat = new Material();
+
+
+
+	return tempMat;
+
 }

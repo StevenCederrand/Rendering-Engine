@@ -32,6 +32,9 @@ std::vector<Triangle> Object::getTriangles() const {
 	return this->triangles;
 }
 
+Material* Object::getMaterial() const {
+	return this->material;
+}
 void Object::setUV(std::vector<UV> uv) {
 	this->uvs = uv;
 }
@@ -50,4 +53,8 @@ void Object::setTriangles(std::vector<Triangle> triangles) {
 
 void Object::setOrderedVertices(std::vector<Vertex> orderedVerts) {
 	this->orderedVerts = orderedVerts;
+}
+
+void Object::setMaterial(Material* material) {
+	this->material = material;
 }

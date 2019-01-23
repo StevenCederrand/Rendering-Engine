@@ -199,8 +199,8 @@ void Application::update() {
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 
+	//Use the one shader that has been set up
 	this->shader->use();
-	//glUseProgram(gShaderProg);
 	this->start();
 
 	std::chrono::high_resolution_clock timer;
@@ -212,16 +212,11 @@ void Application::update() {
 
 	while (!glfwWindowShouldClose(this->window->getWindow())) {
 		frameTime = timer.now();
-
 		//Check input
 		this->window->inputKey(this->currentKey);
-
-		//If no key is pressed
-		
+		//Camera function 
 		this->cameraHandler();
 		
-		
-
 		//Render the VAO with the loaded shader
 		this->render();
 		this->window->update();
@@ -241,7 +236,7 @@ void Application::render() {
 
 
 	if (this->shader->getShaderID() != 0) {
-		this->shader->use();
+		//this->shader->use();
 		//glUseProgram(this->gShaderProg);
 	}
 
@@ -285,11 +280,8 @@ void Application::loadObjects() {
 	auto start = timer.now();
 	
 	//Insert all of the objects here!
-	//Object object(OBJECTSPATH + "Monkey.obj");
 	Object monkey = this->fileloader.loadObj(OBJECTSPATH + "Monkey.obj");
 
-	//Object obj(OBJECTSPATH + "test.obj");
-	//Object objj(OBJECTSPATH + "temp3.obj");
 	auto end = timer.now();
 
 	//Calculate the time it took to load
@@ -299,8 +291,6 @@ void Application::loadObjects() {
 	
 	//Load the object into the objs vector
 	this->objs.push_back(monkey);
-	//this->objs.push_back(obj);
-	//this->objs.push_back(objj);
 
 	for (int i = 0; i < this->objs.size(); i++) {
 		this->nrOfTriangles += this->objs.at(i).getTriangles().size();
