@@ -2,17 +2,14 @@
 #define OBJECT_h
 
 #include "Containers.h"
-#include "Fileloader.h"
+#include "Material.h"
 #include <vector>
 
 //3D Object class
 class Object {
 public:
 	Object();
-	Object(std::string path);
 	~Object();
-	//Automatically load the data from a file into the object. 
-	void loadModel(std::string path);
 	
 	std::vector<UV> getUV() const;
 	std::vector<Vertex> getNormals() const;
@@ -20,10 +17,19 @@ public:
 	std::vector<Triangle> getTriangles() const;
 	std::vector<Vertex> getOrderedVertices() const;
 
+
+	void setUV(std::vector<UV> uv);
+	void setNormals(std::vector<Vertex> normals);
+	void setVertices(std::vector<Vertex> verts);
+	void setTriangles(std::vector<Triangle> triangles);
+	void setOrderedVertices(std::vector<Vertex> orderedVerts);
+
 	//Get the size of the object	
 	int getByteSize();
 
 private:
+	Material* material;
+
 	std::vector<Vertex> orderedVerts;
 	std::vector<UV> uvs;
 	std::vector<Vertex> normals;

@@ -5,27 +5,7 @@ Object::Object() {
 
 }
 
-//Initialize properties
-Object::Object(std::string path) {
-	this->loadModel(path);
-	
-}
-
 Object::~Object() {
-
-}
-
-void Object::loadModel(std::string path) {
-	Fileloader fileloader;
-	
-	if (fileloader.getExtension(path) == ".obj") {
-		
-		fileloader.loadObj(path, this->vertices, this->uvs, this->normals, this->triangles, this->orderedVerts);
-	}
-	else {
-		printf("%s\n", "Filetype not supported");
-	}
-
 
 }
 
@@ -50,4 +30,24 @@ std::vector<Vertex> Object::getVertices() const {
 }
 std::vector<Triangle> Object::getTriangles() const {
 	return this->triangles;
+}
+
+void Object::setUV(std::vector<UV> uv) {
+	this->uvs = uv;
+}
+
+void Object::setNormals(std::vector<Vertex> normals) {
+	this->normals = normals;
+}
+
+void Object::setVertices(std::vector<Vertex> verts) {
+	this->vertices = verts;
+}
+
+void Object::setTriangles(std::vector<Triangle> triangles) {
+	this->triangles = triangles;
+}
+
+void Object::setOrderedVertices(std::vector<Vertex> orderedVerts) {
+	this->orderedVerts = orderedVerts;
 }

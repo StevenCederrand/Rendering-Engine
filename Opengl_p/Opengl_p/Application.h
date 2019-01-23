@@ -46,11 +46,13 @@ private:
 	void start(); //Exists to reduce duplication
 	void loadObjects();
 	void objectHandler();
+	
 //Private data
 private:
 	WND* window;
 	Camera* camera;
 	Shader* shader;
+	Fileloader fileloader;
 
 	GLuint vertexAttrib = 0;
 	GLuint vertexBuffer = 0;

@@ -102,6 +102,7 @@ Application::Application(int WNDW, int WNDH) {
 Application::~Application() {
 	delete this->window;
 	delete this->camera;
+	delete this->shader;
 }
 //Setup the matrixes
 void Application::start() {
@@ -138,6 +139,7 @@ void Application::setupObjects() {
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); 
 
 	this->loadObjects();
+
 	//Load the vertices into memory
 	glGenVertexArrays(1, &this->vertexAttrib);
 	glBindVertexArray(this->vertexAttrib);
@@ -161,11 +163,7 @@ void Application::setupObjects() {
 	
 	//Load vertices into the buffer
 	glBufferData(GL_ARRAY_BUFFER, totalSize, &vertices[0], GL_STATIC_DRAW);
-
-	//Load the vertices 
-	//glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
-
-
+	
 	//Assign where in memory the positions are located	
 	GLint vertexPos = glGetAttribLocation(this->shader->getShaderID(), "position");
 	if (vertexPos == -1) {
@@ -283,7 +281,9 @@ void Application::loadObjects() {
 	auto start = timer.now();
 	
 	//Insert all of the objects here!
-	Object object(OBJECTSPATH + "Monkey.obj");
+	//Object object(OBJECTSPATH + "Monkey.obj");
+	Object monkey = this->fileloader.loadObj(OBJECTSPATH + "Monkey.obj");
+
 	//Object obj(OBJECTSPATH + "test.obj");
 	//Object objj(OBJECTSPATH + "temp3.obj");
 	auto end = timer.now();
@@ -294,7 +294,7 @@ void Application::loadObjects() {
 	std::cout << "Loadtime(ms): " + std::to_string(loadTime) << std::endl;
 	
 	//Load the object into the objs vector
-	this->objs.push_back(object);
+	this->objs.push_back(monkey);
 	//this->objs.push_back(obj);
 	//this->objs.push_back(objj);
 
