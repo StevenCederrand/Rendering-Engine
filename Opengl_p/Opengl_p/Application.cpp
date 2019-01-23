@@ -107,7 +107,7 @@ Application::~Application() {
 void Application::start() {
 
 	//this->viewMatrix = glm::lookAt(glm::vec3(0, 0, 3), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
-	this->camera = new Camera(glm::vec3(0, 0, 3), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+	this->camera = new Camera(glm::vec3(0, 0, 3), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0), this->window->getWindow());
 
 	this->prjMatrix = glm::perspective(glm::radians(65.0f), (float)this->window->getResolution().first / (float)this->window->getResolution().second, 0.1f, 20.0f);
 	
@@ -300,9 +300,10 @@ void Application::update() {
 		this->window->inputKey(this->currentKey);
 
 		//If no key is pressed
-		if (this->currentKey != ValidKeys::DUMMY) {
-			this->cameraHandler();
-		}
+		
+		this->cameraHandler();
+		
+		
 
 		//Render the VAO with the loaded shader
 		this->render();
@@ -338,7 +339,10 @@ void Application::render() {
 //Have this be in an object class
 void Application::cameraHandler() {
 
-	camera->handleKeys(this->currentKey);
+	this->camera->update();
+	if (this->currentKey != ValidKeys::DUMMY) {
+		camera->handleKeys(this->currentKey);
+	}
 
 	this->currentKey = ValidKeys::DUMMY;
 
