@@ -112,17 +112,17 @@ void Application::start() {
 	this->prjMatrix = glm::perspective(glm::radians(65.0f), (float)this->window->getResolution().first / (float)this->window->getResolution().second, 0.1f, 20.0f);
 	
 	//Set world matrix
-	GLint uniformLoc = glGetUniformLocation(this->gShaderProg, "worldMatrix");
+	GLint uniformLoc = glGetUniformLocation(this->shader->getShaderID(), "worldMatrix");
 	if (uniformLoc != -1) {
 		glUniformMatrix4fv(uniformLoc, 1, GL_FALSE, &this->worldMatrix[0][0]);
 	}
 	//Set view matrix
-	uniformLoc = glGetUniformLocation(this->gShaderProg, "viewMatrix");
+	uniformLoc = glGetUniformLocation(this->shader->getShaderID(), "viewMatrix");
 	if (uniformLoc != -1) {
 		glUniformMatrix4fv(uniformLoc, 1, GL_FALSE, &this->camera->getViewMatrix()[0][0]);
 	}
 	//Set projection matrix
-	uniformLoc = glGetUniformLocation(this->gShaderProg, "prjMatrix");
+	uniformLoc = glGetUniformLocation(this->shader->getShaderID(), "prjMatrix");
 	if (uniformLoc != -1) {
 		glUniformMatrix4fv(uniformLoc, 1, GL_FALSE, &this->prjMatrix[0][0]);
 	}
@@ -130,71 +130,7 @@ void Application::start() {
 }
 
 void Application::setupShaders() {
-	char buffer[1024];
-	memset(buffer, 0, 1024);
-	GLint compileResult = 0;
-
-	//			VERTEX SHADER 
-	unsigned int vShader = glCreateShader(GL_VERTEX_SHADER);
-	std::ifstream shaderFile("vShader.glsl");
-	std::string shaderCode((std::istreambuf_iterator<char>(shaderFile)), std::istreambuf_iterator<char>());
-	shaderFile.close();
-
-	const char* shaderTextPtr = shaderCode.c_str();
-	glShaderSource(vShader, 1, &shaderTextPtr, nullptr);
-
-	glCompileShader(vShader);
-	glGetShaderiv(vShader, GL_COMPILE_STATUS, &compileResult);
-	if (compileResult == GL_FALSE) {
-		glGetShaderInfoLog(vShader, 1024, nullptr, buffer);
-		for (int i = 0; i < 1024; i++) {
-			std::cout << buffer[i];
-		}
-		std::cout << std::endl;
-	}
-
-	//			FRAGMENT SHADER
-
-	unsigned int fShader = glCreateShader(GL_FRAGMENT_SHADER);
-	shaderFile.open("fShader.glsl");
-	shaderCode.assign((std::istreambuf_iterator<char>(shaderFile)), std::istreambuf_iterator<char>());
-	shaderFile.close();
-
-	shaderTextPtr = shaderCode.c_str();
-	glShaderSource(fShader, 1, &shaderTextPtr, nullptr);
-
-	glCompileShader(fShader);
-	glGetShaderiv(fShader, GL_COMPILE_STATUS, &compileResult);
-	if (compileResult == GL_FALSE) {
-		memset(buffer, 0, 1024);
-
-		glGetShaderInfoLog(vShader, 1024, nullptr, buffer);
-		for (int i = 0; i < 1024; i++) {
-			std::cout << buffer[i];
-		}
-		std::cout << std::endl;
-	}
-	//				PROGRAM
-	gShaderProg = glCreateProgram();
-	glAttachShader(gShaderProg, vShader);
-	glAttachShader(gShaderProg, fShader);
-	glLinkProgram(gShaderProg);
-
-	glGetProgramiv(gShaderProg, GL_LINK_STATUS, &compileResult);
-	if (compileResult == GL_FALSE) {
-		memset(buffer, 0, 1024);
-		glGetProgramInfoLog(gShaderProg, 1024, nullptr, buffer);
-
-		for (int i = 0; i < 1024; i++) {
-			std::cout << buffer[i];
-		}
-		std::cout << std::endl;
-	}
-
-	glDetachShader(gShaderProg, vShader);
-	glDetachShader(gShaderProg, fShader);
-	glDeleteShader(vShader);
-	glDeleteShader(fShader);
+	this->shader = new Shader(SHADERPATH + "vShader.glsl", SHADERPATH + "fShader.glsl");
 }
 
 void Application::setupObjects() {
@@ -209,30 +145,15 @@ void Application::setupObjects() {
 	glGenBuffers(1, &this->vertexBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, this->vertexBuffer);
 
-	//Optimize this or find a better solution! This is n^2
 	std::vector<glm::vec3> vertices;
 
-
+	//Load all vertices
 	for (int i = 0; i < this->objs.size(); i++) {
 		for (int j = 0; j < this->objs.at(i).getOrderedVertices().size(); j++) {
 			vertices.push_back(this->objs.at(i).getOrderedVertices().at(j).vertex);
 		}
 	}
 
-	/*
-	//This is clearly wrong
-	for (int k = 0; k < this->objs.size(); k++) {
-
-		for (int i = 0; i < this->objs.at(k).getTriangles().size(); i++) {
-			for (int j = 0; j < this->objs.at(k).getTriangles().at(i).vertices.size(); j++) {
-				//vertices.push_back(objs.at(k).getTriangles().)
-				vertices.push_back(this->objs.at(k).getOrderedVertices().at(i));
-				std::cout << "pushback" << std::endl;
-			}
-		}
-	}	*/
-
-	std::cout << "Color" << std::endl;
 	int totalSize = 0;
 	for (int i = 0; i < this->objs.size(); i++) {
 		totalSize += this->objs.at(i).getByteSize();
@@ -246,7 +167,7 @@ void Application::setupObjects() {
 
 
 	//Assign where in memory the positions are located	
-	GLint vertexPos = glGetAttribLocation(this->gShaderProg, "position");
+	GLint vertexPos = glGetAttribLocation(this->shader->getShaderID(), "position");
 	if (vertexPos == -1) {
 		std::cout << "Couldn't find vertexPos" << std::endl;
 		return;
@@ -254,7 +175,7 @@ void Application::setupObjects() {
 	//Set the vertices in the glsl-code
 	glVertexAttribPointer(vertexPos, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(sizeof(float) * 0));
 
-	//Set colours
+	//---- Set colours ----
 	glEnableVertexAttribArray(1);
 	glGenBuffers(1, &this->colorBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, this->colorBuffer);
@@ -263,13 +184,13 @@ void Application::setupObjects() {
 	
 	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3), &col[0], GL_STATIC_DRAW);
 	//Assign where in memory the colorData is located -- 
-	GLint vertexCol = glGetAttribLocation(this->gShaderProg, "colorData");
+	GLint vertexCol = glGetAttribLocation(this->shader->getShaderID(), "colorData");
 	if (vertexCol == -1) {
 		std::cout << "Couldn't find colorData" << std::endl;
 		return;
 	}
 	//Set the colours in the glsl-code
-	glVertexAttribPointer(vertexCol, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(sizeof(float)*0));
+	glVertexAttribPointer(vertexCol, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(sizeof(float) * 0));
 }
 
 //Runs every tick while the window is open
@@ -280,7 +201,8 @@ void Application::update() {
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 
-	glUseProgram(gShaderProg);
+	this->shader->use();
+	//glUseProgram(gShaderProg);
 	this->start();
 
 	std::chrono::high_resolution_clock timer;
@@ -289,9 +211,6 @@ void Application::update() {
 	auto stop = timer.now();
 
 	double deltaTime = 0.0f;
-
-
-
 
 	while (!glfwWindowShouldClose(this->window->getWindow())) {
 		frameTime = timer.now();
@@ -322,8 +241,9 @@ void Application::render() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
-	if (this->gShaderProg != 0) {
-		glUseProgram(this->gShaderProg);
+	if (this->shader->getShaderID() != 0) {
+		this->shader->use();
+		//glUseProgram(this->gShaderProg);
 	}
 
 	if (this->vertexAttrib != 0) {
@@ -343,19 +263,18 @@ void Application::cameraHandler() {
 	this->currentKey = ValidKeys::DUMMY;
 
 	//For model-based rotations
-	GLint worldMatrixLoc = glGetUniformLocation(gShaderProg, "worldMatrix");
+	GLint worldMatrixLoc = glGetUniformLocation(this->shader->getShaderID(), "worldMatrix");
 	if (worldMatrixLoc != -1) {
 		glUniformMatrix4fv(worldMatrixLoc, 1, GL_FALSE, &this->worldMatrix[0][0]);
 	}
 	
 	// This is so that we can "walk" with wasd keys
 	//this->viewMatrix = this->camera->getViewMatrix(); //glm::lookAt(cameraPosition, cameraPosition + cameraFront, cameraUp);
-	GLint viewMatrixLoc = glGetUniformLocation(this->gShaderProg, "viewMatrix");
+	GLint viewMatrixLoc = glGetUniformLocation(this->shader->getShaderID(), "viewMatrix");
 	if (viewMatrixLoc != -1) {
 		glUniformMatrix4fv(viewMatrixLoc, 1, GL_FALSE, &this->camera->getViewMatrix()[0][0]);
 	}
 }
-
 
 void Application::loadObjects() {
 
@@ -365,7 +284,7 @@ void Application::loadObjects() {
 	
 	//Insert all of the objects here!
 	Object object(OBJECTSPATH + "Monkey.obj");
-	//Object obj(OBJECTSPATH + "temp2.obj");
+	//Object obj(OBJECTSPATH + "test.obj");
 	//Object objj(OBJECTSPATH + "temp3.obj");
 	auto end = timer.now();
 

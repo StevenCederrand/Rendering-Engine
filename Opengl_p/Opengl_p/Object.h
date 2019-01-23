@@ -20,7 +20,7 @@ public:
 	std::vector<Triangle> getTriangles() const;
 	std::vector<Vertex> getOrderedVertices() const;
 
-	//Get the size of the object
+	//Get the size of the object	
 	int getByteSize();
 
 private:

@@ -39,6 +39,9 @@
     <ClCompile Include="WND.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h">
@@ -59,12 +62,15 @@
     <ClInclude Include="WND.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="fShader.glsl">
+    <None Include="..\..\Shader\fShader.glsl">
       <Filter>Shader</Filter>
     </None>
-    <None Include="vShader.glsl">
+    <None Include="..\..\Shader\vShader.glsl">
       <Filter>Shader</Filter>
     </None>
   </ItemGroup>

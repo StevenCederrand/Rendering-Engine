@@ -13,6 +13,7 @@ Simple container file. Used to contain general enums that may be/are used in the
 #include <vector>
 
 const std::string OBJECTSPATH = "..\\..\\Objects\\";
+const std::string SHADERPATH = "..\\..\\Shader\\";
 
 struct Vertex {
 	glm::vec3 vertex;

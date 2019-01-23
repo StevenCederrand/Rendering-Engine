@@ -8,19 +8,23 @@
 
 #define BUFFER_OFFSET(i) ((char *)nullptr + (i))
 
+#pragma region Local_Includes
 #include "WND.h" //GLFW handler
 #include "Containers.h"
 #include "Fileloader.h"
 #include "Object.h"
 #include "Camera.h"
 #include "Object.h"	//Contains basic 3D object class
+#include "Shader.h"
+#pragma endregion
 
-
+#pragma region Default_Includes 
 #include <fstream>
 #include <iostream>
 #include <chrono>
 #include <string>
 #include <vector>
+#pragma endregion
 
 class Application {
 
@@ -46,6 +50,7 @@ private:
 private:
 	WND* window;
 	Camera* camera;
+	Shader* shader;
 
 	GLuint vertexAttrib = 0;
 	GLuint vertexBuffer = 0;

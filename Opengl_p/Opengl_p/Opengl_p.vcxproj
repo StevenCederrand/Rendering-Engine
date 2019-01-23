@@ -127,6 +127,7 @@
     <ClCompile Include="Fileloader.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="Object.cpp" />
+    <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="WND.cpp" />
   </ItemGroup>
@@ -136,11 +137,12 @@
     <ClInclude Include="Containers.h" />
     <ClInclude Include="Fileloader.h" />
     <ClInclude Include="Object.h" />
+    <ClInclude Include="Shader.h" />
     <ClInclude Include="WND.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="fShader.glsl" />
-    <None Include="vShader.glsl" />
+    <None Include="..\..\Shader\fShader.glsl" />
+    <None Include="..\..\Shader\vShader.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
