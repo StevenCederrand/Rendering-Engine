@@ -281,7 +281,6 @@ void Application::loadObjects() {
 	
 	//Insert all of the objects here!
 	Object monkey = this->fileloader.loadObj(OBJECTSPATH + "Monkey.obj");
-
 	auto end = timer.now();
 
 	//Calculate the time it took to load

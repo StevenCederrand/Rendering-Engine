@@ -26,6 +26,7 @@ public:
 	std::string getExtension(std::string path);
 private:  
 	Material* loadMaterial(std::string path);
+	glm::vec3 extractVector(std::string line);
 	//Private variables
 private:
 	std::vector<std::string> validFiletypes;

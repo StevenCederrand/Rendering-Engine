@@ -4,7 +4,7 @@
 //Basic material for .mtl files
 class Material {
 public:
-	/*
+	
 	Material() {
 	
 	};
@@ -16,7 +16,9 @@ public:
 	glm::vec3 diffuseCol;
 	glm::vec3 specularCol;
 	float specularWeight;
-	float transparency;*/
+	float transparency;
+	std::string name;
+	int illuminationModel;
 	
 };
 

@@ -196,6 +196,7 @@ Object Fileloader::loadObj(std::string path) {
 	}
 	std::string line;
 	std::string mtlName;
+	
 	std::vector<Vertex> orderedVerts;
 	std::vector<UV> uv;
 	std::vector<Vertex> normals;
@@ -342,10 +343,99 @@ Object Fileloader::loadObj(std::string path) {
 }
 
 Material* Fileloader::loadMaterial(std::string path) {
+	
+	std::ifstream iFile(path);
+		
+	if (!iFile.is_open()) {
+		std::cout << "ERROR::OPENING::MTL::FILE::" + path << std::endl;
+		return nullptr;
+	}
+	
 	Material* tempMat = new Material();
+	std::string line;
+	
+	glm::vec3 col;
+	float x;
 
+	while (std::getline(iFile, line)) {
+		//Grab the first word
+		std::string fWord = line.substr(0, line.find(' '));
 
+		//Specular exponent
+		if (fWord == "Ns") {
+			fWord = line.substr(line.find(' ') + 1, line.length());
+			tempMat->specularWeight = std::stof(fWord);
+		}
+		//Ambient Color
+		else if (fWord == "Ka") {	
+			tempMat->ambientCol = extractVector(line);
+			/*std::cout << "Ambient Color: " + std::to_string(tempMat->ambientCol.x) + " " +
+				std::to_string(tempMat->ambientCol.y) + " " + std::to_string(tempMat->ambientCol.z) << std::endl;*/
+		}
+		//diffuse colour
+		else if (fWord == "Kd") {
+			tempMat->diffuseCol = extractVector(line);
+			/*std::cout << "Diffuse Color: " + std::to_string(tempMat->diffuseCol.x) + " " +
+				std::to_string(tempMat->diffuseCol.y) + " " + std::to_string(tempMat->diffuseCol.z) << std::endl;*/
+		}
+		//Specular colour
+		else if (fWord == "Ks") {
+			tempMat->specularCol = extractVector(line);
+			/*std::cout << "specular Color: " + std::to_string(tempMat->specularCol.x) + " " +
+				std::to_string(tempMat->specularCol.y) + " " + std::to_string(tempMat->specularCol.z) << std::endl;*/
+		}
+		//transparency
+		else if (fWord == "d" || fWord == "Tr") {
+			fWord = line.substr(line.find(' ') + 1, line.length());
+			tempMat->transparency = std::stof(fWord);
 
+			/*std::cout << "Transparency: ";
+			std::cout << tempMat->transparency << std::endl;*/
+		}
+		//illuminaton model
+		else if (fWord == "illum") {
+			fWord = line.substr(line.find(' ') + 1, line.length());
+			tempMat->illuminationModel = std::stoi(fWord);
+			/*std::cout << "illum: ";
+			std::cout << tempMat->illuminationModel << std::endl;*/
+		}
+		//Name of the material
+		else if (fWord == "newmtl") {
+			fWord = line.substr(line.find(' ') + 1, line.length());
+			tempMat->name = fWord;
+
+			/*std::cout << "matname: ";
+			std::cout << tempMat->name << std::endl;*/
+		}
+
+	}
+	iFile.close();
 	return tempMat;
+}
+
+glm::vec3 Fileloader::extractVector(std::string line) {
+	glm::vec3 col;
+	uint8_t traversal = 0;
+	std::string fWord = "";
+
+	for (int i = line.find(' ') + 1; i < line.length(); i++) {
+
+		//If we haven't stumbled upon a gap
+		if (line[i] != ' ') {
+			fWord += line[i];
+		}
+		if (i == line.length() - 1) {
+			col[traversal] = std::stof(fWord);
+			fWord = "";
+			traversal++;
+		}
+		else if (line[i] == ' ') {
+			//std::cout << fWord << std::endl;
+			col[traversal] = std::stof(fWord);
+			fWord = "";
+			traversal++;
+		}
+	}
+	return col;
 
 }
