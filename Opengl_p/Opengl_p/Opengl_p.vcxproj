@@ -136,7 +136,6 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Containers.h" />
     <ClInclude Include="Fileloader.h" />
-    <ClInclude Include="Material.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="WND.h" />

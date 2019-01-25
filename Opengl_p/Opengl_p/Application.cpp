@@ -143,11 +143,11 @@ void Application::setupObjects() {
 	//Load the vertices into memory
 	glGenVertexArrays(1, &this->vertexAttrib);
 	glBindVertexArray(this->vertexAttrib);
-	glEnableVertexAttribArray(0);
 	glGenBuffers(1, &this->vertexBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, this->vertexBuffer);
 
 	std::vector<glm::vec3> vertices;
+
 
 	//Load all vertices
 	for (int i = 0; i < this->objs.size(); i++) {
@@ -155,15 +155,12 @@ void Application::setupObjects() {
 			vertices.push_back(this->objs.at(i).getOrderedVertices().at(j).vertex);
 		}
 	}
-
 	int totalSize = 0;
 	for (int i = 0; i < this->objs.size(); i++) {
 		totalSize += this->objs.at(i).getByteSize();
 	}
-	
 	//Load vertices into the buffer
 	glBufferData(GL_ARRAY_BUFFER, totalSize, &vertices[0], GL_STATIC_DRAW);
-	
 	//Assign where in memory the positions are located	
 	GLint vertexPos = glGetAttribLocation(this->shader->getShaderID(), "position");
 	if (vertexPos == -1) {
@@ -172,23 +169,12 @@ void Application::setupObjects() {
 	}
 	//Set the vertices in the glsl-code
 	glVertexAttribPointer(vertexPos, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(sizeof(float) * 0));
+	glEnableVertexAttribArray(0);
 
-	//---- Set colours ----
-	glEnableVertexAttribArray(1);
-	glGenBuffers(1, &this->colorBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, this->colorBuffer);
-	glm::vec3 col = glm::vec3(0, 244, 0);
-	//glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3), &col[0], GL_STATIC_DRAW);
-	
-	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3), &col[0], GL_STATIC_DRAW);
-	//Assign where in memory the colorData is located -- 
-	GLint vertexCol = glGetAttribLocation(this->shader->getShaderID(), "colorData");
-	if (vertexCol == -1) {
-		std::cout << "Couldn't find colorData" << std::endl;
-		return;
-	}
-	//Set the colours in the glsl-code
-	glVertexAttribPointer(vertexCol, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(sizeof(float) * 0));
+	this->shader->use();
+	GLint colorDataLoc = glGetUniformLocation(this->shader->getShaderID(), "colorData");
+	glUniform3fv(colorDataLoc, 1, &this->objs.at(0).getMaterial()->diffuseCol[0]);
+
 }
 
 //Runs every tick while the window is open
@@ -211,6 +197,9 @@ void Application::update() {
 	double deltaTime = 0.0f;
 
 	while (!glfwWindowShouldClose(this->window->getWindow())) {
+	
+
+
 		frameTime = timer.now();
 		//Check input
 		this->window->inputKey(this->currentKey);
@@ -232,18 +221,15 @@ void Application::update() {
 
 void Application::render() {
 	glClearColor(0.1f, 0.1f, 0.1f, 1);
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
-	if (this->shader->getShaderID() != 0) {
-		//this->shader->use();
-		//glUseProgram(this->gShaderProg);
-	}
+	this->shader->use();
 
 	if (this->vertexAttrib != 0) {
 		glBindVertexArray(this->vertexAttrib);
 	}
-	
+	//glBindVertexArray(this->colorBuffer);
 	//12*3 is used here because we are inputing 12 triangles -- change this later
 	glDrawArrays(GL_TRIANGLES, 0, this->objs.size() * this->nrOfTriangles * 3);
 
@@ -278,9 +264,10 @@ void Application::loadObjects() {
 	//Observe the time it takes to load all of the objects
 	std::chrono::high_resolution_clock timer;
 	auto start = timer.now();
-	
+
 	//Insert all of the objects here!
 	Object monkey = this->fileloader.loadObj(OBJECTSPATH + "Monkey.obj");
+	//Object cube = this->fileloader.loadObj(OBJECTSPATH + "test.obj");
 	auto end = timer.now();
 
 	//Calculate the time it took to load
@@ -290,6 +277,8 @@ void Application::loadObjects() {
 	
 	//Load the object into the objs vector
 	this->objs.push_back(monkey);
+	//this->objs.push_back(cube);
+	std::cout << monkey.getMaterial()->diffuseCol.x << std::endl;
 
 	for (int i = 0; i < this->objs.size(); i++) {
 		this->nrOfTriangles += this->objs.at(i).getTriangles().size();

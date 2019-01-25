@@ -5,9 +5,29 @@ Object::Object() {
 
 }
 
-Object::~Object() {
+Object::Object(const Object& other) {
+	//Self-assignment check
+	if (this != &other) {
+		this->material = new Material(*other.getMaterial());
+		this->setOrderedVertices(other.getOrderedVertices());
+		this->setNormals(other.getNormals());
+		this->setUV(other.getUV());
+		this->setTriangles(other.getTriangles());
+		this->setVertices(other.getVertices());
+	}
+
 
 }
+
+Object::~Object() {
+	delete this->material;
+}
+
+
+void Object::useShader() {
+
+}
+
 
 
 int Object::getByteSize() {
@@ -35,6 +55,7 @@ std::vector<Triangle> Object::getTriangles() const {
 Material* Object::getMaterial() const {
 	return this->material;
 }
+
 void Object::setUV(std::vector<UV> uv) {
 	this->uvs = uv;
 }
@@ -56,5 +77,22 @@ void Object::setOrderedVertices(std::vector<Vertex> orderedVerts) {
 }
 
 void Object::setMaterial(Material* material) {
-	this->material = material;
+	this->material = new Material(*material);
+}
+
+
+
+Object& Object::operator=(const Object &other) {
+	//Self-assignment check
+	if (this != &other) {
+		this->material = new Material(*other.getMaterial());
+		this->setOrderedVertices(other.getOrderedVertices());
+		this->setNormals(other.getNormals());
+		this->setUV(other.getUV());
+		this->setTriangles(other.getTriangles());
+		this->setVertices(other.getVertices());
+	}
+
+
+	return *this;
 }

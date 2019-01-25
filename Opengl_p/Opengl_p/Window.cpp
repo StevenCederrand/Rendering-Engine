@@ -18,10 +18,11 @@
 #include <iostream>
 
 int main() {
-	
-	Application* app = new Application(1280, 900);
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	Application app = Application(1280, 900);
 
-	app->update();
+	app.update();
+
 
 	return 0;
 }

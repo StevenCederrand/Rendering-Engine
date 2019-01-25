@@ -48,7 +48,31 @@ enum ValidKeys {
 	E,
 	DUMMY, 
 };
+struct Material {
+	Material() {
 
+	};
+	Material(const Material &otherMat) {
+		this->ambientCol = otherMat.ambientCol;
+		this->diffuseCol = otherMat.diffuseCol;
+		this->specularCol = otherMat.specularCol;
+		this->illuminationModel = otherMat.illuminationModel;
+		this->specularWeight = otherMat.specularWeight;
+		this->transparency = otherMat.transparency;
+		this->name = otherMat.name;
+	};
+	~Material() {
+
+	};
+	glm::vec3 ambientCol;
+	glm::vec3 diffuseCol;
+	glm::vec3 specularCol;
+	float specularWeight;
+	float transparency;
+	std::string name;
+	int illuminationModel;
+
+};
 //Struct of functions that make rotations a lot more conveniant --- the struct can be removed. But we may find it a little bit more comfortable.
 struct Rotations {
 	//Get the rotation matrix of a specific angle(Converts the angle into radians)

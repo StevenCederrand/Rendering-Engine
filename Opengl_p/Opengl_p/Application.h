@@ -26,6 +26,8 @@
 #include <vector>
 #pragma endregion
 
+
+//Files that may generate memory leaks - Application, WND, Object
 class Application {
 
 //Public functions
@@ -45,7 +47,6 @@ public:
 private:
 	void start(); //Exists to reduce duplication
 	void loadObjects();
-	void objectHandler();
 	
 //Private data
 private:

@@ -28,17 +28,3 @@ private:
 };
 
 #endif
-
-
-/*
-	
-	Application::update() {
-
-		camera->mouse(this->window->getWindow());
-	}
-
-	//Camera.h
-	Camera::Mouse(const GLFW* window) {
-		
-	}
-*/
