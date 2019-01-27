@@ -21,14 +21,14 @@ public:
 	std::vector<Triangle> getTriangles() const;
 	std::vector<Vertex> getOrderedVertices() const;
 	
-	Material* getMaterial() const;
+	Material getMaterial() const;
 		
 	void setUV(std::vector<UV> uv);
 	void setNormals(std::vector<Vertex> normals);
 	void setVertices(std::vector<Vertex> verts);
 	void setTriangles(std::vector<Triangle> triangles);
 	void setOrderedVertices(std::vector<Vertex> orderedVerts);
-	void setMaterial(Material* material);
+	void setMaterial(Material material);
 
 	//Get the size of the object	
 	int getByteSize();
@@ -36,7 +36,7 @@ public:
 
 	Object& operator=(const Object &other);
 private:
-	Material* material;
+	Material material;
 
 	std::vector<Vertex> orderedVerts;
 	std::vector<UV> uvs;

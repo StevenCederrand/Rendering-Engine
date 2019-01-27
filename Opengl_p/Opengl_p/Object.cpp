@@ -8,7 +8,7 @@ Object::Object() {
 Object::Object(const Object& other) {
 	//Self-assignment check
 	if (this != &other) {
-		this->material = new Material(*other.getMaterial());
+		this->material = other.getMaterial();
 		this->setOrderedVertices(other.getOrderedVertices());
 		this->setNormals(other.getNormals());
 		this->setUV(other.getUV());
@@ -20,7 +20,7 @@ Object::Object(const Object& other) {
 }
 
 Object::~Object() {
-	delete this->material;
+	//delete this->material;
 }
 
 
@@ -52,7 +52,7 @@ std::vector<Triangle> Object::getTriangles() const {
 	return this->triangles;
 }
 
-Material* Object::getMaterial() const {
+Material Object::getMaterial() const {
 	return this->material;
 }
 
@@ -76,8 +76,8 @@ void Object::setOrderedVertices(std::vector<Vertex> orderedVerts) {
 	this->orderedVerts = orderedVerts;
 }
 
-void Object::setMaterial(Material* material) {
-	this->material = new Material(*material);
+void Object::setMaterial(Material material) {
+	this->material = material;//Material(material);
 }
 
 
@@ -85,7 +85,7 @@ void Object::setMaterial(Material* material) {
 Object& Object::operator=(const Object &other) {
 	//Self-assignment check
 	if (this != &other) {
-		this->material = new Material(*other.getMaterial());
+		this->material = other.getMaterial();//Material(*other.getMaterial());
 		this->setOrderedVertices(other.getOrderedVertices());
 		this->setNormals(other.getNormals());
 		this->setUV(other.getUV());

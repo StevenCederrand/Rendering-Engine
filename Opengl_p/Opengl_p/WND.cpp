@@ -16,7 +16,7 @@ WND::WND(int width, int height)
 
 WND::~WND()
 {
-	delete this->window;
+	//delete this->window;
 }
 
 //Start handler for the window. 
@@ -27,10 +27,10 @@ int WND::start()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	GLFWwindow* window = glfwCreateWindow(this->WNDW, this->WNDH, "OPENGL Project", NULL, NULL);
-	this->window = window;
+	this->window = glfwCreateWindow(this->WNDW, this->WNDH, "OPENGL Project", NULL, NULL);
+
 	//If the window fails to instantiate 
-	if (window == NULL) {
+	if (this->window == NULL) {
 		std::cout << "Failed to create window" << std::endl;
 		glfwTerminate();
 		return -1;
@@ -74,6 +74,9 @@ void WND::inputKey(ValidKeys & key) {
 	if (glfwGetKey(this->window, GLFW_KEY_E) == GLFW_PRESS) {
 		key = ValidKeys::E;
 	}
+	if (glfwGetKey(this->window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+		key = ValidKeys::ESC;
+	}
 }
 
 GLFWwindow* WND::getWindow() const {
@@ -84,8 +87,10 @@ void setViewport(GLFWwindow* window, int x, int y) {
 	glViewport(0, 0, x, y);
 }
 
-
 std::pair<int, int> WND::getResolution() const {
 	return std::make_pair(this->WNDW, this->WNDH);
+}
 
+void WND::close() {
+	glfwTerminate();
 }

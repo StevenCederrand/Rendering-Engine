@@ -22,7 +22,7 @@ public:
 
 	//Private functions 
 private:  
-	Material* loadMaterial(std::string path);
+	Material loadMaterial(std::string path);
 	glm::vec3 extractVector(std::string line);
 	//Private variables
 private:

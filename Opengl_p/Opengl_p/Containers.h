@@ -46,12 +46,15 @@ enum ValidKeys {
 	D,
 	Q, 
 	E,
-	DUMMY, 
+	ESC,
+	DUMMY
 };
 struct Material {
+
 	Material() {
 
 	};
+
 	Material(const Material &otherMat) {
 		this->ambientCol = otherMat.ambientCol;
 		this->diffuseCol = otherMat.diffuseCol;
@@ -61,9 +64,11 @@ struct Material {
 		this->transparency = otherMat.transparency;
 		this->name = otherMat.name;
 	};
+
 	~Material() {
 
 	};
+
 	glm::vec3 ambientCol;
 	glm::vec3 diffuseCol;
 	glm::vec3 specularCol;

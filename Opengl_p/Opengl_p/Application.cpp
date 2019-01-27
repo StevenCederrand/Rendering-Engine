@@ -100,9 +100,11 @@ Application::Application(int WNDW, int WNDH) {
 }
 
 Application::~Application() {
+	//Critical error when deleting this->window??
 	delete this->window;
-	delete this->camera;
 	delete this->shader;
+	delete this->camera;
+
 }
 //Setup the matrixes
 void Application::start() {
@@ -173,7 +175,7 @@ void Application::setupObjects() {
 
 	this->shader->use();
 	GLint colorDataLoc = glGetUniformLocation(this->shader->getShaderID(), "colorData");
-	glUniform3fv(colorDataLoc, 1, &this->objs.at(0).getMaterial()->diffuseCol[0]);
+	glUniform3fv(colorDataLoc, 1, &this->objs.at(0).getMaterial().diffuseCol[0]);
 
 }
 
@@ -196,27 +198,31 @@ void Application::update() {
 
 	double deltaTime = 0.0f;
 
-	while (!glfwWindowShouldClose(this->window->getWindow())) {
 	
-
-
+	while (!glfwWindowShouldClose(this->window->getWindow())) {
 		frameTime = timer.now();
 		//Check input
+		
 		this->window->inputKey(this->currentKey);
+		if (this->currentKey == ValidKeys::ESC) {
+			glfwSetWindowShouldClose(this->window->getWindow(), true);
+		}
 		//Camera function 
 		this->cameraHandler();
 		
 		//Render the VAO with the loaded shader
 		this->render();
 		this->window->update();
+	
+
 		stop = timer.now();
 
 		//Deltatime in ms
 		std::chrono::duration<double> dt = std::chrono::high_resolution_clock::now() - frameTime;
 		deltaTime = std::chrono::duration_cast<ms>(stop - frameTime).count() / 1000; 
-		
 	}
-	glfwTerminate();
+	
+	this->window->close();
 }
 
 void Application::render() {
@@ -278,7 +284,7 @@ void Application::loadObjects() {
 	//Load the object into the objs vector
 	this->objs.push_back(monkey);
 	//this->objs.push_back(cube);
-	std::cout << monkey.getMaterial()->diffuseCol.x << std::endl;
+	std::cout << monkey.getMaterial().diffuseCol.x << std::endl;
 
 	for (int i = 0; i < this->objs.size(); i++) {
 		this->nrOfTriangles += this->objs.at(i).getTriangles().size();

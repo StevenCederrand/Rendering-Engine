@@ -19,10 +19,13 @@
 
 int main() {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-	Application app = Application(1280, 900);
+	Application* app = new Application(1280, 900);
 
-	app.update();
+	app->update();
+	
+	delete app;
 
 
-	return 0;
+
+	//return 0;
 }
