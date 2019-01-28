@@ -38,6 +38,7 @@ public:
 
 	void setupShaders();
 	void setupObjects();
+	void setupGround(); //change name
 		
 	void update();
 	void render();

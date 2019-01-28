@@ -179,10 +179,38 @@ void Application::setupObjects() {
 
 }
 
+void Application::setupGround()
+{
+	struct TriangleVertex{float x, y, z;};
+	TriangleVertex triangleVertices[1024*904];
+
+	for (size_t i = 0; i < 1024; i++)
+	{
+		for (size_t j = 0; j < 904; j++)
+		{
+
+		}
+	}
+	TriangleVertex triangleVertices22[6] =
+	{
+	{ -0.5f, 0.5f, 0.0f},
+	{ -0.5f, -0.5f, 0.0f},
+	{ 0.5f, -0.5f, 0.0f},
+
+
+	{ 0.5f, -0.5f, 0.0f},
+	{ 0.5f, 0.5f, 0.0f},
+	{ -0.5f, 0.5f, 0.0f}
+
+	};
+
+}
+
 //Runs every tick while the window is open
 void Application::update() {
 	this->setupShaders();
 	this->setupObjects();
+	this->setupGround();
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);

@@ -1,4 +1,6 @@
 #include "Fileloader.h"
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
 Fileloader::Fileloader() {
 	//Setup the valid file types
@@ -191,6 +193,30 @@ Object Fileloader::loadObj(std::string path) {
 	//Set the material
 	tempObject.setMaterial(this->loadMaterial(OBJECTSPATH + mtlName));
 	return tempObject;
+}
+
+void Fileloader::loadMap(std::string path, int width, int height, int bpp, int cpp)
+{
+	float matrix[1024][904];
+	//glm::mat3 matrix;
+	unsigned char* heightMap = stbi_load(path.c_str(), &width, &height, &bpp, cpp);
+
+	std::vector<float> elevation;
+	for (int i = 0; i < width; i++)
+	{
+		for (int j = 0; j < height; j++)
+		{							//kanske är fel, static_cast kanske?
+			//float elevation = float(heightMap[(i*width + j) * 4]);
+			float elevation = static_cast<float>(*(heightMap + (i*width + j) * 4));
+
+			elevation /= 128;
+			elevation--;
+			matrix[i][j] = elevation;
+		}
+	}
+	stbi_image_free(heightMap);
+
+	
 }
 
 Material Fileloader::loadMaterial(std::string path) {

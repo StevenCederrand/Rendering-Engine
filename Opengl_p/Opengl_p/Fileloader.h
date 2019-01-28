@@ -4,6 +4,7 @@
 #include "Object.h"
 #include "Containers.h"
 
+
 #include <filesystem>
 #include <iostream>
 #include <fstream>
@@ -17,6 +18,7 @@ public:
 	~Fileloader();
 
 	Object loadObj(std::string path);
+	void loadMap(std::string path, int width, int height, int bpp, int cpp); //cpp = components per pixel
 	
 	std::string getExtension(std::string path);
 

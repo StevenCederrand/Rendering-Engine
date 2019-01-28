@@ -16,6 +16,9 @@
     <Filter Include="Shader">
       <UniqueIdentifier>{b163e737-35ae-480b-8f3d-dcda2bb3f648}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\stb_image">
+      <UniqueIdentifier>{9b227f79-2074-4f38-8b73-04e89e606834}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -64,6 +67,9 @@
     </ClInclude>
     <ClInclude Include="Shader.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stb_image.h">
+      <Filter>Header Files\stb_image</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
