@@ -38,6 +38,8 @@ void Application::start() {
 	//Set Projection Matrix
 	this->shader->setMat4("prjMatrix", this->prjMatrix);
 
+
+
 	this->currentKey = ValidKeys::DUMMY;	
 }
 
@@ -47,7 +49,7 @@ void Application::setupShaders() {
 
 void Application::setupObjects() {
 	//Wireframe mode
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); 
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); 
 
 	this->loadObjects();
 
@@ -79,10 +81,22 @@ void Application::setupObjects() {
 	}
 	//Set the vertices in the glsl-code
 	glVertexAttribPointer(vertexPos, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(sizeof(float) * 0));
+	glEnableVertexAttribArray(vertexPos);
+
+	GLint normalPos = glGetAttribLocation(this->shader->getShaderID(), "normal");
+	if (normalPos == -1) {
+		std::cout << "ERROR::LOCATING::NORMAL_POS::IN::SHADER" << std::endl;
+		return;
+	}
+
+	glVertexAttribPointer(normalPos, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(sizeof(float) * 0));
+
 	glEnableVertexAttribArray(0);
 
+
 	this->shader->use();
-	this->shader->setVec3("diffuseCol", this->objs.at(0).getMaterial().diffuseCol);
+	this->shader->setVec3("ambientCol", this->objs.at(0).getMaterial().diffuseCol);
+
 }
 
 void Application::setupTextures() {
@@ -97,10 +111,10 @@ void Application::setupTextures() {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-
 }
 //Runs every tick while the window is open
 void Application::update() {
+
 	this->setupShaders();
 	this->setupObjects();
 
@@ -108,7 +122,6 @@ void Application::update() {
 	glDepthFunc(GL_LESS);
 
 	//Use the one shader that has been set up
-	this->shader->use();
 	this->start();
 
 	std::chrono::high_resolution_clock timer;
@@ -151,13 +164,14 @@ void Application::render() {
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	this->shader->use();
 	
 	if (this->vertexAttrib != 0) {
 		glBindVertexArray(this->vertexAttrib);
 	}
-	
+
+	this->shader->use();
 	glDrawArrays(GL_TRIANGLES, 0, this->objs.size() * this->nrOfTriangles * 3);
+	
 }
 //Have this be in an object class
 void Application::cameraHandler() {
@@ -171,7 +185,6 @@ void Application::cameraHandler() {
 	this->currentKey = ValidKeys::DUMMY;
 
 	this->shader->setMat4("worldMatrix", this->worldMatrix);
-
 	// This is so that we can "walk" with wasd keys
 	this->shader->setMat4("viewMatrix", this->camera->getViewMatrix());
 }
@@ -183,8 +196,9 @@ void Application::loadObjects() {
 	auto start = timer.now();
 
 	//Insert all of the objects here!
-	Object monkey = this->fileloader.loadObj(OBJECTSPATH + "Monkey.obj");
+	//Object monkey = this->fileloader.loadObj(OBJECTSPATH + "Monkey.obj");
 	Object cube = this->fileloader.loadObj(OBJECTSPATH + "test.obj");
+	Object monkeu2 = this->fileloader.loadObj(OBJECTSPATH + "Monkey.obj");;
 	auto end = timer.now();
 
 	//Calculate the time it took to load
@@ -193,8 +207,9 @@ void Application::loadObjects() {
 	std::cout << "Loadtime(ms): " + std::to_string(loadTime) << std::endl;
 	
 	//Load the object into the objs vector
-	this->objs.push_back(monkey);
+	//this->objs.push_back(monkey);
 	this->objs.push_back(cube);
+	this->objs.push_back(monkeu2);
 
 	for (int i = 0; i < this->objs.size(); i++) {
 		this->nrOfTriangles += this->objs.at(i).getTriangles().size();

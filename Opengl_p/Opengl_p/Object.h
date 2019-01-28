@@ -30,6 +30,7 @@ public:
 	void setVertices(std::vector<Vertex> verts);
 	void setTriangles(std::vector<Triangle> triangles);
 	void setOrderedVertices(std::vector<Vertex> orderedVerts);
+	
 	void setMaterial(Material material);
 
 	//Get the size of the object	
