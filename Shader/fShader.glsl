@@ -1,11 +1,13 @@
 #version 440 core
 
-in vec3 color;
+uniform vec3 ambientCol;
+uniform vec3 diffuseCol;
+uniform vec3 specCol;
+
 
 out vec4 fragment_color;
-vec3 col = vec3(0, 0.5, 0.5);
 
 void main() {
 
-	fragment_color = vec4(color, 1); 
+	fragment_color = vec4(diffuseCol, 1); 
 }

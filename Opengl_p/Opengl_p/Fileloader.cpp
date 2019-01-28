@@ -220,43 +220,29 @@ Material Fileloader::loadMaterial(std::string path) {
 		//Ambient Color
 		else if (fWord == "Ka") {	
 			tempMat.ambientCol = extractVector(line);
-			/*std::cout << "Ambient Color: " + std::to_string(tempMat->ambientCol.x) + " " +
-				std::to_string(tempMat->ambientCol.y) + " " + std::to_string(tempMat->ambientCol.z) << std::endl;*/
 		}
 		//diffuse colour
 		else if (fWord == "Kd") {
 			tempMat.diffuseCol = extractVector(line);
-			/*std::cout << "Diffuse Color: " + std::to_string(tempMat->diffuseCol.x) + " " +
-				std::to_string(tempMat->diffuseCol.y) + " " + std::to_string(tempMat->diffuseCol.z) << std::endl;*/
 		}
 		//Specular colour
 		else if (fWord == "Ks") {
 			tempMat.specularCol = extractVector(line);
-			/*std::cout << "specular Color: " + std::to_string(tempMat->specularCol.x) + " " +
-				std::to_string(tempMat->specularCol.y) + " " + std::to_string(tempMat->specularCol.z) << std::endl;*/
 		}
 		//transparency
 		else if (fWord == "d" || fWord == "Tr") {
 			fWord = line.substr(line.find(' ') + 1, line.length());
 			tempMat.transparency = std::stof(fWord);
-
-			/*std::cout << "Transparency: ";
-			std::cout << tempMat->transparency << std::endl;*/
 		}
 		//illuminaton model
 		else if (fWord == "illum") {
 			fWord = line.substr(line.find(' ') + 1, line.length());
 			tempMat.illuminationModel = std::stoi(fWord);
-			/*std::cout << "illum: ";
-			std::cout << tempMat->illuminationModel << std::endl;*/
 		}
 		//Name of the material
 		else if (fWord == "newmtl") {
 			fWord = line.substr(line.find(' ') + 1, line.length());
 			tempMat.name = fWord;
-
-			/*std::cout << "matname: ";
-			std::cout << tempMat->name << std::endl;*/
 		}
 
 	}

@@ -38,6 +38,7 @@ public:
 
 	void setupShaders();
 	void setupObjects();
+	void setupTextures();
 		
 	void update();
 	void render();
@@ -57,26 +58,13 @@ private:
 
 	GLuint vertexAttrib = 0;
 	GLuint vertexBuffer = 0;
-	GLuint gShaderProg = 0;
-	GLuint colorBuffer = 0;
-
+	GLuint normalBuffer = 0;
 	//the world matrix is used as a modelmatrix
 	glm::mat4 worldMatrix = glm::mat4(1.f);
 	glm::mat4 prjMatrix = glm::mat4(1.f);
 
 	Rotations rotations;
 	ValidKeys currentKey;
-
-	float rotationVal = 0.05f;
-	float xRotation = 0;
-	float yRotation = 0;
-	float zRotation = 0;
-
-	float cameraSpeed = 0.05f;
-	glm::vec3 cameraPosition = glm::vec3(0.0f, 0.0f, 3.0f);
-	glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
-	glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-		
 
 	std::vector<Object> objs;
 	int nrOfObjects = 0;
