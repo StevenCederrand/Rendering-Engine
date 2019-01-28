@@ -6,6 +6,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include "Containers.h"
 
 class Shader {
 public:
@@ -14,6 +15,10 @@ public:
 	~Shader();
 
 	void use();
+
+	void setMat4(std::string name, glm::mat4 mat);
+	void setVec3(std::string name, glm::vec3 vec);
+
 	unsigned int getShaderID() const;
 
 private: 

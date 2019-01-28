@@ -92,7 +92,20 @@ void Shader::use() {
 	glUseProgram(this->shaderProg);
 }
 
+void Shader::setMat4(std::string name, glm::mat4 mat) {
+	GLint uniformLoc = glGetUniformLocation(this->getShaderID(), name.c_str());
+	if (uniformLoc != -1) {
+		glUniformMatrix4fv(uniformLoc, 1, GL_FALSE, &mat[0][0]);
+	}
+}
 
+void Shader::setVec3(std::string name, glm::vec3 vec) {
+	GLint uniformLoc = glGetUniformLocation(this->getShaderID(), name.c_str());
+	if (uniformLoc != -1) {
+		glUniform3fv(uniformLoc, 1, &vec[0]);
+	}
+
+}
 unsigned int Shader::getShaderID() const {
 	return this->shaderProg;
 }

@@ -19,15 +19,17 @@ Object::Object(const Object& other) {
 
 }
 
+void Object::setupVAO() {
+	glGenVertexArrays(1, &this->VAO);
+	glBindVertexArray(this->VAO);
+}
+
+unsigned int Object::getVAO() const {
+	return this->VAO;
+}
 Object::~Object() {
-	//delete this->material;
-}
-
-
-void Object::useShader() {
 
 }
-
 
 
 int Object::getByteSize() {
