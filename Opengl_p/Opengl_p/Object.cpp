@@ -2,18 +2,23 @@
 
 
 Object::Object() {
-
+	this->mesh = Mesh();
 }
 
 Object::Object(const Object& other) {
 	//Self-assignment check
 	if (this != &other) {
+		this->mesh = Mesh(other.mesh);
 		this->material = other.getMaterial();
 		this->setOrderedVertices(other.getOrderedVertices());
 		this->setNormals(other.getNormals());
 		this->setUV(other.getUV());
 		this->setTriangles(other.getTriangles());
 		this->setVertices(other.getVertices());
+
+		this->v = other.v;
+		this->n = other.n;
+		this->uv = other.uv;
 	}
 
 
@@ -32,6 +37,12 @@ Object::~Object() {
 }
 
 
+Mesh Object::getMesh() const {
+	return this->mesh;
+}
+int Object::getSizeOfNormals() {
+	return sizeof(glm::vec3) * this->normals.size();
+}
 int Object::getByteSize() {
 	//this only looks at the byte size relation with the number of triangles
 	return sizeof(glm::vec3) * this->triangles.size() * 3;
@@ -62,6 +73,11 @@ void Object::setUV(std::vector<UV> uv) {
 	this->uvs = uv;
 }
 
+void Object::setMesh(Mesh mesh) {
+	//delete this->mesh; //Could be a problem
+	this->mesh = Mesh(mesh);
+}
+
 void Object::setNormals(std::vector<Vertex> normals) {
 	this->normals = normals;
 }
@@ -87,12 +103,16 @@ void Object::setMaterial(Material material) {
 Object& Object::operator=(const Object &other) {
 	//Self-assignment check
 	if (this != &other) {
+		this->mesh = Mesh(other.mesh);
 		this->material = other.getMaterial();//Material(*other.getMaterial());
 		this->setOrderedVertices(other.getOrderedVertices());
 		this->setNormals(other.getNormals());
 		this->setUV(other.getUV());
 		this->setTriangles(other.getTriangles());
 		this->setVertices(other.getVertices());
+		this->v = other.v;
+		this->n = other.n;
+		this->uv = other.uv;
 	}
 
 

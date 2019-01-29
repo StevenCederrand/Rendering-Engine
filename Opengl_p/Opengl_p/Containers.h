@@ -19,6 +19,13 @@ struct Vertex {
 	glm::vec3 vertex;
 	uint8_t occupied;
 };
+
+struct Vert {
+	glm::vec3 vertex;
+	glm::vec3 normal;
+	glm::vec2 uv;
+};
+
 struct Color {
 	glm::vec4 color;
 };
@@ -38,6 +45,22 @@ struct TriangleData {
 	float u, v;
 };
 
+struct Mesh {
+	Mesh() {
+
+	};
+	Mesh(const Mesh& other) {
+		this->vertex = other.vertex;
+		this->normal = other.normal;
+		this->uv = other.uv;
+	}
+	~Mesh() {
+		
+	};
+	std::vector<glm::vec3> vertex;
+	std::vector<glm::vec3> normal;
+	std::vector<glm::vec2> uv;
+};
 
 enum ValidKeys {
 	W,

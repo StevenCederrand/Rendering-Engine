@@ -61,16 +61,26 @@ void Application::setupObjects() {
 
 	std::vector<glm::vec3> vertices;
 
+	for (int i = 0; i < this->objs.at(1).v.size(); i++) {
+		vertices.push_back(this->objs.at(1).v.at(i));
+	}
+
+	int totalSize = this->objs.at(1).v.size() * 3 * sizeof(glm::vec3);
+
+	/*
 	//Load all vertices
 	for (int i = 0; i < this->objs.size(); i++) {
 		for (int j = 0; j < this->objs.at(i).getOrderedVertices().size(); j++) {
 			vertices.push_back(this->objs.at(i).getOrderedVertices().at(j).vertex);
 		}
 	}
+
 	int totalSize = 0;
+	
 	for (int i = 0; i < this->objs.size(); i++) {
 		totalSize += this->objs.at(i).getByteSize();
-	}
+	}*/
+
 	//Load vertices into the buffer
 	glBufferData(GL_ARRAY_BUFFER, totalSize, &vertices[0], GL_STATIC_DRAW);
 	//Assign where in memory the positions are located	
@@ -81,8 +91,33 @@ void Application::setupObjects() {
 	}
 	//Set the vertices in the glsl-code
 	glVertexAttribPointer(vertexPos, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(sizeof(float) * 0));
-	glEnableVertexAttribArray(vertexPos);
+	glEnableVertexAttribArray(0);
 
+	vertices.clear();
+	//Load all vertices
+	for (int i = 0; i < this->objs.size(); i++) {
+		for (int j = 0; j < this->objs.at(i).getNormals().size(); j++) {
+			vertices.push_back(this->objs.at(i).getNormals().at(j).vertex);
+		}
+	}
+
+	totalSize = 0; 
+	for (int i = 0; i < this->objs.size(); i++) {
+		totalSize += this->objs.at(i).getSizeOfNormals();
+	}
+	glBufferData(GL_ARRAY_BUFFER, totalSize, &vertices[0], GL_STATIC_DRAW);
+	/*
+	GLint normalPos = glGetAttribLocation(this->shader->getShaderID(), "normal");
+	if (normalPos == -1) {
+		std::cout << "ERROR::LOCATING::NORMAL::POSITION" << std::endl;
+		return;
+	}
+
+	//Set the vertices in the glsl-code
+	glVertexAttribPointer(normalPos, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(sizeof(float) * 0));
+	glEnableVertexAttribArray(1);*/
+
+	/*
 	GLint normalPos = glGetAttribLocation(this->shader->getShaderID(), "normal");
 	if (normalPos == -1) {
 		std::cout << "ERROR::LOCATING::NORMAL_POS::IN::SHADER" << std::endl;
@@ -92,11 +127,12 @@ void Application::setupObjects() {
 	glVertexAttribPointer(normalPos, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(sizeof(float) * 0));
 
 	glEnableVertexAttribArray(0);
+	*/
 
-
+	//
 	this->shader->use();
-	this->shader->setVec3("ambientCol", this->objs.at(0).getMaterial().diffuseCol);
-
+	this->shader->setVec3("ambientCol", this->objs.at(0).getMaterial().ambientCol);
+	this->shader->setVec3("diffuseCol", this->objs.at(0).getMaterial().diffuseCol);
 }
 
 
@@ -147,7 +183,7 @@ void Application::update() {
 
 	this->setupShaders();
 	this->setupObjects();
-	this->setupGround();
+	//this->setupGround();
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
@@ -199,10 +235,16 @@ void Application::render() {
 	if (this->vertexAttrib != 0) {
 		glBindVertexArray(this->vertexAttrib);
 	}
-
 	this->shader->use();
-	glDrawArrays(GL_TRIANGLES, 0, this->objs.size() * this->nrOfTriangles * 3);
-	
+	int x = 0;
+
+	for (int i = 0; i < this->objs.size(); i++) {
+		this->shader->setVec3("ambientCol", this->objs.at(i).getMaterial().ambientCol);
+		this->shader->setVec3("diffuseCol", this->objs.at(i).getMaterial().diffuseCol);
+		glDrawArrays(GL_TRIANGLES, x, x + this->objs.at(i).getTriangles().size() * 3);
+		x += this->objs.at(i).getTriangles().size() * 3;
+
+	}	
 }
 //Have this be in an object class
 void Application::cameraHandler() {
@@ -227,9 +269,10 @@ void Application::loadObjects() {
 	auto start = timer.now();
 
 	//Insert all of the objects here!
-	//Object monkey = this->fileloader.loadObj(OBJECTSPATH + "Monkey.obj");
 	Object cube = this->fileloader.loadObj(OBJECTSPATH + "test.obj");
-	Object monkeu2 = this->fileloader.loadObj(OBJECTSPATH + "Monkey.obj");;
+	Object cb = this->fileloader.readFile(OBJECTSPATH + "temp.obj");
+
+
 	auto end = timer.now();
 
 	//Calculate the time it took to load
@@ -238,9 +281,8 @@ void Application::loadObjects() {
 	std::cout << "Loadtime(ms): " + std::to_string(loadTime) << std::endl;
 	
 	//Load the object into the objs vector
-	//this->objs.push_back(monkey);
 	this->objs.push_back(cube);
-	this->objs.push_back(monkeu2);
+	this->objs.push_back(cb);
 
 	for (int i = 0; i < this->objs.size(); i++) {
 		this->nrOfTriangles += this->objs.at(i).getTriangles().size();

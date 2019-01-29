@@ -19,12 +19,23 @@
 
 int main() {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-
+	
 	Application* app = new Application(1280, 900);
 
 	app->update();
 	
 	delete app;
 
+	Fileloader fl;
+	Object object;
+	object = fl.readFile(OBJECTSPATH + "temp.obj");
+
+	std::cout << "OBJECT:" << std::endl;
+	std::cout << object.getMesh().normal.size() << std::endl;
+	std::cout << object.getMesh().vertex.size() << std::endl;
+	std::cout << object.getMesh().uv.size() << std::endl;
+	
+	std::string x;
+	std::cin >> x;
 	return 0;
 }

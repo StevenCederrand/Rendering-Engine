@@ -14,6 +14,7 @@ Fileloader::~Fileloader()
 
 
 std::string Fileloader::getExtension(std::string path) {
+
 	std::list<char> temp;
 	std::string extension;
 
@@ -34,51 +35,61 @@ std::string Fileloader::getExtension(std::string path) {
 }
 
 Object Fileloader::loadObj(std::string path) {
-	
-	Object tempObject = Object();
-	
-	std::fstream file;
-	file.open(path.c_str(), std::ios::in);
-
-	if (!file.is_open()) {
-		printf("%s%s\n", "Couldn't open the file at path: ", path);
-		return tempObject;
+	if (this->getExtension(path) != ".obj") {
+		std::cout << "ERROR::PARSING::FILETYPE::NOT::SUPPORTED" << std::endl;
+		return Object();
 	}
 	else {
-		printf("%s\n", "File found and opened");
-	}
-	std::string line;
-	std::string mtlName;
-	
-	std::vector<Vertex> orderedVerts;
-	std::vector<UV> uv;
-	std::vector<Vertex> normals;
-	std::vector<Vertex> vertices;
-	std::vector<Triangle> triangles;
 
-	while (std::getline(file, line)) {
+		Object tempObject = Object();
+
+		std::fstream file;
+		file.open(path.c_str(), std::ios::in);
+
+		if (!file.is_open()) {
+			printf("%s%s\n", "Couldn't open the file at path: ", path);
+			return tempObject;
+		}
+		else {
+			printf("%s\n", "File found and opened");
+		}
+
+		std::string line;
+		std::string mtlName;
 		
-		if (line[0] == 'v') {
-			//Get each vertex position
-			if (line[1] == ' ') {
-				Vertex vert = Vertex();
-				std::string val = "";
+		std::vector<Vertex> orderedVerts;
+		std::vector<Vertex> orderedNormals;
 
-				//Read the line
-				for (int i = 2; i < line.length(); i++) {
-					if (line[i] == ' ' || i == line.length() - 1) {
-						//Set the vertex x, y, z
-						vert.vertex[vert.occupied] = std::stof(val);
-						vert.occupied++;
+		std::vector<UV> uv;
+		std::vector<Vertex> normals;
+		std::vector<Vertex> vertices;
+		std::vector<Triangle> triangles;
 
-						val = "";
+
+		std::vector<Vert> verts;
+		/*
+		while (std::getline(file, line)) {
+			if (line[0] == 'v') {
+				//Get each vertex position
+				if (line[1] == ' ') {
+					Vertex vert = Vertex();
+					std::string val = "";
+					//Read the line
+					for (int i = 2; i < line.length(); i++) {
+						if (line[i] == ' ' || i == line.length() - 1) {
+							//Set the vertex x, y, z
+							vert.vertex[vert.occupied] = std::stof(val);
+							vert.occupied++;
+
+							val = "";
+						}
+						else {
+							val += line[i];
+						}
 					}
-					else {
-						val += line[i];
-					}
+					//Save the vertex to the vertex vector
+					vertices.push_back(vert);
 				}
-				//Save the vertex to the vertex vector
-				vertices.push_back(vert);
 			}
 			//If we're dealing with a vertex texture
 			else if (line[1] == 't') {
@@ -117,82 +128,173 @@ Object Fileloader::loadObj(std::string path) {
 				//At the end of line
 				normals.push_back(tempNormal);
 			}
-		}
-		//Get the material name --- We are assuming that the .mtl file is in the same folder as the .obj
-		else if (line[0] == 'm') {
-			bool recName = false;
-			std::cout << line << std::endl;
-			for (int i = 0; i < line.length(); i++) {
-				if (recName) {
-					mtlName += line[i];
-				}
-				//When reaching the middle part of the text
-				if (line[i] == ' ') {
-					recName = true;
+			//Get the material name --- We are assuming that the .mtl file is in the same folder as the .obj
+			else if (line[0] == 'm') {
+				bool recName = false;
+				std::cout << line << std::endl;
+				for (int i = 0; i < line.length(); i++) {
+					if (recName) {
+						mtlName += line[i];
+					}
+					//When reaching the middle part of the text
+					if (line[i] == ' ') {
+						recName = true;
+					}
 				}
 			}
+			else if (line[0] == 'f') {
+				Vert tempVert = Vert();
+				uint8_t slashes = 0;
+				for (int i = 1; i < line.length(); i++) {
+
+				}
+
+			}
 		}
-		//Now we have to figure out a way to handle faces
-		else if (line[0] == 'f') {
-			std::string val = "";
-			//Number of slashes passed
-			uint8_t slashes = 0;
+		*/
+		
+		while (std::getline(file, line)) {
 
-			Triangle tempTriangle = Triangle();
+			if (line[0] == 'v') {
+				//Get each vertex position
+				if (line[1] == ' ') {
+					Vertex vert = Vertex();
+					std::string val = "";
+					//Read the line
+					for (int i = 2; i < line.length(); i++) {
+						if (line[i] == ' ' || i == line.length() - 1) {
+							//Set the vertex x, y, z
+							vert.vertex[vert.occupied] = std::stof(val);
+							vert.occupied++;
 
-			for (int i = 1; i < line.length(); i++) {
-				int x = 0;
-				//When stumbling on spaces or at the end
-				if (line[i] == '/' || line[i] == ' ' || i == line.length() - 1) {
-					if (val != "") {
-						switch (slashes) {
-						case 0:
-							//Push the vertex at pos val - 1 into the triangles list of verts
-							tempTriangle.vertices.push_back(vertices.at(std::stoi(val) - 1));
-							orderedVerts.push_back(vertices.at(std::stoi(val) - 1));
-							break;
-						case 1:
-							tempTriangle.uvs.push_back(uv.at(std::stoi(val) - 1));
-							break;
-						case 2:
-							tempTriangle.normals.push_back(normals.at(std::stoi(val) - 1));
-							break;
+							val = "";
+						}
+						else {
+							val += line[i];
+						}
+					}
+					//Save the vertex to the vertex vector
+					vertices.push_back(vert);
+				}
+				//If we're dealing with a vertex texture
+				else if (line[1] == 't') {
+					UV tempUV = UV();
+					std::string val = "";
+					for (int i = 3; i < line.length(); i++) {
+						//Between each texture coordinate
+						if (line[i] == ' ' || i == line.length() - 1) {
+							//add a uv.x or y onto the UV struct
+							tempUV.uv[tempUV.occupied] = std::stof(val);
+							tempUV.occupied++;
+							val = "";
+						}
+						else {
+							val += line[i];
+						}
+					}
+					//at the end of the line
+					uv.push_back(tempUV);
+				}
+				//If we're dealing with vertex normals
+				else if (line[1] == 'n') {
+					Vertex tempNormal = Vertex();
+					std::string val = "";
+					for (int i = 3; i < line.length(); i++) {
+						if (line[i] == ' ' || i == line.length() - 1) {
+							//Set the tempNormal
+							tempNormal.vertex[tempNormal.occupied] = std::stof(val);
+							tempNormal.occupied++;
+							val = "";
+						}
+						else {
+							val += line[i];
+						}
+					}
+					//At the end of line
+					normals.push_back(tempNormal);
+				}
+			}
+			//Get the material name --- We are assuming that the .mtl file is in the same folder as the .obj
+			else if (line[0] == 'm') {
+				bool recName = false;
+				std::cout << line << std::endl;
+				for (int i = 0; i < line.length(); i++) {
+					if (recName) {
+						mtlName += line[i];
+					}
+					//When reaching the middle part of the text
+					if (line[i] == ' ') {
+						recName = true;
+					}
+				}
+			}
+			//Now we have to figure out a way to handle faces
+			else if (line[0] == 'f') {
+				std::string val = "";
+				//Number of slashes passed
+				uint8_t slashes = 0;
+
+				Triangle tempTriangle = Triangle();
+
+				for (int i = 1; i < line.length(); i++) {
+					//When stumbling on spaces or at the end
+					if (line[i] == '/' || line[i] == ' ' || i == line.length() - 1) {
+						if (val != "") {
+							switch (slashes) {
+							case 0:
+								//Push the vertex at pos val - 1 into the triangles list of verts
+								tempTriangle.vertices.push_back(vertices.at(std::stoi(val) - 1));
+								orderedVerts.push_back(vertices.at(std::stoi(val) - 1));
+								break;
+							case 1:
+								tempTriangle.uvs.push_back(uv.at(std::stoi(val) - 1));
+								break;
+							case 2:
+								tempTriangle.normals.push_back(normals.at(std::stoi(val) - 1));
+								orderedNormals.push_back(normals.at(std::stoi(val) - 1));
+
+								break;
+							}
+
+						}
+						if (line[i] == '/') {
+							slashes++;
+							val = "";
 						}
 
-					}
-					if (line[i] == '/') {
-						slashes++;
-						val = "";
-					}
+						if (line[i] == ' ' || i == line.length() - 1) {
+							val += line[i];
+							//Ghetto fix for adding the last vn
+							if (val != " ") {
+								tempTriangle.normals.push_back(normals.at(std::stoi(val) - 1));
+								orderedNormals.push_back(normals.at(std::stoi(val) - 1));
+							}
 
-					if (line[i] == ' ' || i == line.length() - 1) {
+							val = "";
+							slashes = 0;
+						}
+					}
+					else {
 						val += line[i];
-						//Ghetto fix for adding the last vn
-						if (val != " ") {
-							tempTriangle.normals.push_back(normals.at(std::stoi(val) - 1));
-						}
-
-						val = "";
-						slashes = 0;
 					}
 				}
-				else {
-					val += line[i];
-				}
+				triangles.push_back(tempTriangle);
 			}
-			triangles.push_back(tempTriangle);
 		}
+
+		file.close();
+
+
+		tempObject.setNormals(normals);
+		tempObject.setOrderedVertices(orderedVerts);
+		tempObject.setTriangles(triangles);
+		tempObject.setUV(uv);
+		tempObject.setVertices(vertices);
+		//Set the material
+		tempObject.setMaterial(this->loadMaterial(OBJECTSPATH + mtlName));
+		return tempObject;
 	}
-	file.close();
-	
-	tempObject.setNormals(normals);
-	tempObject.setOrderedVertices(orderedVerts);
-	tempObject.setTriangles(triangles);
-	tempObject.setUV(uv);
-	tempObject.setVertices(vertices);
-	//Set the material
-	tempObject.setMaterial(this->loadMaterial(OBJECTSPATH + mtlName));
-	return tempObject;
+
 }
 
 void Fileloader::loadMap(std::string path, int width, int height, int bpp, int cpp)
@@ -301,4 +403,148 @@ glm::vec3 Fileloader::extractVector(std::string line) {
 	}
 	return col;
 
+}
+
+//Split at 'const char 'c'' position
+std::string Fileloader::split(std::string val, const char c) {
+	return " ";
+}
+
+Object Fileloader::readFile(std::string path) {
+
+	Mesh mesh;
+
+	std::string line;
+	std::fstream file;
+	file.open(path.c_str(), std::ios::in);
+		
+	Object temp = Object();
+	
+	//We can't open the file
+	if (!file.is_open()) { std::cout << "ERROR::NO::FILE::FOUND" << std::endl; return temp; }
+
+	int vertex = 0;
+	int uvs = 0;
+	int ns = 0;
+
+	while (std::getline(file, line)) {
+		//Find the first space
+		int dataStart = line.find(' ');
+		std::string l = line.substr(0, dataStart);
+		if (l == "v") {
+			l = line.substr(++dataStart, line.length());
+			temp.v.push_back(interpretVec3(l));
+			vertex++;
+		}
+		else if (l == "vt") {
+			l = line.substr(++dataStart, line.length());
+			temp.uv.push_back(interpretVec2(l));
+			uvs++;
+		}
+		else if (l == "vn") {
+			l = line.substr(++dataStart, line.length());
+			temp.n.push_back(interpretVec3(l));
+			ns++;
+		}
+		else if (l == "f") {
+			l = line.substr(++dataStart, line.length());
+			interpretMesh(l, mesh, temp);
+		}
+		//load material
+		else if (l == "mtllib") {
+			std::string mtlname = line.substr(l.length() + 1, line.length());
+			temp.setMaterial(this->loadMaterial(OBJECTSPATH + mtlname));
+		}
+	}
+	temp.setMesh(mesh);
+
+	return temp;
+}
+
+void Fileloader::interpretMesh(std::string line, Mesh &mesh, Object object) { 
+
+	int slashes = 0;
+	int index = 0;
+	std::string val;
+
+	for (int i = 0; i < line.length(); i++) {
+		if (line[i] == ' ') {
+			slashes = 0;
+			val = "";
+		}
+		if (i == line.length() - 1) {
+			val += line[i];
+			mesh.normal.push_back(object.n.at(std::stoi(val) - 1));
+		}
+		else if (line[i] == '/') {
+			switch (slashes) {
+				//When we've got vertices in the face
+			case 0:
+				mesh.vertex.push_back(object.v.at(std::stoi(val) - 1));
+				break;
+			case 1:
+				mesh.uv.push_back(object.uv.at(std::stoi(val) - 1));
+				break;
+			}
+			val = "";
+			slashes++;
+		}
+		else {
+			val += line[i];
+		}
+	}
+
+}
+
+glm::vec3 Fileloader::interpretVec3(std::string line) {
+	glm::vec3 pos = glm::vec3(0, 0, 0);
+	int val = 0;
+	std::string temp = "";
+	for (int i = 0; i < line.length(); i++) {
+		if (line[i] == ' ' || i == line.length() - 1) {
+			pos[val++] = std::stof(temp);
+			temp = "";
+		}
+		else {
+			temp += line[i];
+		}
+	}
+	return pos;
+}
+
+glm::vec2 Fileloader::interpretVec2(std::string line) {
+	glm::vec2 pos = glm::vec2(0, 0);
+	int val = 0;
+	std::string temp = "";
+
+	for (int i = 0; i < line.length(); i++) {
+		if (line[i] == ' ' || i == line.length() - 1) {
+			pos[val] = std::stof(temp);
+			val++;
+			temp = "";
+		}
+		else {
+			temp += line[i];
+		}
+	}
+	return pos;
+}
+
+std::string Fileloader::splitAt(std::string path, int at) {
+	std::string word = "";
+	for (int i = at; i < path.length(); i++) {
+		word += path[i];
+	}
+
+	return word;
+}
+
+bool Fileloader::validExtension(std::string path) {
+	int length = path.length();
+	//Because we know that the extension is going to be 4 characters long we can assume this
+	std::string extension = splitAt(path, length - 4);
+	if (extension == ".obj") {
+		return true;
+	}
+	return false;
 }

@@ -21,10 +21,11 @@ public:
 	std::vector<Triangle> getTriangles() const;
 	std::vector<Vertex> getOrderedVertices() const;
 	unsigned int getVAO() const;
-
+	Mesh getMesh() const;
 
 	Material getMaterial() const;
-		
+	
+	void setMesh(Mesh mesh);
 	void setUV(std::vector<UV> uv);
 	void setNormals(std::vector<Vertex> normals);
 	void setVertices(std::vector<Vertex> verts);
@@ -35,16 +36,27 @@ public:
 
 	//Get the size of the object	
 	int getByteSize();
-
+	int getSizeOfNormals();
 
 	Object& operator=(const Object &other);
+
+	std::vector<glm::vec3> v; //Vertices
+	std::vector<glm::vec3> n; //Normals
+	std::vector<glm::vec2> uv; //uvs
+
 private:
 
 
 	Material material;
 
 	unsigned int VAO;
-	
+	Mesh mesh;
+
+
+
+
+	std::vector<Vert> verts;
+	std::vector<Vertex> orderedNormals;
 	std::vector<Vertex> orderedVerts;
 	std::vector<UV> uvs;
 	std::vector<Vertex> normals;
