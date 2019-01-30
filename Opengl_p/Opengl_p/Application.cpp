@@ -61,25 +61,26 @@ void Application::setupObjects() {
 
 	std::vector<glm::vec3> vertices;
 
-	for (int i = 0; i < this->objs.at(1).v.size(); i++) {
-		vertices.push_back(this->objs.at(1).v.at(i));
+	
+	for (int i = 0; i < this->objs.at(0).getMesh().vertex.size(); i++) {
+		vertices.push_back(this->objs.at(0).getMesh().vertex.at(i));
 	}
 
-	int totalSize = this->objs.at(1).v.size() * 3 * sizeof(glm::vec3);
+	int totalSize = this->objs.at(0).getMesh().vertex.size() * sizeof(glm::vec3);
+	
+	//Load all vertices
 
 	/*
-	//Load all vertices
 	for (int i = 0; i < this->objs.size(); i++) {
 		for (int j = 0; j < this->objs.at(i).getOrderedVertices().size(); j++) {
 			vertices.push_back(this->objs.at(i).getOrderedVertices().at(j).vertex);
 		}
 	}
-
 	int totalSize = 0;
-	
 	for (int i = 0; i < this->objs.size(); i++) {
 		totalSize += this->objs.at(i).getByteSize();
 	}*/
+
 
 	//Load vertices into the buffer
 	glBufferData(GL_ARRAY_BUFFER, totalSize, &vertices[0], GL_STATIC_DRAW);
@@ -91,8 +92,9 @@ void Application::setupObjects() {
 	}
 	//Set the vertices in the glsl-code
 	glVertexAttribPointer(vertexPos, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(sizeof(float) * 0));
-	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(vertexPos);
 
+	/*
 	vertices.clear();
 	//Load all vertices
 	for (int i = 0; i < this->objs.size(); i++) {
@@ -105,7 +107,8 @@ void Application::setupObjects() {
 	for (int i = 0; i < this->objs.size(); i++) {
 		totalSize += this->objs.at(i).getSizeOfNormals();
 	}
-	glBufferData(GL_ARRAY_BUFFER, totalSize, &vertices[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, totalSize, &vertices[0], GL_STATIC_DRAW);*/
+
 	/*
 	GLint normalPos = glGetAttribLocation(this->shader->getShaderID(), "normal");
 	if (normalPos == -1) {
@@ -129,7 +132,7 @@ void Application::setupObjects() {
 	glEnableVertexAttribArray(0);
 	*/
 
-	//
+	
 	this->shader->use();
 	this->shader->setVec3("ambientCol", this->objs.at(0).getMaterial().ambientCol);
 	this->shader->setVec3("diffuseCol", this->objs.at(0).getMaterial().diffuseCol);
@@ -236,15 +239,21 @@ void Application::render() {
 		glBindVertexArray(this->vertexAttrib);
 	}
 	this->shader->use();
-	int x = 0;
 
+	//this->shader->setVec3("ambientCol", this->objs.at(0).getMaterial().ambientCol);
+	//this->shader->setVec3("diffuseCol", this->objs.at(0).getMaterial().diffuseCol);
+
+	int x = 0;
+	//glDrawArrays(GL_TRIANGLES, x, this->objs.at(1).v.size() * 3 * sizeof(glm::vec3));
+	/*
 	for (int i = 0; i < this->objs.size(); i++) {
 		this->shader->setVec3("ambientCol", this->objs.at(i).getMaterial().ambientCol);
 		this->shader->setVec3("diffuseCol", this->objs.at(i).getMaterial().diffuseCol);
 		glDrawArrays(GL_TRIANGLES, x, x + this->objs.at(i).getTriangles().size() * 3);
 		x += this->objs.at(i).getTriangles().size() * 3;
+	}	*/
 
-	}	
+	glDrawArrays(GL_TRIANGLES, 0, this->objs.at(0).getMesh().vertex.size() * 3);
 }
 //Have this be in an object class
 void Application::cameraHandler() {
@@ -269,8 +278,8 @@ void Application::loadObjects() {
 	auto start = timer.now();
 
 	//Insert all of the objects here!
-	Object cube = this->fileloader.loadObj(OBJECTSPATH + "test.obj");
-	Object cb = this->fileloader.readFile(OBJECTSPATH + "temp.obj");
+	Object cube = this->fileloader.readFile(OBJECTSPATH + "Monkey.obj");
+	Object cb = this->fileloader.loadObj(OBJECTSPATH + "Monkey.obj");
 
 
 	auto end = timer.now();
@@ -281,6 +290,7 @@ void Application::loadObjects() {
 	std::cout << "Loadtime(ms): " + std::to_string(loadTime) << std::endl;
 	
 	//Load the object into the objs vector
+
 	this->objs.push_back(cube);
 	this->objs.push_back(cb);
 

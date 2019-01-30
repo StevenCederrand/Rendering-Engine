@@ -26,16 +26,5 @@ int main() {
 	
 	delete app;
 
-	Fileloader fl;
-	Object object;
-	object = fl.readFile(OBJECTSPATH + "temp.obj");
-
-	std::cout << "OBJECT:" << std::endl;
-	std::cout << object.getMesh().normal.size() << std::endl;
-	std::cout << object.getMesh().vertex.size() << std::endl;
-	std::cout << object.getMesh().uv.size() << std::endl;
-	
-	std::string x;
-	std::cin >> x;
 	return 0;
 }
