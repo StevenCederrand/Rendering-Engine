@@ -36,11 +36,12 @@ public:
 	Application(int WNDW, int WNDH);
 	~Application();
 
+	#pragma region SETUP FUNCTIONS
 	void setupShaders();
 	void setupObjects();
 	void setupGround(); //change name
 	void setupTextures();
-
+	#pragma endregion
 		
 	void update();
 	void render();
@@ -50,6 +51,7 @@ public:
 private:
 	void start(); //Exists to reduce duplication
 	void loadObjects();
+	void setColours();
 	
 //Private data
 private:
@@ -61,6 +63,8 @@ private:
 	GLuint vertexAttrib = 0;
 	GLuint vertexBuffer = 0;
 	GLuint normalBuffer = 0;
+
+
 	//the world matrix is used as a modelmatrix
 	glm::mat4 worldMatrix = glm::mat4(1.f);
 	glm::mat4 prjMatrix = glm::mat4(1.f);

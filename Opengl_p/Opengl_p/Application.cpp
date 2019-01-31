@@ -49,7 +49,7 @@ void Application::setupShaders() {
 
 void Application::setupObjects() {
 	//Wireframe mode
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); 
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); 
 
 	this->loadObjects();
 
@@ -59,14 +59,11 @@ void Application::setupObjects() {
 	glGenBuffers(1, &this->vertexBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, this->vertexBuffer);
 
-	std::vector<glm::vec3> vertices;
+	std::vector<Vert> vertices;
 
-	
-	for (int i = 0; i < this->objs.at(0).getMesh().vertex.size(); i++) {
-		vertices.push_back(this->objs.at(0).getMesh().vertex.at(i));
-	}
+	vertices = objs.at(0).getMesh().verts;
 
-	int totalSize = this->objs.at(0).getMesh().vertex.size() * sizeof(glm::vec3);
+	int totalSize = vertices.size() * sizeof(Vert);
 	
 	//Load all vertices
 
@@ -80,19 +77,39 @@ void Application::setupObjects() {
 	for (int i = 0; i < this->objs.size(); i++) {
 		totalSize += this->objs.at(i).getByteSize();
 	}*/
-
-
+	
 	//Load vertices into the buffer
 	glBufferData(GL_ARRAY_BUFFER, totalSize, &vertices[0], GL_STATIC_DRAW);
+	
 	//Assign where in memory the positions are located	
-	GLint vertexPos = glGetAttribLocation(this->shader->getShaderID(), "position");
-	if (vertexPos == -1) {
-		std::cout << "Couldn't find vertexPos" << std::endl;
+	GLint attribLocation = glGetAttribLocation(this->shader->getShaderID(), "position");
+	if (attribLocation == -1) {
+		std::cout << "ERROR::LOCATING::VERTEX::POS" << std::endl;
 		return;
 	}
+	
 	//Set the vertices in the glsl-code
-	glVertexAttribPointer(vertexPos, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(sizeof(float) * 0));
-	glEnableVertexAttribArray(vertexPos);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, BUFFER_OFFSET(0));
+	glEnableVertexAttribArray(attribLocation);
+	this->setColours();
+
+	//Load normals
+	attribLocation = glGetAttribLocation(this->shader->getShaderID(), "normal");
+	if (attribLocation == -1) {
+		std::cout << "ERROR::LOCATING::NORMAL::POS" << std::endl;
+		return;
+	}
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, BUFFER_OFFSET(6));
+	glEnableVertexAttribArray(attribLocation);
+
+	//Load uv's
+	attribLocation = 2;//glGetAttribLocation(this->shader->getShaderID(), "uv");
+	if (attribLocation == -1) {
+		std::cout << "ERROR::LOCATING::UV::POS" << std::endl;
+		return;
+	}
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 8, BUFFER_OFFSET(8));
+	glEnableVertexAttribArray(attribLocation);
 
 	/*
 	vertices.clear();
@@ -132,10 +149,6 @@ void Application::setupObjects() {
 	glEnableVertexAttribArray(0);
 	*/
 
-	
-	this->shader->use();
-	this->shader->setVec3("ambientCol", this->objs.at(0).getMaterial().ambientCol);
-	this->shader->setVec3("diffuseCol", this->objs.at(0).getMaterial().diffuseCol);
 }
 
 
@@ -253,7 +266,7 @@ void Application::render() {
 		x += this->objs.at(i).getTriangles().size() * 3;
 	}	*/
 
-	glDrawArrays(GL_TRIANGLES, 0, this->objs.at(0).getMesh().vertex.size() * 3);
+	glDrawArrays(GL_TRIANGLES, 0, this->objs.at(0).getMesh().verts.size());
 }
 //Have this be in an object class
 void Application::cameraHandler() {
@@ -297,4 +310,11 @@ void Application::loadObjects() {
 	for (int i = 0; i < this->objs.size(); i++) {
 		this->nrOfTriangles += this->objs.at(i).getTriangles().size();
 	}
+}
+
+
+void Application::setColours() {
+	this->shader->use();
+	this->shader->setVec3("ambientCol", this->objs.at(0).getMaterial().ambientCol);
+	this->shader->setVec3("diffuseCol", this->objs.at(0).getMaterial().diffuseCol);
 }

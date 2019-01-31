@@ -39,6 +39,7 @@ struct Triangle {
 	std::vector<UV> uvs;
 	std::vector<Vertex> normals;
 };
+
 struct TriangleData {
 	float x, y, z;
 	float r, g, b;
@@ -53,6 +54,7 @@ struct Mesh {
 		this->vertex = other.vertex;
 		this->normal = other.normal;
 		this->uv = other.uv;
+		this->verts = other.verts;
 	}
 	~Mesh() {
 		
@@ -60,6 +62,7 @@ struct Mesh {
 	std::vector<glm::vec3> vertex;
 	std::vector<glm::vec3> normal;
 	std::vector<glm::vec2> uv;
+	std::vector<Vert> verts;
 };
 
 enum ValidKeys {

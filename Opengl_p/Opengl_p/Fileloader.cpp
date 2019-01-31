@@ -64,94 +64,8 @@ Object Fileloader::loadObj(std::string path) {
 		std::vector<Vertex> normals;
 		std::vector<Vertex> vertices;
 		std::vector<Triangle> triangles;
-
-
+		
 		std::vector<Vert> verts;
-		/*
-		while (std::getline(file, line)) {
-			if (line[0] == 'v') {
-				//Get each vertex position
-				if (line[1] == ' ') {
-					Vertex vert = Vertex();
-					std::string val = "";
-					//Read the line
-					for (int i = 2; i < line.length(); i++) {
-						if (line[i] == ' ' || i == line.length() - 1) {
-							//Set the vertex x, y, z
-							vert.vertex[vert.occupied] = std::stof(val);
-							vert.occupied++;
-
-							val = "";
-						}
-						else {
-							val += line[i];
-						}
-					}
-					//Save the vertex to the vertex vector
-					vertices.push_back(vert);
-				}
-			}
-			//If we're dealing with a vertex texture
-			else if (line[1] == 't') {
-				UV tempUV = UV();
-				std::string val = "";
-				for (int i = 3; i < line.length(); i++) {
-					//Between each texture coordinate
-					if (line[i] == ' ' || i == line.length() - 1) {
-						//add a uv.x or y onto the UV struct
-						tempUV.uv[tempUV.occupied] = std::stof(val);
-						tempUV.occupied++;
-						val = "";
-					}
-					else {
-						val += line[i];
-					}
-				}
-				//at the end of the line
-				uv.push_back(tempUV);
-			}
-			//If we're dealing with vertex normals
-			else if (line[1] == 'n') {
-				Vertex tempNormal = Vertex();
-				std::string val = "";
-				for (int i = 3; i < line.length(); i++) {
-					if (line[i] == ' ' || i == line.length() - 1) {
-						//Set the tempNormal
-						tempNormal.vertex[tempNormal.occupied] = std::stof(val);
-						tempNormal.occupied++;
-						val = "";
-					}
-					else {
-						val += line[i];
-					}
-				}
-				//At the end of line
-				normals.push_back(tempNormal);
-			}
-			//Get the material name --- We are assuming that the .mtl file is in the same folder as the .obj
-			else if (line[0] == 'm') {
-				bool recName = false;
-				std::cout << line << std::endl;
-				for (int i = 0; i < line.length(); i++) {
-					if (recName) {
-						mtlName += line[i];
-					}
-					//When reaching the middle part of the text
-					if (line[i] == ' ') {
-						recName = true;
-					}
-				}
-			}
-			else if (line[0] == 'f') {
-				Vert tempVert = Vert();
-				uint8_t slashes = 0;
-				for (int i = 1; i < line.length(); i++) {
-
-				}
-
-			}
-		}
-		*/
 		
 		while (std::getline(file, line)) {
 
@@ -411,7 +325,6 @@ std::string Fileloader::split(std::string val, const char c) {
 }
 
 Object Fileloader::readFile(std::string path) {
-
 	Mesh mesh;
 
 	std::string line;
@@ -426,7 +339,7 @@ Object Fileloader::readFile(std::string path) {
 	int vertex = 0;
 	int uvs = 0;
 	int ns = 0;
-
+	std::vector<Vert> tmpVerts;
 	while (std::getline(file, line)) {
 		//Find the first space
 		int dataStart = line.find(' ');
@@ -448,7 +361,8 @@ Object Fileloader::readFile(std::string path) {
 		}
 		else if (l == "f") {
 			l = line.substr(++dataStart, line.length());
-			interpretMesh(l, mesh, temp);
+			
+			interpretMesh(l, mesh, tmpVerts, temp);
 		}
 		//load material
 		else if (l == "mtllib") {
@@ -456,33 +370,58 @@ Object Fileloader::readFile(std::string path) {
 			temp.setMaterial(this->loadMaterial(OBJECTSPATH + mtlname));
 		}
 	}
+	mesh.verts = tmpVerts;
 	temp.setMesh(mesh);
 
 	return temp;
 }
 
-void Fileloader::interpretMesh(std::string line, Mesh &mesh, Object object) { 
+void Fileloader::interpretMesh(std::string line, Mesh &mesh, std::vector<Vert> &verts, Object object) {
 
 	int slashes = 0;
-	int index = 0;
+	int index = 1;
 	std::string val;
 
+	Vert temp;
+
 	for (int i = 0; i < line.length(); i++) {
+		//Normals
 		if (line[i] == ' ') {
 			slashes = 0;
+			//val += line[i];
+			temp.normal = object.n.at(std::stoi(val) - 1);
+			verts.push_back(temp);
+
+			//verts.at(index).normal = object.n.at(std::stoi(val) - 1);
+			mesh.normal.push_back(object.n.at(std::stoi(val) - 1));
+			index++;
 			val = "";
 		}
+		//Normals
 		if (i == line.length() - 1) {
 			val += line[i];
+
+			temp.normal = object.n.at(std::stoi(val) - 1);
+			verts.push_back(temp);
+
+			//verts.at(index).vertex = object.n.at(std::stoi(val) - 1);
 			mesh.normal.push_back(object.n.at(std::stoi(val) - 1));
+			index++;
 		}
 		else if (line[i] == '/') {
 			switch (slashes) {
-				//When we've got vertices in the face
+			//When we've got vertices in the face
 			case 0:
+				//verts.at(index).vertex = object.v.at(std::stoi(val) - 1);
+				temp.vertex = object.v.at(std::stoi(val) - 1);
+
 				mesh.vertex.push_back(object.v.at(std::stoi(val) - 1));
 				break;
+			//UV's
 			case 1:
+
+				//verts.at(index).uv = object.uv.at(std::stoi(val) - 1);
+				temp.uv = object.uv.at(std::stoi(val) - 1);
 				mesh.uv.push_back(object.uv.at(std::stoi(val) - 1));
 				break;
 			}
