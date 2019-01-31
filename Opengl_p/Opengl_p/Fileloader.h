@@ -17,7 +17,6 @@ public:
 	Fileloader();
 	~Fileloader();
 
-	Object loadObj(std::string path);
 	void loadMap(std::string path, int width, int height, int bpp, int cpp); //cpp = components per pixel
 	Object readFile(std::string path);
 	std::string getExtension(std::string path);
@@ -33,7 +32,7 @@ private:
 	std::string splitAt(std::string path, int at);
 	glm::vec3 interpretVec3(std::string line);
 	glm::vec2 interpretVec2(std::string line);
-	void interpretMesh(std::string line, Mesh &mesh, std::vector<Vert> &verts,Object object);
+	void interpretMesh(std::string line, Mesh &mesh, std::vector<Vertex> &verts,Object object);
 
 	//Private variables
 private:

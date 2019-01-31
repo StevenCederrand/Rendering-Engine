@@ -74,7 +74,5 @@ private:
 
 	std::vector<Object> objs;
 	int nrOfObjects = 0;
-	int nrOfTriangles= 0;
-
 };
 #endif

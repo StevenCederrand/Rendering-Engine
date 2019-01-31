@@ -38,8 +38,6 @@ void Application::start() {
 	//Set Projection Matrix
 	this->shader->setMat4("prjMatrix", this->prjMatrix);
 
-
-
 	this->currentKey = ValidKeys::DUMMY;	
 }
 
@@ -49,7 +47,7 @@ void Application::setupShaders() {
 
 void Application::setupObjects() {
 	//Wireframe mode
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); 
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); 
 
 	this->loadObjects();
 
@@ -59,27 +57,15 @@ void Application::setupObjects() {
 	glGenBuffers(1, &this->vertexBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, this->vertexBuffer);
 
-	std::vector<Vert> vertices;
-
-	vertices = objs.at(0).getMesh().verts;
-
-	int totalSize = vertices.size() * sizeof(Vert);
 	
-	//Load all vertices
+	std::vector<Vertex> meshData;
 
-	/*
-	for (int i = 0; i < this->objs.size(); i++) {
-		for (int j = 0; j < this->objs.at(i).getOrderedVertices().size(); j++) {
-			vertices.push_back(this->objs.at(i).getOrderedVertices().at(j).vertex);
-		}
-	}
-	int totalSize = 0;
-	for (int i = 0; i < this->objs.size(); i++) {
-		totalSize += this->objs.at(i).getByteSize();
-	}*/
+	meshData = objs.at(0).getMesh().verts;
+
+	int totalSize = meshData.size() * sizeof(Vertex);
 	
 	//Load vertices into the buffer
-	glBufferData(GL_ARRAY_BUFFER, totalSize, &vertices[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, totalSize, &meshData[0], GL_STATIC_DRAW);
 	
 	//Assign where in memory the positions are located	
 	GLint attribLocation = glGetAttribLocation(this->shader->getShaderID(), "position");
@@ -99,7 +85,7 @@ void Application::setupObjects() {
 		std::cout << "ERROR::LOCATING::NORMAL::POS" << std::endl;
 		return;
 	}
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, BUFFER_OFFSET(6));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, BUFFER_OFFSET(sizeof(glm::vec3)));
 	glEnableVertexAttribArray(attribLocation);
 
 	//Load uv's
@@ -108,46 +94,8 @@ void Application::setupObjects() {
 		std::cout << "ERROR::LOCATING::UV::POS" << std::endl;
 		return;
 	}
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 8, BUFFER_OFFSET(8));
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 8, BUFFER_OFFSET(0));
 	glEnableVertexAttribArray(attribLocation);
-
-	/*
-	vertices.clear();
-	//Load all vertices
-	for (int i = 0; i < this->objs.size(); i++) {
-		for (int j = 0; j < this->objs.at(i).getNormals().size(); j++) {
-			vertices.push_back(this->objs.at(i).getNormals().at(j).vertex);
-		}
-	}
-
-	totalSize = 0; 
-	for (int i = 0; i < this->objs.size(); i++) {
-		totalSize += this->objs.at(i).getSizeOfNormals();
-	}
-	glBufferData(GL_ARRAY_BUFFER, totalSize, &vertices[0], GL_STATIC_DRAW);*/
-
-	/*
-	GLint normalPos = glGetAttribLocation(this->shader->getShaderID(), "normal");
-	if (normalPos == -1) {
-		std::cout << "ERROR::LOCATING::NORMAL::POSITION" << std::endl;
-		return;
-	}
-
-	//Set the vertices in the glsl-code
-	glVertexAttribPointer(normalPos, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(sizeof(float) * 0));
-	glEnableVertexAttribArray(1);*/
-
-	/*
-	GLint normalPos = glGetAttribLocation(this->shader->getShaderID(), "normal");
-	if (normalPos == -1) {
-		std::cout << "ERROR::LOCATING::NORMAL_POS::IN::SHADER" << std::endl;
-		return;
-	}
-
-	glVertexAttribPointer(normalPos, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(sizeof(float) * 0));
-
-	glEnableVertexAttribArray(0);
-	*/
 
 }
 
@@ -252,22 +200,11 @@ void Application::render() {
 		glBindVertexArray(this->vertexAttrib);
 	}
 	this->shader->use();
-
-	//this->shader->setVec3("ambientCol", this->objs.at(0).getMaterial().ambientCol);
-	//this->shader->setVec3("diffuseCol", this->objs.at(0).getMaterial().diffuseCol);
-
-	int x = 0;
-	//glDrawArrays(GL_TRIANGLES, x, this->objs.at(1).v.size() * 3 * sizeof(glm::vec3));
-	/*
-	for (int i = 0; i < this->objs.size(); i++) {
-		this->shader->setVec3("ambientCol", this->objs.at(i).getMaterial().ambientCol);
-		this->shader->setVec3("diffuseCol", this->objs.at(i).getMaterial().diffuseCol);
-		glDrawArrays(GL_TRIANGLES, x, x + this->objs.at(i).getTriangles().size() * 3);
-		x += this->objs.at(i).getTriangles().size() * 3;
-	}	*/
+	this->shader->setVec3("cameraPos", this->camera->getCameraPosition());
 
 	glDrawArrays(GL_TRIANGLES, 0, this->objs.at(0).getMesh().verts.size());
 }
+
 //Have this be in an object class
 void Application::cameraHandler() {
 
@@ -292,8 +229,6 @@ void Application::loadObjects() {
 
 	//Insert all of the objects here!
 	Object cube = this->fileloader.readFile(OBJECTSPATH + "Monkey.obj");
-	Object cb = this->fileloader.loadObj(OBJECTSPATH + "Monkey.obj");
-
 
 	auto end = timer.now();
 
@@ -303,13 +238,7 @@ void Application::loadObjects() {
 	std::cout << "Loadtime(ms): " + std::to_string(loadTime) << std::endl;
 	
 	//Load the object into the objs vector
-
 	this->objs.push_back(cube);
-	this->objs.push_back(cb);
-
-	for (int i = 0; i < this->objs.size(); i++) {
-		this->nrOfTriangles += this->objs.at(i).getTriangles().size();
-	}
 }
 
 
