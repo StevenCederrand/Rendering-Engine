@@ -76,5 +76,7 @@ private:
 
 	std::vector<Object> objs;
 	int nrOfObjects = 0;
+
+	std::vector<Object> objMap;
 };
 #endif
