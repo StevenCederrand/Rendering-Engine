@@ -1,6 +1,7 @@
 #Ignore folders
 Opengl_p/.vs/*
 Opengl_p/Opengl_p/Debug/*
+Opengl_p/Opengl_p/x64/*
 
 #Ignore files
 *.ipch

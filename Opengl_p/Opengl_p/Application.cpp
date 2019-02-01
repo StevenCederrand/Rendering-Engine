@@ -1,5 +1,8 @@
 #include "Application.h"
 
+
+
+#define STB_IMAGE_IMPLEMENTATION
 using ms = std::chrono::duration<float, std::milli>;
 
 //Start(): 
@@ -78,9 +81,8 @@ void Application::setupObjects() {
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, BUFFER_OFFSET(0));
 	glEnableVertexAttribArray(attribLocation);
 	this->setColours();
-
 	//Load normals
-	attribLocation = glGetAttribLocation(this->shader->getShaderID(), "normal");
+	attribLocation = 1; glGetAttribLocation(this->shader->getShaderID(), "normal");
 	if (attribLocation == -1) {
 		std::cout << "ERROR::LOCATING::NORMAL::POS" << std::endl;
 		return;
@@ -94,7 +96,7 @@ void Application::setupObjects() {
 		std::cout << "ERROR::LOCATING::UV::POS" << std::endl;
 		return;
 	}
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 8, BUFFER_OFFSET(0));
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 8, BUFFER_OFFSET(sizeof(float) * 6));
 	glEnableVertexAttribArray(attribLocation);
 
 }
@@ -166,32 +168,32 @@ void Application::setupGround()
 			normal1 = glm::normalize(glm::cross(firstV-secondV, firstV-thirdV));
 			normal2 = glm::normalize(glm::cross(fourthV-thirdV, fourthV-secondV));
 			//first vertex to first triangle
-			vert.vertex=(firstV);
+			vert.position=(firstV);
 			vert.normal = (normal1);
 			mapPosition.push_back(vert);
 
 			//second vertex to first triangle
-			vert.vertex = (secondV);
+			vert.position = (secondV);
 			vert.normal = (normal1);
 			mapPosition.push_back(vert);
 
 			//third vertex to first triangle
-			vert.vertex = (thirdV);
+			vert.position = (thirdV);
 			vert.normal = (normal1);
 			mapPosition.push_back(vert);
 
 			//first vertex to second triangle
-			vert.vertex = (secondV);
+			vert.position = (secondV);
 			vert.normal = (normal2);
 			mapPosition.push_back(vert);
 
 			//second vertex to second triangle
-			vert.vertex = (thirdV);
+			vert.position = (thirdV);
 			vert.normal = (normal2);
 			mapPosition.push_back(vert);
 
 			//third vertex to second triangle
-			vert.vertex = (fourthV);
+			vert.position = (fourthV);
 			vert.normal = (normal2);
 			mapPosition.push_back(vert);
 		
@@ -211,17 +213,39 @@ void Application::setupGround()
 
 
 void Application::setupTextures() {
+	/*
 	//Texture wrapping
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-	
+
 	//Texture magnifying and minifying filter
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	*/
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	std::string path = OBJECTSPATH + "asa.png";
+	int width, height, nrChannels;
+	
+	unsigned char *data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
 
+	if (data) {
+		std::cout << "FOUND TEXTURE" << std::endl;
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		std::cout << "Generated mipmap" << std::endl;
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
+	else {
+		std::cout << "ERROR::LOADING::TEXTURE" << std::endl;
+	}
+	stbi_image_free(data);
 }
 
 //Runs every tick while the window is open
@@ -230,8 +254,11 @@ void Application::update() {
 	this->setupShaders();
 	this->setupObjects();
 	this->setupGround();
+	this->setupTextures();
 
+	//this->setupGround();
 	glEnable(GL_DEPTH_TEST);
+	
 	glDepthFunc(GL_LESS);
 
 	//Use the one shader that has been set up
@@ -258,6 +285,7 @@ void Application::update() {
 
 		//Camera function 
 		this->cameraHandler();
+		this->shader->setVec3("cameraPos", this->camera->getCameraPosition());
 		
 		//Render the VAO with the loaded shader
 		this->render();
@@ -268,7 +296,8 @@ void Application::update() {
 		deltaTime = std::chrono::duration_cast<ms>(stop - frameTime).count() / 1000; 
 		this->window->update();
 	}
-	
+	glDeleteVertexArrays(1, &vertexAttrib);
+	glDeleteBuffers(1, &vertexBuffer);
 	this->window->close();
 }
 
@@ -278,11 +307,10 @@ void Application::render() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	
-	if (this->vertexAttrib != 0) {
-		glBindVertexArray(this->vertexAttrib);
-	}
+	glBindTexture(GL_TEXTURE_2D, texture);
+
 	this->shader->use();
-	this->shader->setVec3("cameraPos", this->camera->getCameraPosition());
+	glBindVertexArray(this->vertexAttrib);
 
 	glDrawArrays(GL_TRIANGLES, 0, this->objs.at(0).getMesh().verts.size());
 }
@@ -328,4 +356,7 @@ void Application::setColours() {
 	this->shader->use();
 	this->shader->setVec3("ambientCol", this->objs.at(0).getMaterial().ambientCol);
 	this->shader->setVec3("diffuseCol", this->objs.at(0).getMaterial().diffuseCol);
+	this->shader->setVec3("specCol", this->objs.at(0).getMaterial().specularCol);
+	this->shader->setFloat("transparency", this->objs.at(0).getMaterial().transparency);
+	this->shader->setFloat("specularWeight", this->objs.at(0).getMaterial().specularWeight);
 }

@@ -24,6 +24,7 @@
 #include <chrono>
 #include <string>
 #include <vector>
+#include "stb_image.h"
 #pragma endregion
 
 
@@ -60,6 +61,7 @@ private:
 	Shader* shader;
 	Fileloader fileloader;
 
+	unsigned int texture;
 	GLuint vertexAttrib = 0;
 	GLuint vertexBuffer = 0;
 	GLuint normalBuffer = 0;
