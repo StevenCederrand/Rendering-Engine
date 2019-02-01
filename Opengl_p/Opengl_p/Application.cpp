@@ -1,5 +1,8 @@
 #include "Application.h"
 
+
+
+#define STB_IMAGE_IMPLEMENTATION
 using ms = std::chrono::duration<float, std::milli>;
 
 //Start(): 
@@ -78,9 +81,8 @@ void Application::setupObjects() {
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, BUFFER_OFFSET(0));
 	glEnableVertexAttribArray(attribLocation);
 	this->setColours();
-
 	//Load normals
-	attribLocation = glGetAttribLocation(this->shader->getShaderID(), "normal");
+	attribLocation = 1; glGetAttribLocation(this->shader->getShaderID(), "normal");
 	if (attribLocation == -1) {
 		std::cout << "ERROR::LOCATING::NORMAL::POS" << std::endl;
 		return;
@@ -94,7 +96,7 @@ void Application::setupObjects() {
 		std::cout << "ERROR::LOCATING::UV::POS" << std::endl;
 		return;
 	}
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 8, BUFFER_OFFSET(0));
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 8, BUFFER_OFFSET(sizeof(float) * 6));
 	glEnableVertexAttribArray(attribLocation);
 
 }
@@ -129,17 +131,37 @@ void Application::setupGround()
 
 
 void Application::setupTextures() {
+	/*
 	//Texture wrapping
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-	
+
 	//Texture magnifying and minifying filter
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	*/
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	int width, height, nrChannels;
+	std::string path = OBJECTSPATH + "fabric.jpg";
+	unsigned char *data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
 
+	if (data) {
+		std::cout << "FOUND TEXTURE" << std::endl;
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
+	else {
+		std::cout << "ERROR::LOADING::TEXTURE" << std::endl;
+	}
+	stbi_image_free(data);
 }
 
 //Runs every tick while the window is open
@@ -148,7 +170,7 @@ void Application::update() {
 	this->setupShaders();
 	this->setupObjects();
 	//this->setupGround();
-
+	//this->setupTextures();
 	glEnable(GL_DEPTH_TEST);
 	
 	glDepthFunc(GL_LESS);
@@ -177,6 +199,7 @@ void Application::update() {
 
 		//Camera function 
 		this->cameraHandler();
+		this->shader->setVec3("cameraPos", this->camera->getCameraPosition());
 		
 		//Render the VAO with the loaded shader
 		this->render();
@@ -187,7 +210,8 @@ void Application::update() {
 		deltaTime = std::chrono::duration_cast<ms>(stop - frameTime).count() / 1000; 
 		this->window->update();
 	}
-	
+	glDeleteVertexArrays(1, &vertexAttrib);
+	glDeleteBuffers(1, &vertexBuffer);
 	this->window->close();
 }
 
@@ -200,9 +224,7 @@ void Application::render() {
 	if (this->vertexAttrib != 0) {
 		glBindVertexArray(this->vertexAttrib);
 	}
-	this->shader->use();
-	this->shader->setVec3("cameraPos", this->camera->getCameraPosition());
-
+	//glBindTexture(GL_TEXTURE_2D, texture);
 	glDrawArrays(GL_TRIANGLES, 0, this->objs.at(0).getMesh().verts.size());
 }
 
@@ -229,7 +251,7 @@ void Application::loadObjects() {
 	auto start = timer.now();
 
 	//Insert all of the objects here!
-	Object cube = this->fileloader.readFile(OBJECTSPATH + "test.obj");
+	Object cube = this->fileloader.readFile(OBJECTSPATH + "Monkey.obj");
 
 	auto end = timer.now();
 

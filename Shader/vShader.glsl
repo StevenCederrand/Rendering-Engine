@@ -21,4 +21,5 @@ void main() {
 	gl_Position = prjMatrix * viewMatrix * worldMatrix * vec4(position, 1.0f);
 	fragPos = vec3(worldMatrix * vec4(position, 1));
 	camPos = cameraPos;
+	uvs = uv;
 }
