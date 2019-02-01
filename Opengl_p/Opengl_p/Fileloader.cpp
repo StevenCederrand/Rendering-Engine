@@ -5,7 +5,7 @@
 Fileloader::Fileloader() {
 	//Setup the valid file types
 	this->validFiletypes.push_back(".obj");
-
+	this->validFiletypes.push_back(".mtl");
 }
 
 Fileloader::~Fileloader()
@@ -59,12 +59,14 @@ void Fileloader::loadMap(std::string path, int width, int height, int bpp, int c
 }
 
 Material Fileloader::loadMaterial(std::string path) {
-	
-	std::ifstream iFile(path);
+	//Check to see if the path is valid
 	Material tempMat = Material();
-		
+	
+	if (!this->validExtension(path)) { return tempMat; }
+
+	std::ifstream iFile(path);
 	if (!iFile.is_open()) {
-		std::cout << "ERROR::OPENING::MTL::FILE::" + path << std::endl;
+		std::cout << "ERROR::OPENING::MTL::FILE" + path << std::endl;
 		return tempMat;
 	}
 	
@@ -152,10 +154,12 @@ Object Fileloader::readFile(std::string path) {
 
 	std::string line;
 	std::fstream file;
-	file.open(path.c_str(), std::ios::in);
 		
 	Object temp = Object();
+	//in case of an invalid extension
+	if (!this->validExtension(path)) { return temp; }
 	
+	file.open(path.c_str(), std::ios::in);
 	//We can't open the file
 	if (!file.is_open()) { std::cout << "ERROR::NO::FILE::FOUND" << std::endl; return temp; }
 
@@ -230,7 +234,7 @@ void Fileloader::interpretMesh(std::string line, Mesh &mesh, std::vector<Vertex>
 			//Position
 			case 0:
 				//add a vertex position
-				temp.vertex = object.v.at(std::stoi(val) - 1);
+				temp.position = object.v.at(std::stoi(val) - 1);
 				break;
 			//UV
 			case 1:
@@ -297,8 +301,16 @@ bool Fileloader::validExtension(std::string path) {
 	int length = path.length();
 	//Because we know that the extension is going to be 4 characters long we can assume this
 	std::string extension = splitAt(path, length - 4);
-	if (extension == ".obj") {
-		return true;
+	bool retVal = false;
+
+	for (int i = 0; i < this->validFiletypes.size(); i++) {
+		if (this->validFiletypes.at(i) == extension) {
+			retVal = true;
+			break;
+		}
 	}
-	return false;
+	if (!retVal) {
+		std::cout << "ERROR::INVALID::EXTENSION" << std::endl;
+	}
+	return retVal;
 }

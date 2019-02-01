@@ -2,7 +2,7 @@
 
 Task list 
 - [ ] Deferred Rendering
-- [ ] Obj Parsing - Steven 
+- [x] Obj Parsing - Steven 
 > I have reworked the parser and now it works well. What 
 happens is the following. Initially the Fileloader inserts 
 all valid extensions to its extension vector. So everyfile 

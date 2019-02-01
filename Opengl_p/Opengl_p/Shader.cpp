@@ -104,8 +104,15 @@ void Shader::setVec3(std::string name, glm::vec3 vec) {
 	if (uniformLoc != -1) {
 		glUniform3fv(uniformLoc, 1, &vec[0]);
 	}
-
 }
+
+void Shader::setFloat(std::string name, float val) {
+	GLint uniformLoc = glGetUniformLocation(this->getShaderID(), name.c_str());
+	if (uniformLoc != -1) {
+		glUniform1f(uniformLoc, val);
+	}
+}
+
 unsigned int Shader::getShaderID() const {
 	return this->shaderProg;
 }

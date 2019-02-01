@@ -34,6 +34,8 @@ private:
 	glm::vec2 interpretVec2(std::string line);
 	void interpretMesh(std::string line, Mesh &mesh, std::vector<Vertex> &verts,Object object);
 
+
+
 	//Private variables
 private:
 	std::vector<std::string> validFiletypes;
