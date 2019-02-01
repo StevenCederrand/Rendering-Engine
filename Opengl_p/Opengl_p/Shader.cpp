@@ -113,6 +113,14 @@ void Shader::setFloat(std::string name, float val) {
 	}
 }
 
+void Shader::setInt(std::string name, int val) {
+	GLint uniformLoc = glGetUniformLocation(this->getShaderID(), name.c_str());
+	if (uniformLoc != -1) {
+		glUniform1i(uniformLoc, val);
+	}
+
+}
+
 unsigned int Shader::getShaderID() const {
 	return this->shaderProg;
 }

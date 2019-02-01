@@ -19,6 +19,7 @@ public:
 	void setMat4(std::string name, glm::mat4 mat);
 	void setVec3(std::string name, glm::vec3 vec);
 	void setFloat(std::string name, float val);
+	void setInt(std::string name, int val);
 	unsigned int getShaderID() const;
 
 private: 

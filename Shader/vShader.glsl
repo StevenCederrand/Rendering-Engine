@@ -5,8 +5,6 @@ layout(location=1) in vec3 normal;
 layout(location=2) in vec2 uv;
 uniform vec3 cameraPos;
 
-//layout(location=1) in vec3 colorData;
-
 uniform mat4 worldMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 prjMatrix;

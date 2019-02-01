@@ -7,7 +7,10 @@ uniform vec3 specCol;
 uniform float transparency;
 uniform float specularWeight;
 
-uniform sampler2D aTexture;
+
+uniform sampler2D colorTexture;
+uniform sampler2D normalMap;
+
 
 in vec3 normals;
 in vec2 uvs;
@@ -18,8 +21,8 @@ out vec4 fragment_color;
 
 
 vec3 lightPos = vec3(10, 10, 10);
-float lightStr = 10.0f;
-vec3 lightCol = vec3(0.1, 0.1, 0.1);
+float lightStr = 0.5f;
+vec3 lightCol = vec3(1, 1, 1);
 
 //Set ambient lighting 
 vec3 ambience() {
@@ -29,25 +32,34 @@ vec3 ambience() {
 	vec3 result = amb * ambientCol;
 	return result;
 }
+
 //Set diffuse lighting 
 vec3 diffuse() {
+	vec3 nO = texture(normalMap, uvs).rgb;
+	nO = normalize(nO * 2.0 - 1.0);
+
+
 	vec3 norm = normalize(normals);
 	vec3 lightDir = normalize(lightPos - fragPos);
 
-	float diff = max(dot(lightDir, norm), 0);
+	float diff = max(dot(lightDir, nO), 0);
 		
 	vec3 result = diff * lightCol * lightStr;
 	return result;
 }
+
 //Set specular lighting 
 vec3 specular() {
+	vec3 nO = texture(normalMap, uvs).rgb;
+	nO = normalize(nO * 2.0 - 1.0);
 
-	vec3 norm = normalize(normals); //This too
+
+	vec3 norm = normalize(nO); //This too
 	vec3 lightDir = normalize(lightPos - fragPos); //Clean this
 
-	float specularStr = 5.0f; //This should be set to data read in the .obj file
+	float specularStr = 1.0f; //This should be set to data read in the .obj file
 	vec3 viewDir = normalize(camPos - fragPos);
-	vec3 reflectDir = reflect(-lightDir, norm);
+	vec3 reflectDir = reflect(-lightDir, nO);
 	float specW = specularWeight;
 	//Check to see if the specular color is nothing, if so ->defer to default specular weight
 	if (specW == 0) {
@@ -60,9 +72,11 @@ vec3 specular() {
 }
 
 void main() {
+
+
 	
-	vec3 result = (ambience() + diffuse() + specular()) * diffuseCol;
-		
-	fragment_color = vec4(result, 0.1f);
-	fragment_color = texture(aTexture, uvs) * vec4(result, 0.1f);
+	vec3 result = (ambience() + diffuse() + specular()) * vec3(texture(colorTexture, uvs));
+	//vec4 res = texture(normalMap, uvs);
+	fragment_color = vec4(result, texture(colorTexture, uvs).a);
+	
 }

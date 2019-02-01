@@ -64,9 +64,9 @@ void Application::setupObjects() {
 	std::vector<Vertex> meshData;
 
 	meshData = objs.at(0).getMesh().verts;
-
-	int totalSize = meshData.size() * sizeof(Vertex);
 	
+	int totalSize = meshData.size() * sizeof(Vertex);
+
 	//Load vertices into the buffer
 	glBufferData(GL_ARRAY_BUFFER, totalSize, &meshData[0], GL_STATIC_DRAW);
 	
@@ -130,7 +130,7 @@ void Application::setupGround()
 }
 
 
-void Application::setupTextures() {
+void Application::setupTextures(unsigned int &texture, std::string name) {
 	/*
 	//Texture wrapping
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
@@ -149,14 +149,15 @@ void Application::setupTextures() {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	std::string path = OBJECTSPATH + "asa.png";
+	std::string path = OBJECTSPATH + name;
+
 	int width, height, nrChannels;
 	
 	unsigned char *data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
 
 	if (data) {
 		std::cout << "FOUND TEXTURE" << std::endl;
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 		std::cout << "Generated mipmap" << std::endl;
 		glGenerateMipmap(GL_TEXTURE_2D);
 	}
@@ -171,8 +172,21 @@ void Application::update() {
 
 	this->setupShaders();
 	this->setupObjects();
-	this->setupTextures();
-
+	
+	for (int i = 0; i < 2; i++) {
+		unsigned int tex;
+		if (i == 0) {
+			this->setupTextures(tex, "brickwall.jpg");
+		}
+		else {
+			this->setupTextures(tex, "brickwall_n.jpg");
+		}
+		this->textures.push_back(tex);
+	}
+	
+	this->shader->use();
+	this->shader->setInt("colorTexture", 0);
+	this->shader->setInt("normalMap", 1);
 
 	//this->setupGround();
 	glEnable(GL_DEPTH_TEST);
@@ -224,8 +238,11 @@ void Application::render() {
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	
-	glBindTexture(GL_TEXTURE_2D, texture);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, textures.at(0));
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, textures.at(1));
+
 
 	this->shader->use();
 	glBindVertexArray(this->vertexAttrib);
@@ -250,13 +267,12 @@ void Application::cameraHandler() {
 }
 
 void Application::loadObjects() {
-
 	//Observe the time it takes to load all of the objects
 	std::chrono::high_resolution_clock timer;
 	auto start = timer.now();
 
 	//Insert all of the objects here!
-	Object cube = this->fileloader.readFile(OBJECTSPATH + "Monkey.obj");
+	Object cube = this->fileloader.readFile(OBJECTSPATH + "cube.obj");
 
 	auto end = timer.now();
 
@@ -268,7 +284,6 @@ void Application::loadObjects() {
 	//Load the object into the objs vector
 	this->objs.push_back(cube);
 }
-
 
 void Application::setColours() {
 	this->shader->use();

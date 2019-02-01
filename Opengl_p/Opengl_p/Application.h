@@ -41,7 +41,7 @@ public:
 	void setupShaders();
 	void setupObjects();
 	void setupGround(); //change name
-	void setupTextures();
+	void setupTextures(unsigned int &texture, std::string name);
 	#pragma endregion
 		
 	void update();
@@ -61,7 +61,7 @@ private:
 	Shader* shader;
 	Fileloader fileloader;
 
-	unsigned int texture;
+	std::vector<unsigned int> textures;
 	GLuint vertexAttrib = 0;
 	GLuint vertexBuffer = 0;
 	GLuint normalBuffer = 0;
