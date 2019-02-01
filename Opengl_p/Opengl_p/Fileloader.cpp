@@ -234,8 +234,10 @@ void Fileloader::interpretMesh(std::string line, Mesh &mesh, std::vector<Vertex>
 				break;
 			//UV
 			case 1:
-				//add a vertex UV
-				temp.uv = object.uv.at(std::stoi(val) - 1);
+				if (val != "") {
+					//add a vertex UV
+					temp.uv = object.uv.at(std::stoi(val) - 1);
+				}
 				break;
 			}
 			val = "";
