@@ -17,32 +17,8 @@ const std::string SHADERPATH = "..\\..\\Shader\\";
 
 struct Vertex {
 	glm::vec3 vertex;
-	uint8_t occupied;
-};
-
-struct Vert {
-	glm::vec3 vertex;
 	glm::vec3 normal;
 	glm::vec2 uv;
-};
-
-struct Color {
-	glm::vec4 color;
-};
-struct UV {
-	glm::vec2 uv;
-	uint8_t occupied;
-};
-
-struct Triangle {
-	std::vector<Vertex> vertices;
-	std::vector<UV> uvs;
-	std::vector<Vertex> normals;
-};
-struct TriangleData {
-	float x, y, z;
-	float r, g, b;
-	float u, v;
 };
 
 struct Mesh {
@@ -50,16 +26,12 @@ struct Mesh {
 
 	};
 	Mesh(const Mesh& other) {
-		this->vertex = other.vertex;
-		this->normal = other.normal;
-		this->uv = other.uv;
+		this->verts = other.verts;
 	}
 	~Mesh() {
 		
 	};
-	std::vector<glm::vec3> vertex;
-	std::vector<glm::vec3> normal;
-	std::vector<glm::vec2> uv;
+	std::vector<Vertex> verts;
 };
 
 enum ValidKeys {

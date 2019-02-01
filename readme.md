@@ -3,11 +3,20 @@
 Task list 
 - [ ] Deferred Rendering
 - [ ] Obj Parsing - Steven 
-> The fileloader class contains the obj parser. Here we read the file, 
-line by line. Find and collect the different useful sets of data, i.e 
-vertices, uv's and even normals. We place them into their own 
-std::vector. When reading the faces we lookup the specific vertices, uvs 
-and normals, and place them into the std::vector for triangles. 
+> I have reworked the parser and now it works well. What 
+happens is the following. Initially the Fileloader inserts 
+all valid extensions to its extension vector. So everyfile 
+that we request to look up, we will check to see if we 
+support it. If it's an .obj then we start to read the 
+contents of the file. All positions, normals and uv's are 
+pushed into their own vector. When interpretting faces we 
+pass through a Mesh type. Which contains a vector of 
+"Vertex"(a combination of positions, normals and UV's). 
+Each face is divided upp in the following structure, 
+V/VT/VN. We add all of this data to the mesh. Then all we 
+have left is the .mtl file. Which is fairly straight 
+forward. We save all relevant data such as colours into 
+glm::vec3 etc. 
 - [ ] Height Map - Ludwig
 - [ ] Normal Mapping - Steven
 - [ ] Shadow Mapping - Ludwig 

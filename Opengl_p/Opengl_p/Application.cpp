@@ -38,8 +38,6 @@ void Application::start() {
 	//Set Projection Matrix
 	this->shader->setMat4("prjMatrix", this->prjMatrix);
 
-
-
 	this->currentKey = ValidKeys::DUMMY;	
 }
 
@@ -59,83 +57,46 @@ void Application::setupObjects() {
 	glGenBuffers(1, &this->vertexBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, this->vertexBuffer);
 
-	std::vector<glm::vec3> vertices;
-
 	
-	for (int i = 0; i < this->objs.at(0).getMesh().vertex.size(); i++) {
-		vertices.push_back(this->objs.at(0).getMesh().vertex.at(i));
-	}
+	std::vector<Vertex> meshData;
 
-	int totalSize = this->objs.at(0).getMesh().vertex.size() * sizeof(glm::vec3);
+	meshData = objs.at(0).getMesh().verts;
+
+	int totalSize = meshData.size() * sizeof(Vertex);
 	
-	//Load all vertices
-
-	/*
-	for (int i = 0; i < this->objs.size(); i++) {
-		for (int j = 0; j < this->objs.at(i).getOrderedVertices().size(); j++) {
-			vertices.push_back(this->objs.at(i).getOrderedVertices().at(j).vertex);
-		}
-	}
-	int totalSize = 0;
-	for (int i = 0; i < this->objs.size(); i++) {
-		totalSize += this->objs.at(i).getByteSize();
-	}*/
-
-
 	//Load vertices into the buffer
-	glBufferData(GL_ARRAY_BUFFER, totalSize, &vertices[0], GL_STATIC_DRAW);
-	//Assign where in memory the positions are located	
-	GLint vertexPos = glGetAttribLocation(this->shader->getShaderID(), "position");
-	if (vertexPos == -1) {
-		std::cout << "Couldn't find vertexPos" << std::endl;
-		return;
-	}
-	//Set the vertices in the glsl-code
-	glVertexAttribPointer(vertexPos, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(sizeof(float) * 0));
-	glEnableVertexAttribArray(vertexPos);
-
-	/*
-	vertices.clear();
-	//Load all vertices
-	for (int i = 0; i < this->objs.size(); i++) {
-		for (int j = 0; j < this->objs.at(i).getNormals().size(); j++) {
-			vertices.push_back(this->objs.at(i).getNormals().at(j).vertex);
-		}
-	}
-
-	totalSize = 0; 
-	for (int i = 0; i < this->objs.size(); i++) {
-		totalSize += this->objs.at(i).getSizeOfNormals();
-	}
-	glBufferData(GL_ARRAY_BUFFER, totalSize, &vertices[0], GL_STATIC_DRAW);*/
-
-	/*
-	GLint normalPos = glGetAttribLocation(this->shader->getShaderID(), "normal");
-	if (normalPos == -1) {
-		std::cout << "ERROR::LOCATING::NORMAL::POSITION" << std::endl;
-		return;
-	}
-
-	//Set the vertices in the glsl-code
-	glVertexAttribPointer(normalPos, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(sizeof(float) * 0));
-	glEnableVertexAttribArray(1);*/
-
-	/*
-	GLint normalPos = glGetAttribLocation(this->shader->getShaderID(), "normal");
-	if (normalPos == -1) {
-		std::cout << "ERROR::LOCATING::NORMAL_POS::IN::SHADER" << std::endl;
-		return;
-	}
-
-	glVertexAttribPointer(normalPos, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(sizeof(float) * 0));
-
-	glEnableVertexAttribArray(0);
-	*/
-
+	glBufferData(GL_ARRAY_BUFFER, totalSize, &meshData[0], GL_STATIC_DRAW);
 	
-	this->shader->use();
-	this->shader->setVec3("ambientCol", this->objs.at(0).getMaterial().ambientCol);
-	this->shader->setVec3("diffuseCol", this->objs.at(0).getMaterial().diffuseCol);
+	//Assign where in memory the positions are located	
+	GLint attribLocation = glGetAttribLocation(this->shader->getShaderID(), "position");
+	if (attribLocation == -1) {
+		std::cout << "ERROR::LOCATING::VERTEX::POS" << std::endl;
+		return;
+	}
+	
+	//Set the vertices in the glsl-code
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, BUFFER_OFFSET(0));
+	glEnableVertexAttribArray(attribLocation);
+	this->setColours();
+
+	//Load normals
+	attribLocation = glGetAttribLocation(this->shader->getShaderID(), "normal");
+	if (attribLocation == -1) {
+		std::cout << "ERROR::LOCATING::NORMAL::POS" << std::endl;
+		return;
+	}
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, BUFFER_OFFSET(sizeof(glm::vec3)));
+	glEnableVertexAttribArray(attribLocation);
+
+	//Load uv's
+	attribLocation = 2;//glGetAttribLocation(this->shader->getShaderID(), "uv");
+	if (attribLocation == -1) {
+		std::cout << "ERROR::LOCATING::UV::POS" << std::endl;
+		return;
+	}
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 8, BUFFER_OFFSET(0));
+	glEnableVertexAttribArray(attribLocation);
+
 }
 
 
@@ -145,25 +106,107 @@ void Application::setupGround()
 	std::vector<float> elevation;
 	int width = 0;
 	int height = 0;
-	fileloader.loadMap(OBJECTSPATH + "HeightMap.PNG", width, height, elevation);
+	fileloader.loadMap(OBJECTSPATH + "HeightMap2.PNG", width, height, elevation);
 
 	int size = width*height;
 	int counter = 0;
-	
+	int index = 0;
 	//create a trianglevertex struct of the size, width*height
 	TriangleVertex *triangleVertices = new TriangleVertex[size];
 	 //delete this senare
+	/*
 	for (size_t j = 0; j < height; j++)
 	{
 		for (size_t i = 0; i < width; i++)
 		{
-			int index = height * j + i;
+			index = height * j + i;
 			triangleVertices[index].x = (float)i;
-			triangleVertices[index].y = elevation[counter] /15;//divide by a number so that it looks more "flat"
+			triangleVertices[index].y = elevation[counter] /10;//divide by a number so that it looks more "flat"
 			triangleVertices[index].z = (float)j;
 			counter++;
 		}
 	}
+	*/
+	Object objMap = Object();
+	Mesh meshMap;
+	int position1, position2, position3, position4;
+	glm::vec3 normal1, normal2;
+	std::vector<Vertex> mapPosition;
+	Vertex vert;
+	for (size_t j = 0; j < (height-1); j++)
+	{
+		for (size_t i = 0; i < (width-1); i++)
+		{
+			position1 = (height * j) + i;				//upper left			
+			triangleVertices[position1].x = (float)i;
+			triangleVertices[position1].y = elevation[position1] * 0.1f;//divide by a number so that it looks more "flat"
+			triangleVertices[position1].z = (float)j;
+
+			position2 = (height * j) + (i + 1);			//upper right
+			triangleVertices[position2].x = (float)i;
+			triangleVertices[position2].y = elevation[position2] * 0.1f;;//divide by a number so that it looks more "flat"
+			triangleVertices[position2].z = (float)j;
+
+			position3 = (height *(j + 1)) + i;			//bottom left
+			triangleVertices[position3].x = (float)i;
+			triangleVertices[position3].y = elevation[position3] * 0.1f;;//divide by a number so that it looks more "flat"
+			triangleVertices[position3].z = (float)j;
+
+			position4 = (height *(j + 1)) + (i + 1);	//bottom right
+			triangleVertices[position4].x = (float)i;
+			triangleVertices[position4].y = elevation[position4] * 0.1f;;//divide by a number so that it looks more "flat"
+			triangleVertices[position4].z = (float)j;
+
+			glm::vec3 firstV = glm::vec3(triangleVertices[position1].x, triangleVertices[position1].y, triangleVertices[position1].z);
+			glm::vec3 secondV = glm::vec3(triangleVertices[position2].x, triangleVertices[position2].y, triangleVertices[position2].z);
+
+			glm::vec3 thirdV = glm::vec3(triangleVertices[position3].x, triangleVertices[position3].y, triangleVertices[position3].z);
+			glm::vec3 fourthV = glm::vec3(triangleVertices[position4].x, triangleVertices[position4].y, triangleVertices[position4].z);
+
+			normal1 = glm::normalize(glm::cross(firstV-secondV, firstV-thirdV));
+			normal2 = glm::normalize(glm::cross(fourthV-thirdV, fourthV-secondV));
+			//first vertex to first triangle
+			vert.vertex=(firstV);
+			vert.normal = (normal1);
+			mapPosition.push_back(vert);
+
+			//second vertex to first triangle
+			vert.vertex = (secondV);
+			vert.normal = (normal1);
+			mapPosition.push_back(vert);
+
+			//third vertex to first triangle
+			vert.vertex = (thirdV);
+			vert.normal = (normal1);
+			mapPosition.push_back(vert);
+
+			//first vertex to second triangle
+			vert.vertex = (secondV);
+			vert.normal = (normal2);
+			mapPosition.push_back(vert);
+
+			//second vertex to second triangle
+			vert.vertex = (thirdV);
+			vert.normal = (normal2);
+			mapPosition.push_back(vert);
+
+			//third vertex to second triangle
+			vert.vertex = (fourthV);
+			vert.normal = (normal2);
+			mapPosition.push_back(vert);
+		
+			
+
+		}
+	}
+			//change this!
+			meshMap.verts = mapPosition;
+			//setMesh(A Mesh) 
+			objMap.setMesh(meshMap);
+				//pusha map
+			this->objs.push_back(objMap);
+			
+	delete triangleVertices;
 }
 
 
@@ -239,22 +282,11 @@ void Application::render() {
 		glBindVertexArray(this->vertexAttrib);
 	}
 	this->shader->use();
+	this->shader->setVec3("cameraPos", this->camera->getCameraPosition());
 
-	//this->shader->setVec3("ambientCol", this->objs.at(0).getMaterial().ambientCol);
-	//this->shader->setVec3("diffuseCol", this->objs.at(0).getMaterial().diffuseCol);
-
-	int x = 0;
-	//glDrawArrays(GL_TRIANGLES, x, this->objs.at(1).v.size() * 3 * sizeof(glm::vec3));
-	/*
-	for (int i = 0; i < this->objs.size(); i++) {
-		this->shader->setVec3("ambientCol", this->objs.at(i).getMaterial().ambientCol);
-		this->shader->setVec3("diffuseCol", this->objs.at(i).getMaterial().diffuseCol);
-		glDrawArrays(GL_TRIANGLES, x, x + this->objs.at(i).getTriangles().size() * 3);
-		x += this->objs.at(i).getTriangles().size() * 3;
-	}	*/
-
-	glDrawArrays(GL_TRIANGLES, 0, this->objs.at(0).getMesh().vertex.size() * 3);
+	glDrawArrays(GL_TRIANGLES, 0, this->objs.at(0).getMesh().verts.size());
 }
+
 //Have this be in an object class
 void Application::cameraHandler() {
 
@@ -279,8 +311,6 @@ void Application::loadObjects() {
 
 	//Insert all of the objects here!
 	Object cube = this->fileloader.readFile(OBJECTSPATH + "Monkey.obj");
-	Object cb = this->fileloader.loadObj(OBJECTSPATH + "Monkey.obj");
-
 
 	auto end = timer.now();
 
@@ -290,11 +320,12 @@ void Application::loadObjects() {
 	std::cout << "Loadtime(ms): " + std::to_string(loadTime) << std::endl;
 	
 	//Load the object into the objs vector
-
 	this->objs.push_back(cube);
-	this->objs.push_back(cb);
+}
 
-	for (int i = 0; i < this->objs.size(); i++) {
-		this->nrOfTriangles += this->objs.at(i).getTriangles().size();
-	}
+
+void Application::setColours() {
+	this->shader->use();
+	this->shader->setVec3("ambientCol", this->objs.at(0).getMaterial().ambientCol);
+	this->shader->setVec3("diffuseCol", this->objs.at(0).getMaterial().diffuseCol);
 }
