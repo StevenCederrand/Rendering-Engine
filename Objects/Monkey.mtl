@@ -2,9 +2,9 @@
 # Material Count: 1
 
 newmtl None
-Ns 0
+Ns 32
 Ka 0.1 0.1 0.1
 Kd 0.1 0.8 0.8
 Ks 0.8 0.8 0.8
-d 1
+d 0.1
 illum 2
