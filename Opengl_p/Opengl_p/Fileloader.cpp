@@ -297,23 +297,25 @@ Object Fileloader::loadObj(std::string path) {
 
 }
 
-void Fileloader::loadMap(std::string path, int width, int height, int bpp, int cpp)
+//void Fileloader::loadMap(std::string path, int width, int height, int bpp, int cpp)
+void Fileloader::loadMap(std::string path, int &width, int &height, std::vector<float> &elevation)
 {
-	float matrix[1024][904];
-	//glm::mat3 matrix;
-	unsigned char* heightMap = stbi_load(path.c_str(), &width, &height, &bpp, cpp);
+	//unsigned char* heightMap = stbi_load(path.c_str(), &width, &height, &bpp, cpp);
+	//unsigned char* heightMap = stbi_load(path.c_str(), &width, &height, NULL, 1);
+	stbi_uc *heightMap = stbi_load(path.c_str(), &width, &height, NULL, 1);
 
-	std::vector<float> elevation;
-	for (int i = 0; i < width; i++)
-	{
-		for (int j = 0; j < height; j++)
-		{							//kanske är fel, static_cast kanske?
+	for (int i = 0; i < height; i++)
+	{							
+		for (int j = 0; j < width; j++)
+		{
 			//float elevation = float(heightMap[(i*width + j) * 4]);
-			float elevation = static_cast<float>(*(heightMap + (i*width + j) * 4));
+			//float elevations = static_cast<float>(*(heightMap + (i*width + j) * 4));
+			float elevations = static_cast<float>(*(heightMap + (i*width + j)));
 
-			elevation /= 128;
-			elevation--;
-			matrix[i][j] = elevation;
+			elevations /= 128;	
+			elevations--;
+			elevation.push_back(elevations);
+			//matrix[i][j] = elevation;
 		}
 	}
 	stbi_image_free(heightMap);

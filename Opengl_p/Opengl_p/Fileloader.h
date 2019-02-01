@@ -18,7 +18,9 @@ public:
 	~Fileloader();
 
 	Object loadObj(std::string path);
-	void loadMap(std::string path, int width, int height, int bpp, int cpp); //cpp = components per pixel
+	
+	//void loadMap(std::string path, int width, int height, int bpp, int cpp); //cpp = components per pixel
+	void loadMap(std::string path, int &width, int &height, std::vector<float> &elevation);
 	Object readFile(std::string path);
 	std::string getExtension(std::string path);
 

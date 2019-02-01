@@ -49,7 +49,7 @@ void Application::setupShaders() {
 
 void Application::setupObjects() {
 	//Wireframe mode
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); 
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); 
 
 	this->loadObjects();
 
@@ -142,28 +142,28 @@ void Application::setupObjects() {
 void Application::setupGround()
 {
 	struct TriangleVertex{float x, y, z;};
-	TriangleVertex triangleVertices[1024*904];
+	std::vector<float> elevation;
+	int width = 0;
+	int height = 0;
+	fileloader.loadMap(OBJECTSPATH + "HeightMap.PNG", width, height, elevation);
 
-	for (size_t i = 0; i < 1024; i++)
+	int size = width*height;
+	int counter = 0;
+	
+	//create a trianglevertex struct of the size, width*height
+	TriangleVertex *triangleVertices = new TriangleVertex[size];
+	 //delete this senare
+	for (size_t j = 0; j < height; j++)
 	{
-		for (size_t j = 0; j < 904; j++)
+		for (size_t i = 0; i < width; i++)
 		{
-
+			int index = height * j + i;
+			triangleVertices[index].x = (float)i;
+			triangleVertices[index].y = elevation[counter] /15;//divide by a number so that it looks more "flat"
+			triangleVertices[index].z = (float)j;
+			counter++;
 		}
 	}
-	TriangleVertex triangleVertices22[6] =
-	{
-	{ -0.5f, 0.5f, 0.0f},
-	{ -0.5f, -0.5f, 0.0f},
-	{ 0.5f, -0.5f, 0.0f},
-
-
-	{ 0.5f, -0.5f, 0.0f},
-	{ 0.5f, 0.5f, 0.0f},
-	{ -0.5f, 0.5f, 0.0f}
-
-	};
-
 }
 
 
@@ -186,7 +186,7 @@ void Application::update() {
 
 	this->setupShaders();
 	this->setupObjects();
-	//this->setupGround();
+	this->setupGround();
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
