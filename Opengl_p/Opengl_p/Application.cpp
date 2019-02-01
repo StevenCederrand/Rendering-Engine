@@ -149,13 +149,15 @@ void Application::setupTextures() {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	std::string path = OBJECTSPATH + "asa.png";
 	int width, height, nrChannels;
-	std::string path = OBJECTSPATH + "fabric.jpg";
+	
 	unsigned char *data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
 
 	if (data) {
 		std::cout << "FOUND TEXTURE" << std::endl;
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		std::cout << "Generated mipmap" << std::endl;
 		glGenerateMipmap(GL_TEXTURE_2D);
 	}
 	else {
@@ -169,8 +171,10 @@ void Application::update() {
 
 	this->setupShaders();
 	this->setupObjects();
+	this->setupTextures();
+
+
 	//this->setupGround();
-	//this->setupTextures();
 	glEnable(GL_DEPTH_TEST);
 	
 	glDepthFunc(GL_LESS);
@@ -221,10 +225,11 @@ void Application::render() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	
-	if (this->vertexAttrib != 0) {
-		glBindVertexArray(this->vertexAttrib);
-	}
-	//glBindTexture(GL_TEXTURE_2D, texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+
+	this->shader->use();
+	glBindVertexArray(this->vertexAttrib);
+
 	glDrawArrays(GL_TRIANGLES, 0, this->objs.at(0).getMesh().verts.size());
 }
 

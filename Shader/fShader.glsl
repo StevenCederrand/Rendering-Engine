@@ -7,7 +7,7 @@ uniform vec3 specCol;
 uniform float transparency;
 uniform float specularWeight;
 
-//uniform sampler2D aTexture;
+uniform sampler2D aTexture;
 
 in vec3 normals;
 in vec2 uvs;
@@ -18,7 +18,7 @@ out vec4 fragment_color;
 
 
 vec3 lightPos = vec3(10, 10, 10);
-float lightStr = 3.0f;
+float lightStr = 10.0f;
 vec3 lightCol = vec3(0.1, 0.1, 0.1);
 
 //Set ambient lighting 
@@ -64,5 +64,5 @@ void main() {
 	vec3 result = (ambience() + diffuse() + specular()) * diffuseCol;
 		
 	fragment_color = vec4(result, 0.1f);
-	//fragment_color = texture(aTexture, uvs) * vec4(result, 0.1f);
+	fragment_color = texture(aTexture, uvs) * vec4(result, 0.1f);
 }
