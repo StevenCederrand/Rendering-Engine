@@ -213,18 +213,7 @@ void Application::setupGround()
 
 
 void Application::setupTextures(unsigned int &texture, std::string name) {
-	/*
-	//Texture wrapping
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
 
-	//Texture magnifying and minifying filter
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	*/
 	glGenTextures(1, &texture);
 	glBindTexture(GL_TEXTURE_2D, texture);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -255,14 +244,17 @@ void Application::update() {
 	this->setupShaders();
 	this->setupObjects();
 
+	for (int i = 0; i < this->objs.at(0).getMaterial().textures.size(); i++ ) {
+		std::cout << this->objs.at(0).getMaterial().textures.at(i).type << std::endl;
+	}
 	
 	for (int i = 0; i < 2; i++) {
 		unsigned int tex;
 		if (i == 0) {
-			this->setupTextures(tex, "brickwall.jpg");
+			this->setupTextures(tex, this->objs.at(0).getTexture(Texturetypes::Diffuse).name);
 		}
 		else {
-			this->setupTextures(tex, "brickwall_n.jpg");
+			this->setupTextures(tex, this->objs.at(0).getTexture(Texturetypes::Normal).name);
 		}
 		this->textures.push_back(tex);
 	}
@@ -274,7 +266,6 @@ void Application::update() {
 	this->setupGround();
 
 
-	//this->setupGround();
 	glEnable(GL_DEPTH_TEST);
 	
 	glDepthFunc(GL_LESS);
@@ -323,12 +314,11 @@ void Application::render() {
 	glClearColor(0.1f, 0.1f, 0.1f, 1);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, textures.at(0));
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, textures.at(1));
-
+	
+	for (int i = 0; i < this->textures.size(); i++) {
+		glActiveTexture(GL_TEXTURE0 + i);
+		glBindTexture(GL_TEXTURE_2D, textures.at(i));
+	}
 
 	this->shader->use();
 	glBindVertexArray(this->vertexAttrib);
@@ -358,7 +348,7 @@ void Application::loadObjects() {
 	auto start = timer.now();
 
 	//Insert all of the objects here!
-	Object cube = this->fileloader.readFile(OBJECTSPATH + "cube.obj");
+	Object cube = this->fileloader.readFile(OBJECTSPATH + "ExampleOBJ.obj");
 
 	auto end = timer.now();
 

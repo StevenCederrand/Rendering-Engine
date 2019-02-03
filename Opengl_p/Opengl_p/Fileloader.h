@@ -34,7 +34,7 @@ private:
 	glm::vec3 interpretVec3(std::string line);
 	glm::vec2 interpretVec2(std::string line);
 	void interpretMesh(std::string line, Mesh &mesh, std::vector<Vertex> &verts,Object object);
-
+	Texture interpretTexture(std::string line);
 
 
 	//Private variables

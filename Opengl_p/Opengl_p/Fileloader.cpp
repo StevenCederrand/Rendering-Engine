@@ -15,7 +15,6 @@ Fileloader::~Fileloader()
 
 std::string Fileloader::getExtension(std::string path) {
 
-	std::list<char> temp;
 	std::string extension;
 
 	std::cout << "Path: " + path << std::endl;
@@ -61,6 +60,63 @@ void Fileloader::loadMap(std::string path, int &width, int &height, std::vector<
 
 	
 }
+
+
+Object Fileloader::readFile(std::string path) {
+	Mesh mesh;
+
+	std::string line;
+	std::fstream file;
+
+	Object temp = Object();
+	//in case of an invalid extension
+	if (!this->validExtension(path)) { return temp; }
+
+	file.open(path.c_str(), std::ios::in);
+	//We can't open the file
+	if (!file.is_open()) { std::cout << "ERROR::NO::FILE::FOUND" << std::endl; return temp; }
+
+	int vertex = 0;
+	int uvs = 0;
+	int ns = 0;
+
+	std::vector<Vertex> tmpVerts;
+	while (std::getline(file, line)) {
+		//Find the first space
+		int dataStart = line.find(' ');
+		std::string l = line.substr(0, dataStart);
+		if (l == "v") {
+			l = line.substr(++dataStart, line.length());
+			temp.v.push_back(interpretVec3(l));
+			vertex++;
+		}
+		else if (l == "vt") {
+			l = line.substr(++dataStart, line.length());
+			temp.uv.push_back(interpretVec2(l));
+			uvs++;
+		}
+		else if (l == "vn") {
+			l = line.substr(++dataStart, line.length());
+			temp.n.push_back(interpretVec3(l));
+			ns++;
+		}
+		else if (l == "f") {
+			l = line.substr(++dataStart, line.length());
+
+			interpretMesh(l, mesh, tmpVerts, temp);
+		}
+		//load material
+		else if (l == "mtllib") {
+			std::string mtlname = line.substr(l.length() + 1, line.length());
+			temp.setMaterial(this->loadMaterial(OBJECTSPATH + mtlname));
+		}
+	}
+	mesh.verts = tmpVerts;
+	temp.setMesh(mesh);
+
+	return temp;
+}
+
 
 Material Fileloader::loadMaterial(std::string path) {
 	//Check to see if the path is valid
@@ -115,7 +171,10 @@ Material Fileloader::loadMaterial(std::string path) {
 			fWord = line.substr(line.find(' ') + 1, line.length());
 			tempMat.name = fWord;
 		}
-
+		//Handle textures
+		else if (line.substr(0, 3) == "map") {
+			tempMat.textures.push_back(this->interpretTexture(line));
+		}
 	}
 	iFile.close();
 	return tempMat;
@@ -151,61 +210,6 @@ glm::vec3 Fileloader::extractVector(std::string line) {
 //Split at 'const char 'c'' position
 std::string Fileloader::split(std::string val, const char c) {
 	return " ";
-}
-
-Object Fileloader::readFile(std::string path) {
-	Mesh mesh;
-
-	std::string line;
-	std::fstream file;
-		
-	Object temp = Object();
-	//in case of an invalid extension
-	if (!this->validExtension(path)) { return temp; }
-	
-	file.open(path.c_str(), std::ios::in);
-	//We can't open the file
-	if (!file.is_open()) { std::cout << "ERROR::NO::FILE::FOUND" << std::endl; return temp; }
-
-	int vertex = 0;
-	int uvs = 0;
-	int ns = 0;
-
-	std::vector<Vertex> tmpVerts;
-	while (std::getline(file, line)) {
-		//Find the first space
-		int dataStart = line.find(' ');
-		std::string l = line.substr(0, dataStart);
-		if (l == "v") {
-			l = line.substr(++dataStart, line.length());
-			temp.v.push_back(interpretVec3(l));
-			vertex++;
-		}
-		else if (l == "vt") {
-			l = line.substr(++dataStart, line.length());
-			temp.uv.push_back(interpretVec2(l));
-			uvs++;
-		}
-		else if (l == "vn") {
-			l = line.substr(++dataStart, line.length());
-			temp.n.push_back(interpretVec3(l));
-			ns++;
-		}
-		else if (l == "f") {
-			l = line.substr(++dataStart, line.length());
-			
-			interpretMesh(l, mesh, tmpVerts, temp);
-		}
-		//load material
-		else if (l == "mtllib") {
-			std::string mtlname = line.substr(l.length() + 1, line.length());
-			temp.setMaterial(this->loadMaterial(OBJECTSPATH + mtlname));
-		}
-	}
-	mesh.verts = tmpVerts;
-	temp.setMesh(mesh);
-
-	return temp;
 }
 
 void Fileloader::interpretMesh(std::string line, Mesh &mesh, std::vector<Vertex> &verts, Object object) {
@@ -256,6 +260,43 @@ void Fileloader::interpretMesh(std::string line, Mesh &mesh, std::vector<Vertex>
 		}
 	}
 
+}
+
+Texture Fileloader::interpretTexture(std::string line) {
+	Texture texture;
+	int space = line.find(' ');
+	std::string textureType = line.substr(0, line.find(' '));
+	
+	//When dealing with a bump-mapping texture
+	if (textureType == "map_Bump") {
+		texture.type = Texturetypes::Normal;
+		std::string text = line.substr(++space, line.find(' '));
+		
+		//std::cout << text << std::endl;
+		text = "";
+		for (int i = line.length() - 1; i > 0; i--) {
+			if (line[i] == ' ') {
+				break;
+			}
+			text += line[i];
+		}
+
+		//Get the file-name
+		std::string name = "";
+		for (int i = 0; i < text.length(); i++) {
+			name.push_back(text.at(text.length() - i - 1));
+		}
+		texture.name = name;
+	}
+
+	//Diffuse texture
+	else if (textureType == "map_Kd") {
+		std::string textureName = line.substr(++space, line.length());
+		texture.name = textureName;
+		texture.type = Texturetypes::Diffuse;
+	}
+
+	return texture;
 }
 
 glm::vec3 Fileloader::interpretVec3(std::string line) {

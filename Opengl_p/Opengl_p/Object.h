@@ -14,6 +14,7 @@ public:
 	~Object();
 	
 	Mesh getMesh() const;
+	Texture getTexture(Texturetypes type);
 
 	Material getMaterial() const;
 	

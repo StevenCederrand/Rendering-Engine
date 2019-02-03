@@ -23,6 +23,16 @@ Object::~Object() {
 
 }
 
+Texture Object::getTexture(Texturetypes type) {
+	Texture texture;
+	for (int i = 0; i < this->material.textures.size(); i++) {
+		if (this->material.textures.at(i).type == type) {
+			texture = this->material.textures.at(i);
+			break;
+		}
+	}
+	return texture;
+}
 
 Mesh Object::getMesh() const {
 	return this->mesh;

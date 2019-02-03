@@ -11,9 +11,21 @@ Simple container file. Used to contain general enums that may be/are used in the
 #include <glm\glm.hpp>
 #include <glm\gtx\transform.hpp>
 #include <vector>
-
 const std::string OBJECTSPATH = "..\\..\\Objects\\";
 const std::string SHADERPATH = "..\\..\\Shader\\";
+
+enum Texturetypes {
+	Diffuse, 
+	Normal, 
+};
+
+struct Texture {
+	Texturetypes type;
+	std::string name;
+	unsigned int texture; //Assigned when loading the texture into the texture buffer
+	float textureStr;
+
+};
 
 struct Vertex {
 	glm::vec3 position;
@@ -58,6 +70,7 @@ struct Material {
 		this->specularWeight = otherMat.specularWeight;
 		this->transparency = otherMat.transparency;
 		this->name = otherMat.name;
+		this->textures = otherMat.textures;
 	};
 
 	~Material() {
@@ -71,6 +84,7 @@ struct Material {
 	float transparency;
 	std::string name;
 	int illuminationModel;
+	std::vector<Texture> textures;
 
 };
 //Struct of functions that make rotations a lot more conveniant --- the struct can be removed. But we may find it a little bit more comfortable.
