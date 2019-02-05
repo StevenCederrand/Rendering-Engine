@@ -46,6 +46,11 @@ struct Mesh {
 	std::vector<Vertex> verts;
 };
 
+//http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-13-normal-mapping/
+struct TangentBasis {
+	std::vector<glm::vec3> tangents;
+	std::vector<glm::vec3> bitangents;
+};
 enum ValidKeys {
 	W,
 	S,

@@ -20,7 +20,7 @@ public:
 	
 	void setMesh(Mesh mesh);
 	void setMaterial(Material material);
-
+	void caluclateTangentBasis();
 
 	Object& operator=(const Object &other);
 
@@ -31,6 +31,7 @@ public:
 private:
 	Material material;
 	Mesh mesh;
+	
 };
 
 #endif

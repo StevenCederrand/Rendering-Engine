@@ -80,7 +80,6 @@ void Application::setupObjects() {
 	//Set the vertices in the glsl-code
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, BUFFER_OFFSET(0));
 	glEnableVertexAttribArray(attribLocation);
-	this->setColours();
 	//Load normals
 	attribLocation = 1; glGetAttribLocation(this->shader->getShaderID(), "normal");
 	if (attribLocation == -1) {
@@ -263,6 +262,7 @@ void Application::update() {
 	this->shader->setInt("colorTexture", 0);
 	this->shader->setInt("normalMap", 1);
 
+	this->setColours();
 	this->setupGround();
 
 
@@ -295,7 +295,8 @@ void Application::update() {
 		//Camera function 
 		this->cameraHandler();
 		this->shader->setVec3("cameraPos", this->camera->getCameraPosition());
-		
+		this->shader->setVec3("camFront", this->camera->getCameraFront());
+
 		//Render the VAO with the loaded shader
 		this->render();
 	
@@ -364,6 +365,7 @@ void Application::loadObjects() {
 void Application::setColours() {
 	this->shader->use();
 	this->shader->setVec3("ambientCol", this->objs.at(0).getMaterial().ambientCol);
+	std::cout << this->objs.at(0).getMaterial().ambientCol.x << std::endl;
 	this->shader->setVec3("diffuseCol", this->objs.at(0).getMaterial().diffuseCol);
 	this->shader->setVec3("specCol", this->objs.at(0).getMaterial().specularCol);
 	this->shader->setFloat("transparency", this->objs.at(0).getMaterial().transparency);
