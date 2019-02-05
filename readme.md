@@ -25,6 +25,16 @@ glm::vec3 etc.
 - [ ] Billboarded Particles - Steven
 - [ ] Glow Effect - Ludwig
 
+
+2019-02-05
+To do list for week 6. 
+- [ ] Implement some form of indexing
+- [ ] Complete normal mapping -- Working on tangent space
+- [ ] Height Mapping?
+- [ ] 
+
+
+
 2019-01-03
 > The project is setup as a base right now, what has been implemented is 
 just a simple window manager and some other smaller details. 

@@ -364,10 +364,5 @@ void Application::loadObjects() {
 
 void Application::setColours() {
 	this->shader->use();
-	this->shader->setVec3("ambientCol", this->objs.at(0).getMaterial().ambientCol);
-	std::cout << this->objs.at(0).getMaterial().ambientCol.x << std::endl;
-	this->shader->setVec3("diffuseCol", this->objs.at(0).getMaterial().diffuseCol);
-	this->shader->setVec3("specCol", this->objs.at(0).getMaterial().specularCol);
-	this->shader->setFloat("transparency", this->objs.at(0).getMaterial().transparency);
-	this->shader->setFloat("specularWeight", this->objs.at(0).getMaterial().specularWeight);
+	this->objs.at(0).assignMaterial(this->shader);
 }
