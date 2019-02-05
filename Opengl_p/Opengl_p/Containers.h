@@ -27,6 +27,7 @@ struct Texture {
 
 };
 
+//Each vertex should contain a tangent and bitangent? Look in deeper to normalmapping
 struct Vertex {
 	glm::vec3 position;
 	glm::vec3 normal;

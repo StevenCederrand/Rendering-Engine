@@ -44,7 +44,11 @@ void Object::calculateTangentBasis() {
 		//Compute tangent and bitangent
 		float r = 1 / (deltaUV0.x * deltaUV1.x - deltaUV0.y * deltaUV1.y);
 		glm::vec3 tangent = (edge0 * deltaUV1.y - edge1 * deltaUV0.y) * r;
+		tangent = glm::normalize(tangent);
+
 		glm::vec3 bitangent = (edge1 * deltaUV0.x - edge0 * deltaUV1.x) * r;
+		bitangent = glm::normalize(bitangent); 
+		
 		//Same tangent for all three positions
 		this->tangents.push_back(tangent);
 		this->tangents.push_back(tangent);
