@@ -52,31 +52,31 @@ public:
 private:
 	void start(); //Exists to reduce duplication
 	void loadObjects();
-	void setColours();
+	void setColours(); 
 	
 //Private data
 private:
+	
 	WND* window;
 	Camera* camera;
 	Shader* shader;
 	Fileloader fileloader;
 
+	std::vector<unsigned int> indices;
+	
 	std::vector<unsigned int> textures;
 	GLuint vertexAttrib = 0;
 	GLuint vertexBuffer = 0;
-	GLuint normalBuffer = 0;
-
 
 	//the world matrix is used as a modelmatrix
 	glm::mat4 worldMatrix = glm::mat4(1.f);
 	glm::mat4 prjMatrix = glm::mat4(1.f);
 
-	Rotations rotations;
 	ValidKeys currentKey;
 
+	//Objects
 	std::vector<Object> objs;
-	int nrOfObjects = 0;
-
+	//Height map
 	std::vector<Object> objMap;
 };
 #endif
