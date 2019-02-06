@@ -21,10 +21,10 @@ public:
 
 	Object readFile(std::string path);
 	std::string getExtension(std::string path);
+	Material loadMaterial(std::string path);
 
 	//Private functions 
 private:  
-	Material loadMaterial(std::string path);
 	glm::vec3 extractVector(std::string line);
 	std::string split(std::string val, const char c);
 	

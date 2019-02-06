@@ -42,16 +42,17 @@ void Fileloader::loadMap(std::string path, int &width, int &height, std::vector<
 	//unsigned char* heightMap = stbi_load(path.c_str(), &width, &height, NULL, 1);
 	stbi_uc *heightMap = stbi_load(path.c_str(), &width, &height, NULL, 1);
 
-	for (int i = 0; i < height; i++)
+	for (int j = 0; j < height; j++)
 	{							
-		for (int j = 0; j < width; j++)
+		for (int i = 0; i < width; i++)
 		{
 			//float elevation = float(heightMap[(i*width + j) * 4]);
 			//float elevations = static_cast<float>(*(heightMap + (i*width + j) * 4));
-			float elevations = static_cast<float>(*(heightMap + (i*width + j)));
+			float elevations = static_cast<float>(*(heightMap + (j*width + i)));
 
-			elevations /= 128;	
+			elevations /= 128.0f;	
 			elevations--;
+			elevations -= 10.0f;
 			elevation.push_back(elevations);
 			//matrix[i][j] = elevation;
 		}

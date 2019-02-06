@@ -114,101 +114,202 @@ void Application::setupGround()
 	int counter = 0;
 	int index = 0;
 	//create a trianglevertex struct of the size, width*height
-	TriangleVertex *triangleVertices = new TriangleVertex[size];
-	 //delete this senare
-	/*
-	for (size_t j = 0; j < height; j++)
-	{
-		for (size_t i = 0; i < width; i++)
-		{
-			index = height * j + i;
-			triangleVertices[index].x = (float)i;
-			triangleVertices[index].y = elevation[counter] /10;//divide by a number so that it looks more "flat"
-			triangleVertices[index].z = (float)j;
-			counter++;
-		}
-	}
-	*/
+	std::vector<TriangleVertex> TVerts;
+
+	//TriangleVertex *triangleVertices = new TriangleVertex[size];
+	TriangleVertex triangleVertices2;
+	
 	Object objMap = Object();
-	Mesh meshMap;
+	Mesh meshMap = Mesh();
 	int position1, position2, position3, position4;
 	glm::vec3 normal1, normal2;
 	std::vector<Vertex> mapPosition;
 	Vertex vert;
-	for (size_t j = 0; j < (height-1); j++)
+	glm::vec2 uV;
+	float height2 = 1.0f / height;
+	float width2 = 1.0f / width;
+	for (size_t j = 0; j < 5; j++) //(height-1); j++)
 	{
-		for (size_t i = 0; i < (width-1); i++)
+		for (size_t i = 0; i <5;i++) //(width-1); i++)
 		{
-			position1 = (height * j) + i;				//upper left			
-			triangleVertices[position1].x = (float)i;
-			triangleVertices[position1].y = elevation[position1] * 0.1f;//divide by a number so that it looks more "flat"
-			triangleVertices[position1].z = (float)j;
+			position1 = (width * j) + i;				//upper left			
+			triangleVertices2.x = (float)i;
+			triangleVertices2.y = elevation[position1] * 0.1f;//divide by a number so that it looks more "flat"
+			triangleVertices2.z = (float)j;
+			TVerts.push_back(triangleVertices2);
 
-			position2 = (height * j) + (i + 1);			//upper right
-			triangleVertices[position2].x = (float)i;
-			triangleVertices[position2].y = elevation[position2] * 0.1f;;//divide by a number so that it looks more "flat"
-			triangleVertices[position2].z = (float)j;
 
-			position3 = (height *(j + 1)) + i;			//bottom left
-			triangleVertices[position3].x = (float)i;
-			triangleVertices[position3].y = elevation[position3] * 0.1f;;//divide by a number so that it looks more "flat"
-			triangleVertices[position3].z = (float)j;
+			position2 = (width * j) + (i + 1);			//upper right
+			triangleVertices2.x = (float)i+1;
+			triangleVertices2.y = elevation[position2] * 0.1f;;//divide by a number so that it looks more "flat"
+			triangleVertices2.z = (float)j;
+			TVerts.push_back(triangleVertices2);
 
-			position4 = (height *(j + 1)) + (i + 1);	//bottom right
-			triangleVertices[position4].x = (float)i;
-			triangleVertices[position4].y = elevation[position4] * 0.1f;;//divide by a number so that it looks more "flat"
-			triangleVertices[position4].z = (float)j;
+			position3 = (width *(j + 1)) + i;			//bottom left
+			triangleVertices2.x = (float)i;
+			triangleVertices2.y = elevation[position3] * 0.1f;;//divide by a number so that it looks more "flat"
+			triangleVertices2.z = (float)j+1;
+			TVerts.push_back(triangleVertices2);
 
-			glm::vec3 firstV = glm::vec3(triangleVertices[position1].x, triangleVertices[position1].y, triangleVertices[position1].z);
-			glm::vec3 secondV = glm::vec3(triangleVertices[position2].x, triangleVertices[position2].y, triangleVertices[position2].z);
+			position4 = (width *(j + 1)) + (i + 1);		//bottom right
+			triangleVertices2.x = (float)i+1;
+			triangleVertices2.y = elevation[position4] * 0.1f;;//divide by a number so that it looks more "flat"
+			triangleVertices2.z = (float)j+1;
+			TVerts.push_back(triangleVertices2);
 
-			glm::vec3 thirdV = glm::vec3(triangleVertices[position3].x, triangleVertices[position3].y, triangleVertices[position3].z);
-			glm::vec3 fourthV = glm::vec3(triangleVertices[position4].x, triangleVertices[position4].y, triangleVertices[position4].z);
+			glm::vec3 firstV = glm::vec3(TVerts.at(counter).x, TVerts.at(counter).y, TVerts.at(counter).z); counter++;
+			glm::vec3 secondV = glm::vec3(TVerts.at(counter).x, TVerts.at(counter).y, TVerts.at(counter).z); counter++;
+
+			glm::vec3 thirdV = glm::vec3(TVerts.at(counter).x, TVerts.at(counter).y, TVerts.at(counter).z); counter++;
+			glm::vec3 fourthV = glm::vec3(TVerts.at(counter).x, TVerts.at(counter).y, TVerts.at(counter).z); counter++;
 
 			normal1 = glm::normalize(glm::cross(firstV-secondV, firstV-thirdV));
 			normal2 = glm::normalize(glm::cross(fourthV-thirdV, fourthV-secondV));
-			//first vertex to first triangle
+			//glm::vec2 uV = glm::vec2(0.333333, 0.666667);
+			//first vertex to first triangle first line 1-2
 			vert.position=(firstV);
 			vert.normal = (normal1);
+			uV = glm::vec2(firstV.x*width2, firstV.z*height2);
+			vert.uv = (uV);
 			mapPosition.push_back(vert);
 
-			//second vertex to first triangle
+			//second vertex to first triangle first line 1-2
 			vert.position = (secondV);
 			vert.normal = (normal1);
+			uV = glm::vec2(secondV.x*width2, secondV.z*height2);
+			vert.uv = (uV);
 			mapPosition.push_back(vert);
 
-			//third vertex to first triangle
+			//second vertex to first triangle second line 2-3
+			vert.position = (secondV);
+			vert.normal = (normal1);
+			uV = glm::vec2(secondV.x*width2, secondV.z*height2);
+			vert.uv = (uV);
+			mapPosition.push_back(vert);
+
+			//third vertex to first triangle second line 2-3
 			vert.position = (thirdV);
 			vert.normal = (normal1);
+			uV = glm::vec2(thirdV.x*width2, thirdV.z*height2);
+			vert.uv = (uV);
 			mapPosition.push_back(vert);
 
-			//first vertex to second triangle
+			//first vertex to first triangle third line 1-3
+			vert.position = (firstV);
+			vert.normal = (normal1);
+			uV = glm::vec2(firstV.x*width2, firstV.z*height2);
+			vert.uv = (uV);
+			mapPosition.push_back(vert);
+
+			//third vertex to first triangle third line 1-3	
+			vert.position = (thirdV);
+			vert.normal = (normal1);
+			uV = glm::vec2(thirdV.x*width2, thirdV.z*height2);
+			vert.uv = (uV);
+			mapPosition.push_back(vert);
+
+			//first vertex to second triangle first line 2-3
 			vert.position = (secondV);
 			vert.normal = (normal2);
+			uV = glm::vec2(secondV.x*width2, secondV.z*height2);
+			vert.uv = (uV);
 			mapPosition.push_back(vert);
 
-			//second vertex to second triangle
+			//second vertex to second triangle first line 2-3
 			vert.position = (thirdV);
 			vert.normal = (normal2);
+			uV = glm::vec2(thirdV.x*width2, thirdV.z*height2);
+			vert.uv = (uV);
 			mapPosition.push_back(vert);
 
-			//third vertex to second triangle
+			//second vertex to second triangle second line 3-4
+			vert.position = (thirdV);
+			vert.normal = (normal2);
+			uV = glm::vec2(thirdV.x*width2, thirdV.z*height2);
+			vert.uv = (uV);
+			mapPosition.push_back(vert);
+
+			//third vertex to second triangle second line 3-4
 			vert.position = (fourthV);
 			vert.normal = (normal2);
+			uV = glm::vec2(fourthV.x*width2, fourthV.z*height2);
+			vert.uv = (uV);
 			mapPosition.push_back(vert);
-		
-			
 
+			//first vertex to second triangle third line 2-4
+			vert.position = (secondV);
+			vert.normal = (normal2);
+			uV = glm::vec2(secondV.x*width2, secondV.z*height2);
+			vert.uv = (uV);
+			mapPosition.push_back(vert);
+
+			//third vertex to second triangle third line 2-4
+			vert.position = (fourthV);
+			vert.normal = (normal2);
+			uV = glm::vec2(fourthV.x*width2, fourthV.z*height2);
+			vert.uv = (uV);
+			mapPosition.push_back(vert);
 		}
 	}
 			//change this!
-			meshMap.verts = mapPosition;
+	meshMap.verts = mapPosition;
 			//setMesh(A Mesh) 
-			objMap.setMesh(meshMap);
+	objMap.setMesh(meshMap);
+	objMap.setMaterial(this->fileloader.loadMaterial(OBJECTSPATH + "ExampleObj.mtl"));														
 				//pusha map
-			this->objs.push_back(objMap);
+	this->objs.push_back(objMap);
 			
-	delete triangleVertices;
+	//delete TVerts;
+
+	this->shader->use();
+	glGenVertexArrays(1, &this->vertexAttrib);
+	glBindVertexArray(this->vertexAttrib);
+	glGenBuffers(1, &this->vertexBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, this->vertexBuffer);
+
+
+	std::vector<Vertex> meshData;
+
+	meshData = objs.at(0).getMesh().verts;
+	int totalSize = meshData.size() * sizeof(Vertex);
+
+	//Load vertices into the buffer
+	glBufferData(GL_ARRAY_BUFFER, totalSize, &meshData[0], GL_STATIC_DRAW);
+
+	//Assign where in memory the positions are located	
+	GLint attribLocation = glGetAttribLocation(this->shader->getShaderID(), "position");
+	if (attribLocation == -1) {
+		std::cout << "ERROR::LOCATING::VERTEX::POS" << std::endl;
+		return;
+	}
+
+	//Set the vertices in the glsl-code
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float)*8, BUFFER_OFFSET(0));
+
+	
+	glEnableVertexAttribArray(0);
+	this->setColours();
+	//Load normals
+	attribLocation = 1; glGetAttribLocation(this->shader->getShaderID(), "normal");
+	if (attribLocation == -1) {
+		std::cout << "ERROR::LOCATING::NORMAL::POS" << std::endl;
+		return;
+	}
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float)*8, BUFFER_OFFSET(sizeof(glm::vec3)));
+	glEnableVertexAttribArray(1);
+	//Load uv's
+	attribLocation = 2;//glGetAttribLocation(this->shader->getShaderID(), "uv");
+	if (attribLocation == -1) {
+		std::cout << "ERROR::LOCATING::UV::POS" << std::endl;
+		return;
+	}
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(float) *8, BUFFER_OFFSET(sizeof(glm::vec3) * 2));
+	glEnableVertexAttribArray(2);
+
+	std::cout << "Helloi" << std::endl;
+	
+
+
 }
 
 
@@ -242,7 +343,8 @@ void Application::setupTextures(unsigned int &texture, std::string name) {
 void Application::update() {
 
 	this->setupShaders();
-	this->setupObjects();
+	this->setupGround();
+	//this->setupObjects();
 
 	for (int i = 0; i < this->objs.at(0).getMaterial().textures.size(); i++ ) {
 		std::cout << this->objs.at(0).getMaterial().textures.at(i).type << std::endl;
@@ -263,7 +365,7 @@ void Application::update() {
 	this->shader->setInt("colorTexture", 0);
 	this->shader->setInt("normalMap", 1);
 
-	this->setupGround();
+	//this->setupGround();
 
 
 	glEnable(GL_DEPTH_TEST);
@@ -314,12 +416,12 @@ void Application::render() {
 	glClearColor(0.1f, 0.1f, 0.1f, 1);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
+	/*
 	for (int i = 0; i < this->textures.size(); i++) {
 		glActiveTexture(GL_TEXTURE0 + i);
 		glBindTexture(GL_TEXTURE_2D, textures.at(i));
-	}
-
+	}*/
+	
 	this->shader->use();
 	glBindVertexArray(this->vertexAttrib);
 
