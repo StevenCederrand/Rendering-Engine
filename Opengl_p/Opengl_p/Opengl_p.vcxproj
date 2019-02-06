@@ -127,6 +127,7 @@
     <ClCompile Include="Fileloader.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="Object.cpp" />
+    <ClCompile Include="ObjectManager.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="WND.cpp" />
@@ -137,6 +138,7 @@
     <ClInclude Include="Containers.h" />
     <ClInclude Include="Fileloader.h" />
     <ClInclude Include="Object.h" />
+    <ClInclude Include="ObjectManager.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="WND.h" />

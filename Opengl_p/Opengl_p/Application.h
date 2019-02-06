@@ -6,8 +6,6 @@
 #ifndef APPLICATION_h
 #define APPLICATION_h
 
-#define BUFFER_OFFSET(i) ((char *)nullptr + (i))
-
 #pragma region Local_Includes
 #include "WND.h" //GLFW handler
 #include "Containers.h"
@@ -16,6 +14,7 @@
 #include "Camera.h"
 #include "Object.h"	//Contains basic 3D object class
 #include "Shader.h"
+#include "ObjectManager.h"
 #pragma endregion
 
 #pragma region Default_Includes 
@@ -52,31 +51,33 @@ public:
 private:
 	void start(); //Exists to reduce duplication
 	void loadObjects();
-	void setColours();
+	void setColours(); 
 	
 //Private data
 private:
+	
 	WND* window;
 	Camera* camera;
 	Shader* shader;
 	Fileloader fileloader;
 
+	std::vector<unsigned int> indices;
+	
 	std::vector<unsigned int> textures;
 	GLuint vertexAttrib = 0;
 	GLuint vertexBuffer = 0;
-	GLuint normalBuffer = 0;
-
 
 	//the world matrix is used as a modelmatrix
 	glm::mat4 worldMatrix = glm::mat4(1.f);
 	glm::mat4 prjMatrix = glm::mat4(1.f);
 
-	Rotations rotations;
 	ValidKeys currentKey;
+	
+	ObjectManager* objectManager;
 
+	//Objects
 	std::vector<Object> objs;
-	int nrOfObjects = 0;
-
+	//Height map
 	std::vector<Object> objMap;
 };
 #endif
