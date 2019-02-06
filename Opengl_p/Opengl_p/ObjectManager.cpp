@@ -24,8 +24,8 @@ void ObjectManager::loadObject(std::string path, std::string name) {
 
 void ObjectManager::loadMap(std::string path)
 {
-//	Object obj = loader->loadMap(OBJECTSPATH+path, );
-//	this->objects.push_back(obj);
+	Object obj = loader->loadMap(OBJECTSPATH+path);
+	this->objects.push_back(obj);
 }
 
 void ObjectManager::setupObjects(Shader * shader) {

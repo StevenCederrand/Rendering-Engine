@@ -17,7 +17,7 @@ public:
 	Fileloader();
 	~Fileloader();
 
-	void loadMap(std::string path, int &width, int &height, std::vector<float> &elevation);
+	Object loadMap(std::string path);
 
 	Object readFile(std::string path);
 	std::string getExtension(std::string path);

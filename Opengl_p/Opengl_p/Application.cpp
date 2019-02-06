@@ -77,6 +77,8 @@ void Application::setupObjects() {
 
 void Application::setupGround()
 {
+	this->objectManager->loadMap("HeightMap2.PNG");
+	/*
 	struct TriangleVertex{float x, y, z;};
 	std::vector<float> elevation;
 	int width = 0;
@@ -233,7 +235,7 @@ void Application::setupGround()
 	this->objs.push_back(objMap);
 			
 	//delete TVerts;
-
+	/*
 	this->shader->use();
 	glGenVertexArrays(1, &this->vertexAttrib);
 	glBindVertexArray(this->vertexAttrib);
@@ -281,7 +283,7 @@ void Application::setupGround()
 
 	std::cout << "Helloi" << std::endl;
 	
-
+	*/
 
 }
 
@@ -316,8 +318,8 @@ void Application::setupTextures(unsigned int &texture, std::string name) {
 void Application::update() {
 
 	this->setupShaders();
-	//this->setupGround();
-	this->setupObjects();
+	this->setupGround();
+	//this->setupObjects();
 
 	for (int i = 0; i < this->objs.at(0).getMaterial().textures.size(); i++ ) {
 		std::cout << this->objs.at(0).getMaterial().textures.at(i).type << std::endl;
