@@ -23,7 +23,7 @@ out vec4 fragment_color;
 
 vec3 rgb_normal = texture(normalMap, uvs).rgb;
 vec3 lightPos = vec3(0, 2, 5);
-float lightStr = 10f;
+float lightStr = 10.0f;
 vec3 lightCol = vec3(1, 1, 1);
 
 vec4 phong(vec3 normal, vec3 diffCol) {

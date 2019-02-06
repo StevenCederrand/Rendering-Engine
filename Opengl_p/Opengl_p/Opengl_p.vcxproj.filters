@@ -85,5 +85,8 @@
     <None Include="..\..\Shader\vShader.glsl">
       <Filter>Shader</Filter>
     </None>
+    <None Include="gShader.glsl">
+      <Filter>Shader</Filter>
+    </None>
   </ItemGroup>
 </Project>

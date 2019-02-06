@@ -318,8 +318,8 @@ void Application::setupTextures(unsigned int &texture, std::string name) {
 void Application::update() {
 
 	this->setupShaders();
-	this->setupGround();
-	//this->setupObjects();
+	//this->setupGround();
+	this->setupObjects();
 
 	for (int i = 0; i < this->objs.at(0).getMaterial().textures.size(); i++ ) {
 		std::cout << this->objs.at(0).getMaterial().textures.at(i).type << std::endl;
@@ -341,7 +341,7 @@ void Application::update() {
 	this->shader->setInt("normalMap", 1);
 
 
-	this->setColours();
+	//this->setColours();
 	//this->setupGround();
 
 
