@@ -6,8 +6,6 @@
 #ifndef APPLICATION_h
 #define APPLICATION_h
 
-#define BUFFER_OFFSET(i) ((char *)nullptr + (i))
-
 #pragma region Local_Includes
 #include "WND.h" //GLFW handler
 #include "Containers.h"
@@ -16,6 +14,7 @@
 #include "Camera.h"
 #include "Object.h"	//Contains basic 3D object class
 #include "Shader.h"
+#include "ObjectManager.h"
 #pragma endregion
 
 #pragma region Default_Includes 
@@ -73,6 +72,8 @@ private:
 	glm::mat4 prjMatrix = glm::mat4(1.f);
 
 	ValidKeys currentKey;
+	
+	ObjectManager* objectManager;
 
 	//Objects
 	std::vector<Object> objs;

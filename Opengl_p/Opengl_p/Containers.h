@@ -6,11 +6,15 @@ Simple container file. Used to contain general enums that may be/are used in the
 
 #ifndef	CONTAINERS_h
 #define CONTAINERS_h
+#define BUFFER_OFFSET(i) ((char *)nullptr + (i))
+
 #include <string>
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm\glm.hpp>
 #include <glm\gtx\transform.hpp>
 #include <vector>
+
+
 const std::string OBJECTSPATH = "..\\..\\Objects\\";
 const std::string SHADERPATH = "..\\..\\Shader\\";
 

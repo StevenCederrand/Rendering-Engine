@@ -18,6 +18,8 @@ Application::Application(int WNDW, int WNDH) {
 
 	this->window = new WND(WNDW, WNDH);
 	this->window->start();
+	this->objectManager = new ObjectManager();
+
 }
 
 Application::~Application() {
@@ -59,7 +61,6 @@ void Application::setupObjects() {
 	glBindVertexArray(this->vertexAttrib);
 	glGenBuffers(1, &this->vertexBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, this->vertexBuffer);
-
 	
 	std::vector<Vertex> meshData;
 
@@ -69,35 +70,8 @@ void Application::setupObjects() {
 
 	//Load vertices into the buffer
 	glBufferData(GL_ARRAY_BUFFER, totalSize, &meshData[0], GL_STATIC_DRAW);
-	
-	//Assign where in memory the positions are located	
-	GLint attribLocation = glGetAttribLocation(this->shader->getShaderID(), "position");
-	if (attribLocation == -1) {
-		std::cout << "ERROR::LOCATING::VERTEX::POS" << std::endl;
-		return;
-	}
-	
-	//Set the vertices in the glsl-code
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, BUFFER_OFFSET(0));
-	glEnableVertexAttribArray(attribLocation);
-	//Load normals
-	attribLocation = 1; glGetAttribLocation(this->shader->getShaderID(), "normal");
-	if (attribLocation == -1) {
-		std::cout << "ERROR::LOCATING::NORMAL::POS" << std::endl;
-		return;
-	}
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, BUFFER_OFFSET(sizeof(glm::vec3)));
-	glEnableVertexAttribArray(attribLocation);
 
-	//Load uv's
-	attribLocation = 2;//glGetAttribLocation(this->shader->getShaderID(), "uv");
-	if (attribLocation == -1) {
-		std::cout << "ERROR::LOCATING::UV::POS" << std::endl;
-		return;
-	}
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 8, BUFFER_OFFSET(sizeof(float) * 6));
-	glEnableVertexAttribArray(attribLocation);
-
+	this->objectManager->setupObjects(this->shader);
 }
 
 
@@ -344,6 +318,9 @@ void Application::cameraHandler() {
 }
 
 void Application::loadObjects() {
+	this->objectManager->loadObject("ExampleOBJ.obj");
+
+
 	//Observe the time it takes to load all of the objects
 	std::chrono::high_resolution_clock timer;
 	auto start = timer.now();

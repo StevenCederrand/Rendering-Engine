@@ -2,10 +2,8 @@
 #define OBJECT_h
 
 #include "Containers.h"
-#include "Shader.h"
-
 #include <vector>
-
+#include "Shader.h"
 //3D Object class
 class Object {
 public:
