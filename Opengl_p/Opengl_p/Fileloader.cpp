@@ -34,65 +34,58 @@ std::string Fileloader::getExtension(std::string path) {
 }
 
 
-//void Fileloader::loadMap(std::string path, int width, int height, int bpp, int cpp)
 Object Fileloader::loadMap(std::string path)
 {
-	//unsigned char* heightMap = stbi_load(path.c_str(), &width, &height, &bpp, cpp);
-	//unsigned char* heightMap = stbi_load(path.c_str(), &width, &height, NULL, 1);
+	// here we load the map
 	int width;
 	int height;
 	std::vector<float> elevation;
 	stbi_uc *heightMap = stbi_load(path.c_str(), &width, &height, NULL, 1);
-
+	width /= 20;
+	height /= 20;
 	for (int j = 0; j < height; j++)
 	{
 		for (int i = 0; i < width; i++)
 		{
-			//float elevation = float(heightMap[(i*width + j) * 4]);
-			//float elevations = static_cast<float>(*(heightMap + (i*width + j) * 4));
-			float elevations = static_cast<float>(*(heightMap + (j*width + i)));
-
-			elevations /= 128.0f;
-			elevations--;
-			elevations -= 10.0f;
+			//go along the width, height times so that we get all the elevations from the picture
+			float elevations = float(heightMap[(j*width + i)]);
+	
+			elevations /= 32.0f;
 			elevation.push_back(elevations);
-			//matrix[i][j] = elevation;
 
 		}
 	}
 
-
+	stbi_image_free(heightMap);
 
 	struct TriangleVertex { float x, y, z; };
-	//fileloader.loadMap(OBJECTSPATH + "HeightMap2.PNG", width, height, elevation);
-
 	int size = width * height;
 	int counter = 0;
 	int index = 0;
 	//create a trianglevertex vector
-	std::vector<TriangleVertex> TVerts;
 	//TriangleVertex *triangleVertices = new TriangleVertex[size];
 	TriangleVertex triangleVertices2;
+	std::vector<TriangleVertex> TVerts;
 
 	Object objMap = Object();
 	Mesh meshMap = Mesh();
-	int position1, position2, position3, position4;
-	glm::vec3 normal1, normal2;
 	std::vector<Vertex> mapPosition;
 	Vertex vert;
+
+	glm::vec3 normal1, normal2;
 	glm::vec2 uV;
+	int position1, position2, position3, position4;
 	float height2 = 1.0f / height;
 	float width2 = 1.0f / width;
-	for (size_t j = 0; j < 5; j++) //(height-1); j++)
+	for (size_t j = 0; j < (height-1); j++)
 	{
-		for (size_t i = 0; i < 5; i++) //(width-1); i++)
+		for (size_t i = 0; i < (width-1); i++)
 		{
 			position1 = (width * j) + i;				//upper left			
 			triangleVertices2.x = (float)i;
 			triangleVertices2.y = elevation[position1] * 0.1f;//divide by a number so that it looks more "flat"
 			triangleVertices2.z = (float)j;
 			TVerts.push_back(triangleVertices2);
-
 
 			position2 = (width * j) + (i + 1);			//upper right
 			triangleVertices2.x = (float)i + 1;
@@ -118,8 +111,8 @@ Object Fileloader::loadMap(std::string path)
 			glm::vec3 thirdV = glm::vec3(TVerts.at(counter).x, TVerts.at(counter).y, TVerts.at(counter).z); counter++;
 			glm::vec3 fourthV = glm::vec3(TVerts.at(counter).x, TVerts.at(counter).y, TVerts.at(counter).z); counter++;
 
-			normal1 = glm::normalize(glm::cross(firstV - secondV, firstV - thirdV));
-			normal2 = glm::normalize(glm::cross(fourthV - thirdV, fourthV - secondV));
+			normal1 = -(glm::normalize(glm::cross(firstV - secondV, firstV - thirdV)));
+			normal2 = -(glm::normalize(glm::cross(fourthV - thirdV, fourthV - secondV)));
 			//glm::vec2 uV = glm::vec2(0.333333, 0.666667);
 			//first vertex to first triangle first line 1-2
 			vert.position = (firstV);
@@ -128,6 +121,10 @@ Object Fileloader::loadMap(std::string path)
 			vert.uv = (uV);
 			mapPosition.push_back(vert);
 
+			objMap.v.push_back(firstV);
+			objMap.n.push_back(normal1);
+			objMap.uv.push_back(uV);
+
 			//second vertex to first triangle first line 1-2
 			vert.position = (secondV);
 			vert.normal = (normal1);
@@ -135,12 +132,20 @@ Object Fileloader::loadMap(std::string path)
 			vert.uv = (uV);
 			mapPosition.push_back(vert);
 
+			objMap.v.push_back(secondV);
+			objMap.n.push_back(normal1);
+			objMap.uv.push_back(uV);
+			/*
 			//second vertex to first triangle second line 2-3
 			vert.position = (secondV);
 			vert.normal = (normal1);
 			uV = glm::vec2(secondV.x*width2, secondV.z*height2);
 			vert.uv = (uV);
 			mapPosition.push_back(vert);
+
+			objMap.v.push_back(secondV);
+			objMap.n.push_back(normal1);
+			objMap.uv.push_back(uV);
 
 			//third vertex to first triangle second line 2-3
 			vert.position = (thirdV);
@@ -149,6 +154,8 @@ Object Fileloader::loadMap(std::string path)
 			vert.uv = (uV);
 			mapPosition.push_back(vert);
 
+			objMap.v.push_back(thirdV);
+
 			//first vertex to first triangle third line 1-3
 			vert.position = (firstV);
 			vert.normal = (normal1);
@@ -156,12 +163,22 @@ Object Fileloader::loadMap(std::string path)
 			vert.uv = (uV);
 			mapPosition.push_back(vert);
 
+			objMap.v.push_back(firstV);
+			objMap.n.push_back(normal1);
+			objMap.uv.push_back(uV);
+
+			*/
 			//third vertex to first triangle third line 1-3	
 			vert.position = (thirdV);
 			vert.normal = (normal1);
 			uV = glm::vec2(thirdV.x*width2, thirdV.z*height2);
 			vert.uv = (uV);
 			mapPosition.push_back(vert);
+
+			objMap.v.push_back(thirdV);
+			objMap.n.push_back(normal1);
+			objMap.uv.push_back(uV);
+
 
 			//first vertex to second triangle first line 2-3
 			vert.position = (secondV);
@@ -170,12 +187,22 @@ Object Fileloader::loadMap(std::string path)
 			vert.uv = (uV);
 			mapPosition.push_back(vert);
 
+			objMap.v.push_back(secondV);
+			objMap.n.push_back(normal2);
+			objMap.uv.push_back(uV);
+
 			//second vertex to second triangle first line 2-3
 			vert.position = (thirdV);
 			vert.normal = (normal2);
 			uV = glm::vec2(thirdV.x*width2, thirdV.z*height2);
 			vert.uv = (uV);
 			mapPosition.push_back(vert);
+
+			objMap.v.push_back(thirdV);
+			objMap.n.push_back(normal2);
+			objMap.uv.push_back(uV);
+
+			/*
 
 			//second vertex to second triangle second line 3-4
 			vert.position = (thirdV);
@@ -184,12 +211,22 @@ Object Fileloader::loadMap(std::string path)
 			vert.uv = (uV);
 			mapPosition.push_back(vert);
 
+			objMap.v.push_back(thirdV);
+			objMap.n.push_back(normal2);
+			objMap.uv.push_back(uV);
+
+
 			//third vertex to second triangle second line 3-4
 			vert.position = (fourthV);
 			vert.normal = (normal2);
 			uV = glm::vec2(fourthV.x*width2, fourthV.z*height2);
 			vert.uv = (uV);
 			mapPosition.push_back(vert);
+
+			objMap.v.push_back(fourthV);
+			objMap.n.push_back(normal2);
+			objMap.uv.push_back(uV);
+
 
 			//first vertex to second triangle third line 2-4
 			vert.position = (secondV);
@@ -198,30 +235,30 @@ Object Fileloader::loadMap(std::string path)
 			vert.uv = (uV);
 			mapPosition.push_back(vert);
 
+			objMap.v.push_back(secondV);
+			objMap.n.push_back(normal2);
+			objMap.uv.push_back(uV);
+			*/
+
 			//third vertex to second triangle third line 2-4
 			vert.position = (fourthV);
 			vert.normal = (normal2);
 			uV = glm::vec2(fourthV.x*width2, fourthV.z*height2);
 			vert.uv = (uV);
 			mapPosition.push_back(vert);
+
+			objMap.v.push_back(fourthV);
+			objMap.n.push_back(normal2);
+			objMap.uv.push_back(uV);
+
 		}
 	}
-	//change this!
 			
 	meshMap.verts = mapPosition;
-	//setMesh(A Mesh) 
 	objMap.setMesh(meshMap);
 	objMap.setMaterial(loadMaterial(OBJECTSPATH + "ExampleObj.mtl"));
-	//pusha map
-			
-
-
-
-
 		
 	return objMap;
-
-	
 }
 
 

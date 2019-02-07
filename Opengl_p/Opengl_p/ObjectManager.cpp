@@ -37,7 +37,7 @@ void ObjectManager::setupObjects(Shader * shader) {
 	}
 
 	//Set the vertices in the glsl-code
-	glVertexAttribPointer(attributeLocation, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, BUFFER_OFFSET(0));
+	glVertexAttribPointer(attributeLocation, 3, GL_FLOAT, GL_FALSE, sizeof(float)*8, BUFFER_OFFSET(0));
 	glEnableVertexAttribArray(0);
 
 	//Load normals
