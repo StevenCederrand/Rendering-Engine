@@ -21,20 +21,16 @@ glm::vec3 etc.
 - [ ] Normal Mapping - Steven
 - [ ] Shadow Mapping - Ludwig 
 - [ ] Front and Back Rendering - Ludwig
-- [x] Back Face Culling in GS - Steven //Allt som vi behöver göra är 
-att 
-inte emitta de faces som är vänd från kameran. Dvs. att vi använder ej 
-emitvertex och emit primitive. 
+- [x] Back Face Culling in GS - Steven 
+>This was a very simple problem to be honest. What I did to solve this 
+was to send 3 vertices to the geometry shader. Then I took the normal 
+for these two points. Then check to see that the dot product between 
+the cameratovertex([i]) and the normal is > 0. If it is then we render 
+the emit the vertex/primitive. Otherwise we skip emitting the 
+primitive. NOTE! Although this is marked as done there is a weird glitch 
+with the floor. Which has to be solved before we show this to Francisco!
 - [ ] Billboarded Particles - Steven
 - [ ] Glow Effect - Ludwig
-
-
-2019-02-05
-To do list for week 6. 
-- [ ] Implement some form of indexing
-- [ ] Complete normal mapping -- Working on tangent space
-- [ ] Height Mapping?
-- [ ] 
 
 
 

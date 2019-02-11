@@ -28,7 +28,7 @@ vec3 getNormal() {
 	vec4 edge1 = vertices[1] - vertices[0];
 	vec4 edge2 = vertices[2] - vertices[0];
 	
-	vec3 normal = (cross(vec3(edge1), vec3(edge2)));
+	vec3 normal = normalize(cross(vec3(edge1), vec3(edge2)));
 
 	return normal;
 }
@@ -40,7 +40,7 @@ void culling() {
 	for(int i = 0; i < 3 && emit; i++) {
 		//this vertex is in projection space
 		vertex = prjMatrix * viewMatrix * worldMatrix * vec4(geom_data[i].position, 1);
-		vec3 camToSurface = vec3(vertex) - cameraPosition;
+		vec3 camToSurface = normalize(vec3(vertex) - cameraPosition);
 		if(dot(camToSurface, getNormal()) <= 0) {
 			emit = false;
 		}

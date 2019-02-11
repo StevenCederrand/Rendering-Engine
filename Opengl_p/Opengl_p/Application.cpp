@@ -127,8 +127,8 @@ void Application::setupTextures(unsigned int &texture, std::string name) {
 void Application::update() {
 
 	this->setupShaders();
-	//this->setupGround();
-	this->setupObjects();
+	this->setupGround();
+	//this->setupObjects();
 
 
 	for (int i = 0; i < 2; i++) {
