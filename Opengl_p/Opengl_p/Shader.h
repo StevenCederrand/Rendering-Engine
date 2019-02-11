@@ -12,6 +12,8 @@ class Shader {
 public:
 	//Input vertex path & fragment path
 	Shader(std::string vPath, std::string fPath);
+	//When we have a geometry shader
+	Shader(std::string vPath, std::string gPath, std::string fPath);
 	~Shader();
 
 	void use();

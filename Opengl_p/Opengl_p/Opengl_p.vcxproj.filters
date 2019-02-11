@@ -85,7 +85,16 @@
     <None Include="..\..\Shader\vShader.glsl">
       <Filter>Shader</Filter>
     </None>
-    <None Include="gShader.glsl">
+    <None Include="..\..\Shader\gShader.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="..\..\Shader\tempFShader.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="..\..\Shader\tempGShader.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="..\..\Shader\tempVShader.glsl">
       <Filter>Shader</Filter>
     </None>
   </ItemGroup>

@@ -145,8 +145,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Shader\fShader.glsl" />
+    <None Include="..\..\Shader\gShader.glsl" />
+    <None Include="..\..\Shader\tempFShader.glsl" />
+    <None Include="..\..\Shader\tempGShader.glsl" />
+    <None Include="..\..\Shader\tempVShader.glsl" />
     <None Include="..\..\Shader\vShader.glsl" />
-    <None Include="gShader.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
