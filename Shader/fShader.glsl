@@ -64,4 +64,5 @@ void main() {
 
 	fragment_color = vec4(1);//phong(normalize(normalText * 0.5 + 0.5), diffText);
 
+
 }

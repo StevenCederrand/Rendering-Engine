@@ -130,8 +130,7 @@ void Application::update() {
 	//this->setupGround();
 	this->setupObjects();
 
-	/*
-	*/
+
 	for (int i = 0; i < 2; i++) {
 		unsigned int tex;
 		if (i == 0) {
