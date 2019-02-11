@@ -23,6 +23,8 @@ public:
 	std::string getExtension(std::string path);
 	Material loadMaterial(std::string path);
 
+	float getElevation(glm::vec3 position);
+
 	//Private functions 
 private:  
 	glm::vec3 extractVector(std::string line);
@@ -40,6 +42,10 @@ private:
 	//Private variables
 private:
 	std::vector<std::string> validFiletypes;
+	std::vector<float> elevation;
+	int width;
+	int height;
+
 };
 
 

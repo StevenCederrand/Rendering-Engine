@@ -98,7 +98,6 @@ void Application::setupGround()
 	
 }
 
-
 void Application::setupTextures(unsigned int &texture, std::string name) {
 
 	glGenTextures(1, &texture);
@@ -148,9 +147,7 @@ void Application::update() {
 
 	this->shader->setInt("colorTexture", 0);
 	this->shader->setInt("normalMap", 1);
-	/*
-	*/
-	
+
 	glEnable(GL_DEPTH_TEST);
 	
 	glDepthFunc(GL_LESS);
@@ -217,7 +214,9 @@ void Application::cameraHandler() {
 	this->camera->update();
 
 	if (this->currentKey != ValidKeys::DUMMY) {
-		camera->handleKeys(this->currentKey);
+		glm::vec3 cameraPos = camera->getCameraPosition();
+		float yValue = objectManager->getElevation(cameraPos);
+		camera->handleKeys(this->currentKey, yValue);
 	}
 		
 	this->currentKey = ValidKeys::DUMMY;
