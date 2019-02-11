@@ -58,3 +58,8 @@ void ObjectManager::setupObjects(Shader * shader) {
 	glVertexAttribPointer(attributeLocation, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 8, BUFFER_OFFSET(sizeof(float) * 6));
 	glEnableVertexAttribArray(attributeLocation);
 }
+
+float ObjectManager::getElevation(glm::vec3 position)
+{
+	return loader->getElevation(position);
+}

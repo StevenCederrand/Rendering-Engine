@@ -30,7 +30,7 @@ void Camera::resetCamera(glm::vec3 eye, glm::vec3 center, glm::vec3 up) {
 }
 
 
-void Camera::handleKeys(ValidKeys currentKey) {
+void Camera::handleKeys(ValidKeys currentKey, float yPos) {
 	if (currentKey == ValidKeys::W) {
 		this->cameraPosition += this->cameraSpeed * this->cameraFront;
 	}
@@ -43,7 +43,9 @@ void Camera::handleKeys(ValidKeys currentKey) {
 	else if (currentKey == ValidKeys::D) {
 		this->cameraPosition -= glm::normalize(glm::cross(this->cameraUp, this->cameraFront))*this->cameraSpeed;
 	}
-
+	glm::vec3 temp = this->cameraPosition;
+	temp.y= yPos;
+	cameraPosition.y = yPos+1;
 	this->viewMatrix = glm::lookAt(this->cameraPosition, this->cameraPosition + this->cameraFront, this->cameraUp);
 }
 

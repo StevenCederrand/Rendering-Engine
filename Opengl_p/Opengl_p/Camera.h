@@ -17,7 +17,7 @@ public:
 	glm::mat4 getViewMatrix() const;
 	
 	//Handle key presses
-	void handleKeys(ValidKeys currentKey);
+	void handleKeys(ValidKeys currentKey, float yPos);
 	
 	glm::vec3 getCameraPosition() const;
 	glm::vec3 getCameraUp() const;

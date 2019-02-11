@@ -19,6 +19,8 @@ public:
 
 	void setupObjects(Shader* shader);
 
+	float getElevation(glm::vec3 position);
+
 private:
 	std::vector<Object> objects;
 	Fileloader* loader;
