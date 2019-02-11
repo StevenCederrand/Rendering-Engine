@@ -41,8 +41,8 @@ Object Fileloader::loadMap(std::string path)
 	int height;
 	std::vector<float> elevation;
 	stbi_uc *heightMap = stbi_load(path.c_str(), &width, &height, NULL, 1);
-	width /= 20;
-	height /= 20;
+	//width /= 20;
+	//height /= 20;
 	for (int j = 0; j < height; j++)
 	{
 		for (int i = 0; i < width; i++)

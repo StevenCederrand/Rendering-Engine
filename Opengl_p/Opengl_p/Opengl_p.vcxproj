@@ -22,7 +22,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{4507C901-E787-4507-A522-8439B94BA53F}</ProjectGuid>
     <RootNamespace>Openglp</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -145,8 +145,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Shader\fShader.glsl" />
+    <None Include="..\..\Shader\gShader.glsl" />
+    <None Include="..\..\Shader\tempFShader.glsl" />
+    <None Include="..\..\Shader\tempGShader.glsl" />
+    <None Include="..\..\Shader\tempVShader.glsl" />
     <None Include="..\..\Shader\vShader.glsl" />
-    <None Include="gShader.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

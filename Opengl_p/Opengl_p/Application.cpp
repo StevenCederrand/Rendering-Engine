@@ -47,7 +47,8 @@ void Application::start() {
 }
 
 void Application::setupShaders() {
-	this->shader = new Shader(SHADERPATH + "vShader.glsl", SHADERPATH + "fShader.glsl");
+	this->shader = new Shader(SHADERPATH + "tempVShader.glsl", SHADERPATH + "tempGShader.glsl" ,SHADERPATH + "tempFShader.glsl");
+	//this->shader = new Shader(SHADERPATH + "vShader.glsl", SHADERPATH + "fShader.glsl");
 }
 
 void Application::setupObjects() {
@@ -65,7 +66,7 @@ void Application::setupObjects() {
 	std::vector<Vertex> meshData;
 	this->objs = this->objectManager->getObjects();
 	meshData = objs.at(0).getMesh().verts;
-	
+
 	int totalSize = meshData.size() * sizeof(Vertex);
 
 	//Load vertices into the buffer
@@ -113,10 +114,9 @@ void Application::setupTextures(unsigned int &texture, std::string name) {
 	unsigned char *data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
 
 	if (data) {
-		std::cout << "FOUND TEXTURE" << std::endl;
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-		std::cout << "Generated mipmap" << std::endl;
 		glGenerateMipmap(GL_TEXTURE_2D);
+		std::cout << "GENERATED::TEXTURE" << std::endl;
 	}
 	else {
 		std::cout << "ERROR::LOADING::TEXTURE" << std::endl;
@@ -131,11 +131,8 @@ void Application::update() {
 	this->setupGround();
 	//this->setupObjects();
 
-	
-	for (int i = 0; i < this->objs.at(0).getMaterial().textures.size(); i++ ) {
-		std::cout << this->objs.at(0).getMaterial().textures.at(i).type << std::endl;
-	}
-	
+	/*
+	*/
 	for (int i = 0; i < 2; i++) {
 		unsigned int tex;
 		if (i == 0) {
@@ -148,15 +145,12 @@ void Application::update() {
 	}
 	
 	this->shader->use();
+
 	this->shader->setInt("colorTexture", 0);
 	this->shader->setInt("normalMap", 1);
-
-
-	//this->setColours();
-	//this->setupGround();
-
-
-
+	/*
+	*/
+	
 	glEnable(GL_DEPTH_TEST);
 	
 	glDepthFunc(GL_LESS);
@@ -186,11 +180,10 @@ void Application::update() {
 		//Camera function 
 		this->cameraHandler();
 		this->shader->setVec3("cameraPos", this->camera->getCameraPosition());
-		this->shader->setVec3("camFront", this->camera->getCameraFront());
 
 		//Render the VAO with the loaded shader
 		this->render();
-	
+
 		stop = timer.now();
 		//Deltatime in ms
 		std::chrono::duration<double> dt = std::chrono::high_resolution_clock::now() - frameTime;
@@ -206,16 +199,16 @@ void Application::render() {
 	glClearColor(0.1f, 0.1f, 0.1f, 1);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	/*
+	
 	for (int i = 0; i < this->textures.size(); i++) {
 		glActiveTexture(GL_TEXTURE0 + i);
 		glBindTexture(GL_TEXTURE_2D, textures.at(i));
-	}*/
+	}
 	
 	this->shader->use();
 	glBindVertexArray(this->vertexAttrib);
 
-	glDrawArrays(GL_TRIANGLES, 0, this->objs.at(0).getMesh().verts.size());
+	glDrawArrays(GL_TRIANGLES, 0, this->objectManager->getObjects().at(0).getMesh().verts.size());
 }
 
 //Have this be in an object class
@@ -226,7 +219,7 @@ void Application::cameraHandler() {
 	if (this->currentKey != ValidKeys::DUMMY) {
 		camera->handleKeys(this->currentKey);
 	}
-
+		
 	this->currentKey = ValidKeys::DUMMY;
 
 	this->shader->setMat4("worldMatrix", this->worldMatrix);

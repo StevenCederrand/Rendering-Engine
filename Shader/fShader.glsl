@@ -16,16 +16,15 @@ in vec3 normals;
 in vec2 uvs;
 in vec3 fragPos;
 in vec3 camPos;
-in vec3 cameraLook;
 
 out vec4 fragment_color;
 
 
 vec3 rgb_normal = texture(normalMap, uvs).rgb;
 vec3 lightPos = vec3(0, 2, 5);
-float lightStr = 10.0f;
+float lightStr = 0.5f;
 vec3 lightCol = vec3(1, 1, 1);
-
+/*
 vec4 phong(vec3 normal, vec3 diffCol) {
 	vec4 result = vec4(0, 0, 0, 1);
 	normal = normalize(normal * 2 - 1);
@@ -40,7 +39,7 @@ vec4 phong(vec3 normal, vec3 diffCol) {
 	vec3 diffuse = lightStr * diffCol * surNormAngl * heavyDiff;
 
 	//Specular
-	vec3 temp = camPos * cameraLook;
+	vec3 temp = camPos;
 	vec3 viewDir = normalize((camPos) - fragPos);
 	//viewDir = cross(viewDir, cameraLook);
 	vec3 reflection = reflect(-posToLight, normal);
@@ -52,22 +51,17 @@ vec4 phong(vec3 normal, vec3 diffCol) {
 
 	}
 
-	result.rgb = specular;
-	//ambient + diffuse + 
+	result.rgb = ambient + diffuse + specular;
+	
 	return result;
 }
 
-void main() {
 
-	// * texture(colorTexture, uvs).rgb;//diffuse() + texture(colorTexture, uvs).rgb;;//(ambience() + diffuse()) * texture(colorTexture, uvs).rgb; //(ambience() + diffuse() + specular()) * vec3(texture(colorTexture, uvs));
-	//vec4 res = texture(normalMap, uvs);
+*/
+void main() {
 	vec3 normalText = texture(normalMap, uvs).rgb;
 	vec3 diffText = texture(colorTexture, uvs).rgb;
 
-	fragment_color = phong(normalize(normalText * 0.5 + 0.5), diffText);
+	fragment_color = vec4(1);//phong(normalize(normalText * 0.5 + 0.5), diffText);
 
-	//vec3 result = (ambience() + diffuse() + specular());// * texture(colorTexture, uvs).rgb;//diffuse() + texture(colorTexture, uvs).rgb;;//(ambience() + diffuse()) * texture(colorTexture, uvs).rgb; //(ambience() + diffuse() + specular()) * vec3(texture(colorTexture, uvs));
-	//vec4 res = texture(normalMap, uvs);
-	//fragment_color = vec4(result, texture(colorTexture, uvs).a);
-	fragment_color = vec4(1, 1, 1, 1);
 }
