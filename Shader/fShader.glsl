@@ -69,5 +69,5 @@ void main() {
 	//vec3 result = (ambience() + diffuse() + specular());// * texture(colorTexture, uvs).rgb;//diffuse() + texture(colorTexture, uvs).rgb;;//(ambience() + diffuse()) * texture(colorTexture, uvs).rgb; //(ambience() + diffuse() + specular()) * vec3(texture(colorTexture, uvs));
 	//vec4 res = texture(normalMap, uvs);
 	//fragment_color = vec4(result, texture(colorTexture, uvs).a);
-	fragment_color = vec4(1, 1, 1, 1);
+	//fragment_color = vec4(1, 1, 1, 1);
 }

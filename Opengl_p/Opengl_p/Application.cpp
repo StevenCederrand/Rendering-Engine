@@ -129,7 +129,6 @@ void Application::update() {
 	this->setupShaders();
 	this->setupGround();
 	//this->setupObjects();
-
 	
 	for (int i = 0; i < this->objs.at(0).getMaterial().textures.size(); i++ ) {
 		std::cout << this->objs.at(0).getMaterial().textures.at(i).type << std::endl;
@@ -203,11 +202,11 @@ void Application::render() {
 	glClearColor(0.1f, 0.1f, 0.1f, 1);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	/*
+	
 	for (int i = 0; i < this->textures.size(); i++) {
 		glActiveTexture(GL_TEXTURE0 + i);
 		glBindTexture(GL_TEXTURE_2D, textures.at(i));
-	}*/
+	}
 	
 	this->shader->use();
 	glBindVertexArray(this->vertexAttrib);

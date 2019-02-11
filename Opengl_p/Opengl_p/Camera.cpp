@@ -43,6 +43,16 @@ void Camera::handleKeys(ValidKeys currentKey, float yPos) {
 	else if (currentKey == ValidKeys::D) {
 		this->cameraPosition -= glm::normalize(glm::cross(this->cameraUp, this->cameraFront))*this->cameraSpeed;
 	}
+	else if (currentKey == ValidKeys::Q) {
+		if(this->cameraSpeed==0.05f)
+		{
+			this->cameraSpeed = 0.5f;
+		}
+		else if (this->cameraSpeed == 0.5f)
+		{
+			this->cameraSpeed = 0.05f;
+		}
+	}
 	glm::vec3 temp = this->cameraPosition;
 	temp.y= yPos;
 	cameraPosition.y = yPos+1;

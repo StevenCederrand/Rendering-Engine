@@ -38,7 +38,6 @@ Object Fileloader::loadMap(std::string path)
 {
 	// here we load the map
 	
-	
 	stbi_uc *heightMap = stbi_load(path.c_str(), &width, &height, NULL, 1);
 	width /= 10;
 	height /= 10;
