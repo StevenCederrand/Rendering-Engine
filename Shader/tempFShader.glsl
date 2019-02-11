@@ -13,5 +13,5 @@ void main() {
 	vec3 baseCol = vec3(texture(colorTexture, frag_uv));
 	vec3 normalCol = vec3(texture(normalMap, frag_uv));
 
-    fragment_color = vec4(normalCol, 1);
+    fragment_color = vec4(baseCol, 1);
 }

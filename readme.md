@@ -21,7 +21,8 @@ glm::vec3 etc.
 - [ ] Normal Mapping - Steven
 - [ ] Shadow Mapping - Ludwig 
 - [ ] Front and Back Rendering - Ludwig
-- [ ] Back Face Culling in GS - Steven //Allt som vi behöver göra är att 
+- [x] Back Face Culling in GS - Steven //Allt som vi behöver göra är 
+att 
 inte emitta de faces som är vänd från kameran. Dvs. att vi använder ej 
 emitvertex och emit primitive. 
 - [ ] Billboarded Particles - Steven
