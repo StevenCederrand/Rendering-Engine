@@ -109,8 +109,8 @@ Object Fileloader::loadMap(std::string path)
 			glm::vec3 thirdV = glm::vec3(TVerts.at(counter).x, TVerts.at(counter).y, TVerts.at(counter).z); counter++;
 			glm::vec3 fourthV = glm::vec3(TVerts.at(counter).x, TVerts.at(counter).y, TVerts.at(counter).z); counter++;
 
-			normal1 = -(glm::normalize(glm::cross(firstV - secondV, firstV - thirdV)));
-			normal2 = -(glm::normalize(glm::cross(fourthV - thirdV, fourthV - secondV)));
+			normal1 = (glm::normalize(glm::cross((firstV - secondV), (firstV - thirdV))));
+			normal2 = (glm::normalize(glm::cross((fourthV - thirdV), (fourthV - secondV))));
 
 			//first vertex to first triangle
 			vert.position = (firstV);
@@ -122,6 +122,17 @@ Object Fileloader::loadMap(std::string path)
 			objMap.v.push_back(firstV);
 			objMap.n.push_back(normal1);
 			objMap.uv.push_back(uV);
+			
+			//third vertex to first triangle we do it counterclockwise 
+			vert.position = (thirdV);
+			vert.normal = (normal1);
+			uV = glm::vec2(thirdV.x*width2, thirdV.z*height2);
+			vert.uv = (uV);
+			mapPosition.push_back(vert);
+
+			objMap.v.push_back(thirdV);
+			objMap.n.push_back(normal1);
+			objMap.uv.push_back(uV);
 
 			//second vertex to first triangle 
 			vert.position = (secondV);
@@ -131,17 +142,6 @@ Object Fileloader::loadMap(std::string path)
 			mapPosition.push_back(vert);
 
 			objMap.v.push_back(secondV);
-			objMap.n.push_back(normal1);
-			objMap.uv.push_back(uV);
-			
-			//third vertex to first triangle
-			vert.position = (thirdV);
-			vert.normal = (normal1);
-			uV = glm::vec2(thirdV.x*width2, thirdV.z*height2);
-			vert.uv = (uV);
-			mapPosition.push_back(vert);
-
-			objMap.v.push_back(thirdV);
 			objMap.n.push_back(normal1);
 			objMap.uv.push_back(uV);
 

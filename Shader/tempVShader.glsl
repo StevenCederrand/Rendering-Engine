@@ -16,5 +16,5 @@ out GEOM_DATA {
 void main() {
 	geom_data.position = position;
 	geom_data.normals = normal;
-	geom_data.uv = uv;
+	geom_data.uv = uv *40;
 }

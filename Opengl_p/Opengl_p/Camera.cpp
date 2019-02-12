@@ -48,7 +48,7 @@ void Camera::handleKeys(ValidKeys currentKey, float yPos) {
 		{
 			this->cameraSpeed = 0.25f;
 		}
-		else if (this->cameraSpeed == 0.5f)
+		else if (this->cameraSpeed == 0.25f)
 		{
 			this->cameraSpeed = 0.05f;
 		}

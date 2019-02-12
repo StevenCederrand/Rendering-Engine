@@ -18,7 +18,12 @@ have left is the .mtl file. Which is fairly straight
 forward. We save all relevant data such as colours into 
 glm::vec3 etc. 
 - [x] Height Map - Ludwig
->Lägg gärna till en beskrivning
+>I read the all the colour values from the picture and save 
+them in a vector. We calculatethe 4 courners (2 triangles) 
+where the y value is the value of the colour from our picture. 
+Then we add them counterclockwiseto a vertex vector. 
+Add the vertex vector to the Mesh and then add the 
+mesh to our Object and return the Object.
 - [ ] Normal Mapping - Steven
 - [ ] Shadow Mapping - Ludwig 
 - [ ] Front and Back Rendering - Ludwig
