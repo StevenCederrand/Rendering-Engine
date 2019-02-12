@@ -15,8 +15,12 @@ in GEOM_DATA{
 	vec2 uv;
 } geom_data[];
 
-out vec2 frag_uv;
-out vec3 frag_normals;
+
+out FRAG_DATA {
+	vec2 frag_uv;
+	vec3 frag_normals;
+	vec3 frag_position;
+} frag_data;
 
 vec3 getNormal() {
 	vec4 vertices[3];
@@ -46,8 +50,9 @@ void culling() {
 		}
 		else {
 			gl_Position = vertex;
-			frag_uv = geom_data[i].uv;
-			frag_normals = geom_data[i].normals;
+			frag_data.frag_uv = geom_data[i].uv;
+			frag_data.frag_position = vec3(worldMatrix * vec4(geom_data[i].position, 1));
+			frag_data.frag_normals = geom_data[i].normals;
 			EmitVertex();
 		}
 	}
