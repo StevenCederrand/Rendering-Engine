@@ -17,7 +17,8 @@ V/VT/VN. We add all of this data to the mesh. Then all we
 have left is the .mtl file. Which is fairly straight 
 forward. We save all relevant data such as colours into 
 glm::vec3 etc. 
-- [ ] Height Map - Ludwig
+- [x] Height Map - Ludwig
+>Lägg gärna till en beskrivning
 - [ ] Normal Mapping - Steven
 - [ ] Shadow Mapping - Ludwig 
 - [ ] Front and Back Rendering - Ludwig
