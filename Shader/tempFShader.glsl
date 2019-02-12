@@ -2,6 +2,13 @@
 
 uniform vec3 cameraPos;
 
+//Uniforms for basic .obj material
+uniform vec3 ambientCol;
+uniform vec3 diffuseCol;
+uniform vec3 specCol;
+uniform float transparency;
+uniform float specularWeight;
+
 in FRAG_DATA {
 	vec2 frag_uv;
 	vec3 frag_normals;
@@ -29,7 +36,17 @@ vec4 phongShading(vec3 diffCol) {
 	float diff = max(dot(posToLight, normalize(frag_data.frag_normals)), 0);
 	vec3 diffuse = lightStr * diffCol * diff;
 	
-	return vec4(ambient + diffuse, 1);
+
+	//Speculare Shading 
+	vec3 viewDirection = normalize(cameraPos - frag_data.frag_position);
+	vec3 reflection = reflect(-posToLight, normalize(frag_data.frag_normals));
+	float specW = specularWeight ;
+	if(specW <= 0) {
+		specW = 32;
+	}
+	vec3 speculare = lightStr * specCol * pow(max(dot(reflection, viewDirection), 0), specularWeight);;
+	
+	return vec4(ambient + diffuse + speculare, 1);
 }
 
 

@@ -79,15 +79,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\Shader\fShader.glsl">
-      <Filter>Shader</Filter>
-    </None>
-    <None Include="..\..\Shader\vShader.glsl">
-      <Filter>Shader</Filter>
-    </None>
-    <None Include="..\..\Shader\gShader.glsl">
-      <Filter>Shader</Filter>
-    </None>
     <None Include="..\..\Shader\tempFShader.glsl">
       <Filter>Shader</Filter>
     </None>

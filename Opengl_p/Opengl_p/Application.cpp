@@ -1,7 +1,5 @@
 #include "Application.h"
 
-
-
 #define STB_IMAGE_IMPLEMENTATION
 using ms = std::chrono::duration<float, std::milli>;
 
@@ -127,8 +125,8 @@ void Application::setupTextures(unsigned int &texture, std::string name) {
 void Application::update() {
 
 	this->setupShaders();
-	this->setupGround();
-	//this->setupObjects();
+	//this->setupGround();
+	this->setupObjects();
 
 
 	for (int i = 0; i < 2; i++) {
@@ -150,7 +148,7 @@ void Application::update() {
 	glEnable(GL_DEPTH_TEST);
 	
 	glDepthFunc(GL_LESS);
-
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	//Use the one shader that has been set up
 	this->start();
 

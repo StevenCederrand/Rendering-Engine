@@ -109,8 +109,8 @@ Object Fileloader::loadMap(std::string path)
 			glm::vec3 thirdV = glm::vec3(TVerts.at(counter).x, TVerts.at(counter).y, TVerts.at(counter).z); counter++;
 			glm::vec3 fourthV = glm::vec3(TVerts.at(counter).x, TVerts.at(counter).y, TVerts.at(counter).z); counter++;
 
-			normal1 = (glm::normalize(glm::cross((firstV - secondV), (firstV - thirdV))));
-			normal2 = (glm::normalize(glm::cross((fourthV - thirdV), (fourthV - secondV))));
+			normal1 = -(glm::normalize(glm::cross((firstV - secondV), (firstV - thirdV))));
+			normal2 = -(glm::normalize(glm::cross((fourthV - thirdV), (fourthV - secondV))));
 
 			//first vertex to first triangle
 			vert.position = (firstV);
