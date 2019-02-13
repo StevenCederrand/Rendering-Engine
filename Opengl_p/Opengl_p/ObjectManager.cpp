@@ -1,65 +1,73 @@
 #include "ObjectManager.h"
 
 ObjectManager::ObjectManager() {
-	this->loader = new Fileloader();
+	this->fileloader = new Fileloader();
+	this->objectloader = new ObjectLoader();
+
 }
 
 ObjectManager::~ObjectManager() {
-	delete loader;
+	delete this->fileloader;
+	delete this->objectloader;
+}
+
+void ObjectManager::start() {
+
 }
 
 std::vector<Object> ObjectManager::getObjects() const {
 	return this->objects;
 }
 
-void ObjectManager::loadObject(std::string filename) {
-	Object obj = loader->readFile(OBJECTSPATH + filename);
-	this->objects.push_back(obj);
-}
 
-void ObjectManager::loadObject(std::string path, std::string name) {
-	Object obj = loader->readFile(path + name);
-	this->objects.push_back(obj);
-}
-
-void ObjectManager::loadMap(std::string path)
-{
-	Object obj = loader->loadMap(OBJECTSPATH+path);
-	this->objects.push_back(obj);
-}
-
-void ObjectManager::setupObjects(Shader * shader) {
-
-	GLint attributeLocation = 0;
-	if (attributeLocation == -1) {
-		std::cout << "ERROR::LOCATING::VERTEX::POS" << std::endl;
+void ObjectManager::readFromFile(std::string filename, int objectType, Shader* shader) {
+	
+	if (objectType == ObjectTypes::Standard) {
+		shader->use();
+		Object obj = fileloader->readFile(OBJECTSPATH + filename);
+		this->objectloader->loadObject(obj, shader);
+		this->objects.push_back(obj);
+	}
+	else if (objectType == ObjectTypes::HeightMapBased) {
+		shader->use();
+		Object obj = fileloader->loadMap(OBJECTSPATH + filename);
+		this->objectloader->loadObject(obj, shader);
+		this->objects.push_back(obj);
+	}
+	else {
+		std::cout << "WARNING::OBJECT::NOT::SUPPORTED" << std::endl;
 		return;
 	}
+}
 
-	//Set the vertices in the glsl-code
-	glVertexAttribPointer(attributeLocation, 3, GL_FLOAT, GL_FALSE, sizeof(float)*8, BUFFER_OFFSET(0));
-	glEnableVertexAttribArray(0);
+void ObjectManager::readFromFile(std::string path, std::string filename, int objectType, Shader* shader) {
 
-	//Load normals
-	attributeLocation = 1;
-	if (attributeLocation == -1) {
-		std::cout << "ERROR::LOCATING::NORMAL::POS" << std::endl;
+	if (objectType == ObjectTypes::Standard) {
+		Object obj = fileloader->readFile(path + filename);
+		this->objectloader->loadObject(obj, shader);
+		this->objects.push_back(obj);
+	}
+	else if (objectType == ObjectTypes::HeightMapBased) {
+		Object obj = fileloader->loadMap(path + filename);
+		this->objectloader->loadObject(obj, shader);
+		this->objects.push_back(obj);
+	}
+	else {
+		std::cout << "WARNING::OBJECT::NOT::SUPPORTED" << std::endl;
 		return;
 	}
-	glVertexAttribPointer(attributeLocation, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, BUFFER_OFFSET(sizeof(glm::vec3)));
-	glEnableVertexAttribArray(attributeLocation);
+}
 
-	//Load uv's
-	attributeLocation = 2;
-	if (attributeLocation == -1) {
-		std::cout << "ERROR::LOCATING::UV::POS" << std::endl;
-		return;
-	}
-	glVertexAttribPointer(attributeLocation, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 8, BUFFER_OFFSET(sizeof(float) * 6));
-	glEnableVertexAttribArray(attributeLocation);
+void ObjectManager::destroy() {
+	this->objectloader->clean();
 }
 
 float ObjectManager::getElevation(glm::vec3 position)
 {
-	return loader->getElevation(position);
+	return fileloader->getElevation(position);
 }
+
+ObjectLoader  ObjectManager::getObjectloader() {
+	return *this->objectloader;
+}
+

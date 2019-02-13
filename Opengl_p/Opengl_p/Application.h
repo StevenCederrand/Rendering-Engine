@@ -15,6 +15,7 @@
 #include "Object.h"	//Contains basic 3D object class
 #include "Shader.h"
 #include "ObjectManager.h"
+#include "Renderer.h"
 #pragma endregion
 
 #pragma region Default_Includes 
@@ -38,8 +39,6 @@ public:
 
 	#pragma region SETUP FUNCTIONS
 	void setupShaders();
-	void setupObjects();
-	void setupGround(); //change name
 	void setupTextures(unsigned int &texture, std::string name);
 	#pragma endregion
 		
@@ -51,7 +50,6 @@ public:
 private:
 	void start(); //Exists to reduce duplication
 	void loadObjects();
-	void setColours(); 
 	
 //Private data
 private:
@@ -61,23 +59,16 @@ private:
 	Shader* shader;
 	Fileloader fileloader;
 
-	std::vector<unsigned int> indices;
-	
 	std::vector<unsigned int> textures;
-	GLuint vertexAttrib = 0;
-	GLuint vertexBuffer = 0;
+
 
 	//the world matrix is used as a modelmatrix
 	glm::mat4 worldMatrix = glm::mat4(1.f);
 	glm::mat4 prjMatrix = glm::mat4(1.f);
 
 	ValidKeys currentKey;
-	
+	Renderer renderer;
 	ObjectManager* objectManager;
-
-	//Objects
-	std::vector<Object> objs;
-	//Height map
-	std::vector<Object> objMap;
+	
 };
 #endif

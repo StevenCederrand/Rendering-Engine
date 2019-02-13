@@ -46,7 +46,7 @@ vec4 phongShading(vec3 diffCol) {
 	}
 	vec3 speculare = lightStr * specCol * pow(max(dot(reflection, viewDirection), 0), specularWeight);;
 	
-	return vec4(ambient + diffuse + speculare, 1);
+	return vec4(ambient + diffuse, 1);
 }
 
 

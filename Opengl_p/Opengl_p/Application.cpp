@@ -25,6 +25,7 @@ Application::~Application() {
 	delete this->window;
 	delete this->shader;
 	delete this->camera;
+	delete this->objectManager;
 
 }
 //Setup the matrixes
@@ -49,51 +50,9 @@ void Application::setupShaders() {
 	//this->shader = new Shader(SHADERPATH + "vShader.glsl", SHADERPATH + "fShader.glsl");
 }
 
-void Application::setupObjects() {
-	//Wireframe mode
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); 
-
-	this->loadObjects();
-
-	//Load the vertices into memory
-	glGenVertexArrays(1, &this->vertexAttrib);
-	glBindVertexArray(this->vertexAttrib);
-	glGenBuffers(1, &this->vertexBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, this->vertexBuffer);
-	
-	std::vector<Vertex> meshData;
-	this->objs = this->objectManager->getObjects();
-	meshData = objs.at(0).getMesh().verts;
-
-	int totalSize = meshData.size() * sizeof(Vertex);
-
-	//Load vertices into the buffer
-	glBufferData(GL_ARRAY_BUFFER, totalSize, &meshData[0], GL_STATIC_DRAW);
-
-	this->objectManager->setupObjects(this->shader);
-}
-
-
-void Application::setupGround()
-{
-	this->objectManager->loadMap("HeightMap3.PNG");
-
-	glGenVertexArrays(1, &this->vertexAttrib);
-	glBindVertexArray(this->vertexAttrib);
-	glGenBuffers(1, &this->vertexBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, this->vertexBuffer);
-
-	std::vector<Vertex> meshData;
-	this->objs = this->objectManager->getObjects();
-	meshData = objs.at(0).getMesh().verts;
-
-	int totalSize = meshData.size() * sizeof(Vertex);
-
-	//Load vertices into the buffer
-	glBufferData(GL_ARRAY_BUFFER, totalSize, &meshData[0], GL_STATIC_DRAW);
-
-	this->objectManager->setupObjects(this->shader);
-	
+void Application::loadObjects() {
+	this->objectManager->readFromFile("ExampleOBJ.obj", ObjectTypes::Standard, this->shader);
+	this->objectManager->readFromFile("HeightMap3.png", ObjectTypes::HeightMapBased, this->shader);
 }
 
 void Application::setupTextures(unsigned int &texture, std::string name) {
@@ -125,17 +84,16 @@ void Application::setupTextures(unsigned int &texture, std::string name) {
 void Application::update() {
 
 	this->setupShaders();
-	//this->setupGround();
-	this->setupObjects();
+	this->loadObjects();
 
 
 	for (int i = 0; i < 2; i++) {
 		unsigned int tex;
 		if (i == 0) {
-			this->setupTextures(tex, this->objs.at(0).getTexture(Texturetypes::Diffuse).name);
+			this->setupTextures(tex, this->objectManager->getObjects().at(0).getTexture(Texturetypes::Diffuse).name);//this->objs.at(0).getTexture(Texturetypes::Diffuse).name);
 		}
 		else {
-			this->setupTextures(tex, this->objs.at(0).getTexture(Texturetypes::Normal).name);
+			this->setupTextures(tex, this->objectManager->getObjects().at(0).getTexture(Texturetypes::Normal).name);
 		}
 		this->textures.push_back(tex);
 	}
@@ -149,7 +107,7 @@ void Application::update() {
 	
 	glDepthFunc(GL_LESS);
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	//Use the one shader that has been set up
+
 	this->start();
 
 	std::chrono::high_resolution_clock timer;
@@ -184,25 +142,23 @@ void Application::update() {
 		deltaTime = std::chrono::duration_cast<ms>(stop - frameTime).count() / 1000; 
 		this->window->update();
 	}
-	glDeleteVertexArrays(1, &vertexAttrib);
-	glDeleteBuffers(1, &vertexBuffer);
+	
+	this->objectManager->destroy();
 	this->window->close();
 }
 
 void Application::render() {
-	glClearColor(0.1f, 0.1f, 0.1f, 1);
+	this->renderer.clearBuffers();
 
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
+	//Assign Textures
 	for (int i = 0; i < this->textures.size(); i++) {
 		glActiveTexture(GL_TEXTURE0 + i);
 		glBindTexture(GL_TEXTURE_2D, textures.at(i));
 	}
 	
 	this->shader->use();
-	glBindVertexArray(this->vertexAttrib);
-
-	glDrawArrays(GL_TRIANGLES, 0, this->objectManager->getObjects().at(0).getMesh().verts.size());
+	
+	this->renderer.render(this->objectManager->getObjectloader(), this->objectManager->getObjects(), this->shader);
 }
 
 //Have this be in an object class
@@ -223,29 +179,3 @@ void Application::cameraHandler() {
 	this->shader->setMat4("viewMatrix", this->camera->getViewMatrix());
 }
 
-void Application::loadObjects() {
-	this->objectManager->loadObject("ExampleOBJ.obj");
-
-
-	//Observe the time it takes to load all of the objects
-	std::chrono::high_resolution_clock timer;
-	auto start = timer.now();
-
-	//Insert all of the objects here!
-	Object cube = this->fileloader.readFile(OBJECTSPATH + "ExampleOBJ.obj");
-
-	auto end = timer.now();
-
-	//Calculate the time it took to load
-	std::chrono::duration<double> dt = std::chrono::high_resolution_clock::now() - start;
-	auto loadTime = std::chrono::duration_cast<ms>(end - start).count(); // in ms
-	std::cout << "Loadtime(ms): " + std::to_string(loadTime) << std::endl;
-	
-	//Load the object into the objs vector
-	//this->objs.push_back(cube);
-}
-
-void Application::setColours() {
-	this->shader->use();
-	this->objs.at(0).assignMaterial(this->shader);
-}
