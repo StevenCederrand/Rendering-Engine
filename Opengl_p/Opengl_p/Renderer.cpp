@@ -31,8 +31,6 @@ void Renderer::render(ObjectLoader *objloader, std::vector<Object> objects) {
 void Renderer::render(ObjectLoader objloader, std::vector<Object> objects, Shader* shader) {
 	this->clearBuffers();
 	
-	//shader->use();
-	int step = 0;
 	//Itterate through every object
 	for (int i = 0; i < objects.size(); i++) {
 		objloader.bindVAO(i);

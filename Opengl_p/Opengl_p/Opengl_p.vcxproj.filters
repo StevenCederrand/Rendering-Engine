@@ -19,75 +19,105 @@
     <Filter Include="Header Files\stb_image">
       <UniqueIdentifier>{9b227f79-2074-4f38-8b73-04e89e606834}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Object">
+      <UniqueIdentifier>{c9b25aaf-4140-42c3-9975-b08d24da1f88}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Parser">
+      <UniqueIdentifier>{2555e99a-bd2b-4e5f-871c-d097ea068e27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Window/GLFW">
+      <UniqueIdentifier>{2854eb3e-99d5-43d5-9099-5001912dcc6e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Rendering">
+      <UniqueIdentifier>{b4db33a2-2055-4e1a-80d2-e0dd379dabe0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Rendering">
+      <UniqueIdentifier>{069451ec-0002-484d-b574-ef75d15c5ddb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Parser">
+      <UniqueIdentifier>{79bc1c2a-ad27-44de-8be2-760d1ba23cb7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Object">
+      <UniqueIdentifier>{7d18dac0-9cff-4623-a987-229efac57fbd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Other">
+      <UniqueIdentifier>{ec9ad606-9d58-40ee-bb35-646b44478572}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Other">
+      <UniqueIdentifier>{30f0a61b-509e-46f0-a0ea-5fb38ea0faba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Window/GLFW">
+      <UniqueIdentifier>{006f458e-8e48-48e8-9bec-0f4312771305}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Application.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Fileloader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="glad.c">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Shader.cpp">
+      <Filter>Shader</Filter>
     </ClCompile>
     <ClCompile Include="Object.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Window.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="WND.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Shader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ObjectManager.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Object</Filter>
     </ClCompile>
     <ClCompile Include="ObjectLoader.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectManager.cpp">
+      <Filter>Source Files\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Fileloader.cpp">
+      <Filter>Source Files\Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="Application.cpp">
+      <Filter>Source Files\Rendering</Filter>
     </ClCompile>
     <ClCompile Include="Renderer.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="glad.c">
+      <Filter>Source Files\Other</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source Files\Other</Filter>
+    </ClCompile>
+    <ClCompile Include="WND.cpp">
+      <Filter>Source Files\Window/GLFW</Filter>
+    </ClCompile>
+    <ClCompile Include="Window.cpp">
+      <Filter>Source Files\Window/GLFW</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Application.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Containers.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Fileloader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Object.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="WND.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="stb_image.h">
       <Filter>Header Files\stb_image</Filter>
     </ClInclude>
-    <ClInclude Include="ObjectManager.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Object.h">
+      <Filter>Header Files\Object</Filter>
     </ClInclude>
     <ClInclude Include="ObjectLoader.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectManager.h">
+      <Filter>Header Files\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Fileloader.h">
+      <Filter>Header Files\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="WND.h">
+      <Filter>Header Files\Window/GLFW</Filter>
     </ClInclude>
     <ClInclude Include="Renderer.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Application.h">
+      <Filter>Header Files\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Header Files\Other</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
