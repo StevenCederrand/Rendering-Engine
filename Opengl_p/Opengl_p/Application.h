@@ -18,7 +18,7 @@
 #include "Shader.h"
 #include "ObjectManager.h"
 #include "Renderer.h"
-
+#include "Deltatime.h"
 #include "Imgui/imgui.h"
 #include "Imgui/Examples/imgui_impl_glfw.h"
 #include "Imgui/Examples/imgui_impl_opengl3.h"
@@ -76,6 +76,6 @@ private:
 	ValidKeys currentKey;
 	Renderer renderer;
 	ObjectManager* objectManager;
-	
+	Deltatime* deltaTime;
 };
 #endif

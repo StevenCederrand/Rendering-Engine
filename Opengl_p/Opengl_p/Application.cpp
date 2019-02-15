@@ -17,6 +17,7 @@ Application::Application(int WNDW, int WNDH) {
 	this->window = new WND(WNDW, WNDH);
 	this->window->start();
 	this->objectManager = new ObjectManager();
+	this->deltaTime = new Deltatime();
 
 }
 
@@ -26,6 +27,7 @@ Application::~Application() {
 	delete this->shader;
 	delete this->camera;
 	delete this->objectManager;
+	delete this->deltaTime;
 
 }
 //Setup the matrixes
@@ -107,19 +109,13 @@ void Application::update() {
 
 	this->start();
 
-	std::chrono::high_resolution_clock timer;
-
-	auto frameTime = timer.now();
-	auto stop = timer.now();
-
-	double deltaTime = 0.0f;
-
+	this->deltaTime->start();
+	this->deltaTime->end();
 	
 	while (!glfwWindowShouldClose(this->window->getWindow())) {
 
 		this->window->update();
-
-		frameTime = timer.now();
+		this->deltaTime->start();
 
 
 		
@@ -139,11 +135,9 @@ void Application::update() {
 		//Render the VAO with the loaded shader
 		this->render();
 
-		stop = timer.now();
+		this->deltaTime->end();
 		//Deltatime in ms
-		std::chrono::duration<double> dt = std::chrono::high_resolution_clock::now() - frameTime;
-		deltaTime = std::chrono::duration_cast<ms>(stop - frameTime).count() / 1000; 
-
+		this->deltaTime->deltaTime();
 
 		
 	}

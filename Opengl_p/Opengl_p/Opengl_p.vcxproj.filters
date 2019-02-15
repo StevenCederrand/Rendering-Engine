@@ -120,6 +120,9 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Deltatime.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stb_image.h">
@@ -178,6 +181,9 @@
     </ClInclude>
     <ClInclude Include="Imgui\Examples\imgui_impl_opengl3.h">
       <Filter>Header Files\Imgui\Example</Filter>
+    </ClInclude>
+    <ClInclude Include="Deltatime.h">
+      <Filter>Header Files\Other</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
