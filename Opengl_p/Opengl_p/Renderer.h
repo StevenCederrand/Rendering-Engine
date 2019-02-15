@@ -9,7 +9,7 @@ public:
 
 	void render(ObjectLoader *objloader, std::vector<Object> objects);
 	void render(ObjectLoader objloader, std::vector<Object> objects, Shader* shader);
-
+	void start();
 	void clearBuffers();
 };
 

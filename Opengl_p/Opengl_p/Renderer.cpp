@@ -44,6 +44,12 @@ void Renderer::render(ObjectLoader objloader, std::vector<Object> objects, Shade
 
 }
 
+void Renderer::start() {
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+}
+
 void Renderer::clearBuffers() {
 	glClearColor(0.1f, 0.1f, 0.1f, 1);
 

@@ -82,7 +82,6 @@ void Application::setupTextures(unsigned int &texture, std::string name) {
 
 //Runs every tick while the window is open
 void Application::update() {
-
 	this->setupShaders();
 	this->loadObjects();
 
@@ -102,11 +101,9 @@ void Application::update() {
 
 	this->shader->setInt("colorTexture", 0);
 	this->shader->setInt("normalMap", 1);
-
-	glEnable(GL_DEPTH_TEST);
 	
-	glDepthFunc(GL_LESS);
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	this->renderer.start();
+
 
 	this->start();
 
@@ -120,7 +117,13 @@ void Application::update() {
 	
 	while (!glfwWindowShouldClose(this->window->getWindow())) {
 
+		this->window->update();
+
 		frameTime = timer.now();
+
+
+		
+
 
 		//Check input
 		this->window->inputKey(this->currentKey);
@@ -140,9 +143,10 @@ void Application::update() {
 		//Deltatime in ms
 		std::chrono::duration<double> dt = std::chrono::high_resolution_clock::now() - frameTime;
 		deltaTime = std::chrono::duration_cast<ms>(stop - frameTime).count() / 1000; 
-		this->window->update();
+
+
+		
 	}
-	
 	this->objectManager->destroy();
 	this->window->close();
 }
@@ -158,6 +162,7 @@ void Application::render() {
 	
 	this->shader->use();
 	
+
 	this->renderer.render(this->objectManager->getObjectloader(), this->objectManager->getObjects(), this->shader);
 }
 

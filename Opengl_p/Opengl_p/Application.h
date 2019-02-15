@@ -6,7 +6,9 @@
 #ifndef APPLICATION_h
 #define APPLICATION_h
 
+
 #pragma region Local_Includes
+//Imgui
 #include "WND.h" //GLFW handler
 #include "Containers.h"
 #include "Fileloader.h"
@@ -16,6 +18,10 @@
 #include "Shader.h"
 #include "ObjectManager.h"
 #include "Renderer.h"
+
+#include "Imgui/imgui.h"
+#include "Imgui/Examples/imgui_impl_glfw.h"
+#include "Imgui/Examples/imgui_impl_opengl3.h"
 #pragma endregion
 
 #pragma region Default_Includes 
@@ -26,6 +32,7 @@
 #include <vector>
 #include "stb_image.h"
 #pragma endregion
+
 
 
 //Files that may generate memory leaks - Application, WND, Object
