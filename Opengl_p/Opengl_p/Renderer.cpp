@@ -36,12 +36,28 @@ void Renderer::render(ObjectLoader objloader, std::vector<Object> objects, Shade
 		objloader.bindVAO(i);
 		objloader.bindVBO(i);
 
+		if (objects.at(i).type == ObjectTypes::LightSource) {
+			shader->setVec3("lightPos", objects.at(i).position);
+			shader->setInt("type", 2);
+		}
+		else if (objects.at(i).type == ObjectTypes::HeightMapBased) {
+			shader->setInt("type", 1);
+		}
+		else if (objects.at(i).type == ObjectTypes::Standard) {
+			shader->setInt("type", 0);
+		}
+		if (objects.at(i).name == "L2") {
+			objects.at(i).modelMatrix = glm::translate(glm::vec3(10, 5, 10));
+			objects.at(i).position = glm::vec3(10, 5, 10);
+			shader->setVec3("lightPos", objects.at(i).position);
+		}
+		shader->setMat4("worldMatrix", objects.at(i).modelMatrix);
+
 		glDrawArrays(GL_TRIANGLES, 0, objects.at(i).getMesh().verts.size());
+
 		objloader.unbindVAO();
 		objloader.unbindVBO();
 	}
-
-
 }
 
 void Renderer::start() {

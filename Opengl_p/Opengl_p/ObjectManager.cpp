@@ -20,42 +20,26 @@ std::vector<Object> ObjectManager::getObjects() const {
 }
 
 
-void ObjectManager::readFromFile(std::string filename, int objectType, Shader* shader) {
+void ObjectManager::readFromFile(std::string filename, std::string objName, ObjectTypes objectType, Shader* shader) {
 	
-	if (objectType == ObjectTypes::Standard) {
-		shader->use();
-		Object obj = fileloader->readFile(OBJECTSPATH + filename);
-		this->objectloader->loadObject(obj, shader);
-		this->objects.push_back(obj);
-	}
-	else if (objectType == ObjectTypes::HeightMapBased) {
-		shader->use();
-		Object obj = fileloader->loadMap(OBJECTSPATH + filename);
-		this->objectloader->loadObject(obj, shader);
-		this->objects.push_back(obj);
+	Object obj;
+	shader->use();
+
+	if (objectType == ObjectTypes::HeightMapBased) {
+		obj = fileloader->loadMap(OBJECTSPATH + filename);
 	}
 	else {
-		std::cout << "WARNING::OBJECT::NOT::SUPPORTED" << std::endl;
-		return;
+		obj = fileloader->readFile(OBJECTSPATH + filename);
 	}
-}
+	obj.type = objectType;
+	this->objectloader->loadObject(obj, shader);
 
-void ObjectManager::readFromFile(std::string path, std::string filename, int objectType, Shader* shader) {
-
-	if (objectType == ObjectTypes::Standard) {
-		Object obj = fileloader->readFile(path + filename);
-		this->objectloader->loadObject(obj, shader);
-		this->objects.push_back(obj);
+	if (objectType == ObjectTypes::LightSource) {
+		obj.position = glm::vec3(0, 10, 0);
+		obj.modelMatrix = glm::translate(obj.position);
 	}
-	else if (objectType == ObjectTypes::HeightMapBased) {
-		Object obj = fileloader->loadMap(path + filename);
-		this->objectloader->loadObject(obj, shader);
-		this->objects.push_back(obj);
-	}
-	else {
-		std::cout << "WARNING::OBJECT::NOT::SUPPORTED" << std::endl;
-		return;
-	}
+	obj.name = objName;
+	this->objects.push_back(obj);
 }
 
 void ObjectManager::destroy() {

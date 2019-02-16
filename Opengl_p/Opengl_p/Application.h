@@ -8,7 +8,6 @@
 
 
 #pragma region Local_Includes
-//Imgui
 #include "WND.h" //GLFW handler
 #include "Containers.h"
 #include "Fileloader.h"
@@ -19,9 +18,6 @@
 #include "ObjectManager.h"
 #include "Renderer.h"
 #include "Deltatime.h"
-#include "Imgui/imgui.h"
-#include "Imgui/Examples/imgui_impl_glfw.h"
-#include "Imgui/Examples/imgui_impl_opengl3.h"
 #pragma endregion
 
 #pragma region Default_Includes 
@@ -67,7 +63,6 @@ private:
 	Fileloader fileloader;
 
 	std::vector<unsigned int> textures;
-
 
 	//the world matrix is used as a modelmatrix
 	glm::mat4 worldMatrix = glm::mat4(1.f);

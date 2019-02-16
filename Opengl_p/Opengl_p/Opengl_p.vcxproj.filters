@@ -121,7 +121,7 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Deltatime.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Other</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -187,13 +187,13 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\Shader\tempFShader.glsl">
+    <None Include="..\..\Shader\fragShader.glsl">
       <Filter>Shader</Filter>
     </None>
-    <None Include="..\..\Shader\tempGShader.glsl">
+    <None Include="..\..\Shader\geomShader.glsl">
       <Filter>Shader</Filter>
     </None>
-    <None Include="..\..\Shader\tempVShader.glsl">
+    <None Include="..\..\Shader\vertShader.glsl">
       <Filter>Shader</Filter>
     </None>
   </ItemGroup>

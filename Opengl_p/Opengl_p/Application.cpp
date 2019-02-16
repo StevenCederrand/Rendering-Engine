@@ -1,16 +1,15 @@
 #include "Application.h"
 
 #define STB_IMAGE_IMPLEMENTATION
-using ms = std::chrono::duration<float, std::milli>;
 
-//Start(): 
+
 //Creates a default window. 
 Application::Application() {
 
 	this->window = new WND();
 	this->window->start();
 }
-//Start(): 
+
 //Creates a window with a specific size
 Application::Application(int WNDW, int WNDH) {
 
@@ -37,8 +36,7 @@ void Application::start() {
 	this->camera = new Camera(glm::vec3(0, 0, 3), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0), this->window->getWindow());
 
 	this->prjMatrix = glm::perspective(glm::radians(65.0f), (float)this->window->getResolution().first / (float)this->window->getResolution().second, 0.1f, 20.0f);
-	//Set World Matrix	
-	this->shader->setMat4("worldMatrix", this->worldMatrix);
+	
 	//Set View Matrix
 	this->shader->setMat4("viewMatrix", this->camera->getViewMatrix());
 	//Set Projection Matrix
@@ -48,13 +46,15 @@ void Application::start() {
 }
 
 void Application::setupShaders() {
-	this->shader = new Shader(SHADERPATH + "tempVShader.glsl", SHADERPATH + "tempGShader.glsl" ,SHADERPATH + "tempFShader.glsl");
-	//this->shader = new Shader(SHADERPATH + "vShader.glsl", SHADERPATH + "fShader.glsl");
+	//Our standard shader
+	this->shader = new Shader(SHADERPATH + "vertShader.glsl", SHADERPATH + "geomShader.glsl" ,SHADERPATH + "fragShader.glsl");
 }
 
 void Application::loadObjects() {
-	this->objectManager->readFromFile("ExampleOBJ.obj", ObjectTypes::Standard, this->shader);
-	this->objectManager->readFromFile("HeightMap3.png", ObjectTypes::HeightMapBased, this->shader);
+	this->objectManager->readFromFile("ExampleOBJ.obj", "Cube", ObjectTypes::Standard, this->shader);
+	this->objectManager->readFromFile("HeightMap3.png", "Terrain", ObjectTypes::HeightMapBased, this->shader);
+	this->objectManager->readFromFile("ExampleOBJ.obj", "L1", ObjectTypes::LightSource, this->shader);
+	this->objectManager->readFromFile("ExampleOBJ.obj", "L2", ObjectTypes::LightSource, this->shader);
 }
 
 void Application::setupTextures(unsigned int &texture, std::string name) {
@@ -87,14 +87,14 @@ void Application::update() {
 	this->setupShaders();
 	this->loadObjects();
 
-
+	
 	for (int i = 0; i < 2; i++) {
 		unsigned int tex;
 		if (i == 0) {
-			this->setupTextures(tex, this->objectManager->getObjects().at(0).getTexture(Texturetypes::Diffuse).name);//this->objs.at(0).getTexture(Texturetypes::Diffuse).name);
+			this->setupTextures(tex, this->objectManager->getObjects().at(1).getTexture(Texturetypes::Diffuse).name);//this->objs.at(0).getTexture(Texturetypes::Diffuse).name);
 		}
 		else {
-			this->setupTextures(tex, this->objectManager->getObjects().at(0).getTexture(Texturetypes::Normal).name);
+			this->setupTextures(tex, this->objectManager->getObjects().at(1).getTexture(Texturetypes::Normal).name);
 		}
 		this->textures.push_back(tex);
 	}
@@ -117,16 +117,8 @@ void Application::update() {
 		this->window->update();
 		this->deltaTime->start();
 
-
-		
-
-
 		//Check input
 		this->window->inputKey(this->currentKey);
-
-		if (this->currentKey == ValidKeys::ESC) {
-			glfwSetWindowShouldClose(this->window->getWindow(), true);
-		}
 
 		//Camera function 
 		this->cameraHandler();
@@ -138,7 +130,7 @@ void Application::update() {
 		this->deltaTime->end();
 		//Deltatime in ms
 		this->deltaTime->deltaTime();
-
+		std::cout << this->deltaTime->deltaTime() << std::endl;
 		
 	}
 	this->objectManager->destroy();

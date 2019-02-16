@@ -8,6 +8,7 @@ uniform vec3 diffuseCol;
 uniform vec3 specCol;
 uniform float transparency;
 uniform float specularWeight;
+uniform vec3 lightPos;
 
 
 
@@ -21,7 +22,7 @@ in FRAG_DATA {
 	vec2 frag_uv;
 	vec3 frag_normals;
 	vec3 frag_position;
-
+	flat int frag_type;
 } frag_data;
 
 out vec4 fragment_color;
@@ -29,7 +30,6 @@ out vec4 fragment_color;
 uniform sampler2D colorTexture;
 uniform sampler2D normalMap;
 
-vec3 lightPos = vec3(0, 10, 0);
 float lightStr = 1.0f;
 vec3 lightCol = vec3(1, 1, 1);
 
@@ -63,8 +63,13 @@ vec4 phongShading(vec3 diffCol) {
 
 
 void main() {
-	vec3 normalText = texture(normalMap, frag_data.frag_uv).rgb;
-	vec3 diffText = texture(colorTexture, frag_data.frag_uv).rgb;
+	if(frag_data.frag_type != 2) { 
+		vec3 normalText = texture(normalMap, frag_data.frag_uv).rgb;
+		vec3 diffText = texture(colorTexture, frag_data.frag_uv).rgb;
 
-    fragment_color = phongShading(diffText);
+		fragment_color = phongShading(diffText);
+	}
+	else {
+		fragment_color = vec4(1);
+	}
 }

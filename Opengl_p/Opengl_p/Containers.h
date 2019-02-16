@@ -37,6 +37,7 @@ enum ValidKeys {
 enum ObjectTypes {
 	Standard,
 	HeightMapBased,
+	LightSource,
 };
 #pragma endregion
 
