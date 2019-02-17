@@ -30,27 +30,29 @@ void Camera::resetCamera(glm::vec3 eye, glm::vec3 center, glm::vec3 up) {
 }
 
 
-void Camera::handleKeys(ValidKeys currentKey, float yPos) {
+void Camera::handleKeys(ValidKeys currentKey, float yPos, float deltaTime) {
+	float velocity = this->cameraSpeed * deltaTime;
+
 	if (currentKey == ValidKeys::W) {
-		this->cameraPosition += this->cameraSpeed * this->cameraFront;
+		this->cameraPosition += velocity * this->cameraFront;
 	}
 	else if (currentKey == ValidKeys::S) {
-		this->cameraPosition -= this->cameraSpeed * this->cameraFront;
+		this->cameraPosition -= velocity * this->cameraFront;
 	}
 	else if (currentKey == ValidKeys::A) {
-		this->cameraPosition += glm::normalize(glm::cross(this->cameraUp, this->cameraFront))*this->cameraSpeed;
+		this->cameraPosition += glm::normalize(glm::cross(this->cameraUp, this->cameraFront))*velocity;
 	}
 	else if (currentKey == ValidKeys::D) {
-		this->cameraPosition -= glm::normalize(glm::cross(this->cameraUp, this->cameraFront))*this->cameraSpeed;
+		this->cameraPosition -= glm::normalize(glm::cross(this->cameraUp, this->cameraFront))*velocity;
 	}
 	else if (currentKey == ValidKeys::Q) {
-		if(this->cameraSpeed==0.05f)
+		if(this->cameraSpeed==1.f)
 		{
-			this->cameraSpeed = 0.25f;
+			this->cameraSpeed = 5.5f;
 		}
-		else if (this->cameraSpeed == 0.25f)
+		else if (this->cameraSpeed == 5.5f)
 		{
-			this->cameraSpeed = 0.05f;
+			this->cameraSpeed = 1.f;
 		}
 	}
 	glm::vec3 temp = this->cameraPosition;

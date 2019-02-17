@@ -129,8 +129,9 @@ void Application::update() {
 
 		this->deltaTime->end();
 		//Deltatime in ms
-		this->deltaTime->deltaTime();
-		std::cout << this->deltaTime->deltaTime() << std::endl;
+		
+		this->deltaT = this->deltaTime->deltaTime();
+		std::cout << this->deltaT << std::endl;
 		
 	}
 	this->objectManager->destroy();
@@ -160,7 +161,8 @@ void Application::cameraHandler() {
 	if (this->currentKey != ValidKeys::DUMMY) {
 		glm::vec3 cameraPos = camera->getCameraPosition();
 		float yValue = objectManager->getElevation(cameraPos);
-		camera->handleKeys(this->currentKey, yValue);
+		std::cout << this->deltaTime->deltaTime() << std::endl;
+		camera->handleKeys(this->currentKey, yValue, this->deltaT);
 	}
 		
 	this->currentKey = ValidKeys::DUMMY;

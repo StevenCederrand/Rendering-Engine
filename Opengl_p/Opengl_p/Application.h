@@ -72,5 +72,7 @@ private:
 	Renderer renderer;
 	ObjectManager* objectManager;
 	Deltatime* deltaTime;
+
+	float deltaT;
 };
 #endif
