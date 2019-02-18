@@ -16,6 +16,9 @@ Object::Object(const Object& other) {
 		this->modelMatrix = other.modelMatrix;
 		this->type = other.type;
 		this->name = other.name;
+		if (this->pointLight != nullptr) {
+			this->pointLight = other.pointLight;
+		}
 	}
 
 
@@ -101,6 +104,9 @@ Object& Object::operator=(const Object &other) {
 		this->modelMatrix = other.modelMatrix;
 		this->type = other.type;
 		this->name = other.name;
+		if (this->pointLight != nullptr) {
+			this->pointLight = other.pointLight;
+		}
 	}
 
 

@@ -20,11 +20,13 @@ public:
 	void destroy();
 	float getElevation(glm::vec3 position);
 	ObjectLoader getObjectloader();
+	int getLightCount() const;
 
 private:
 	std::vector<Object> objects;
 	Fileloader* fileloader;
 	ObjectLoader* objectloader; //Contains VBOs, VAOs etc. I,e data for rendering 
+	int lightcount = 0;
 };
 
 

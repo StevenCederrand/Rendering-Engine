@@ -74,7 +74,6 @@ struct TangentBasis {
 	std::vector<glm::vec3> bitangents;
 };
 
-
 struct Material {
 
 	Material() {
@@ -146,6 +145,19 @@ struct Rotations {
 			glm::vec4(0, 0, 1, 0),
 			glm::vec4(0, 0, 0, 1));
 	}
+};
+
+struct PointLight {
+	PointLight& operator=(const PointLight& other) {
+		if (this != &other) {
+			this->constant = other.constant;
+			this->linear = other.linear;
+			this->quadratic = other.quadratic;
+		}
+	}
+	float constant;
+	float linear;
+	float quadratic;
 };
 
 #endif

@@ -37,6 +37,11 @@ void ObjectManager::readFromFile(std::string filename, std::string objName, Obje
 	if (objectType == ObjectTypes::LightSource) {
 		obj.position = glm::vec3(0, 10, 0);
 		obj.modelMatrix = glm::translate(obj.position);
+		obj.pointLight = new PointLight();
+		obj.pointLight->constant = 1.0f;
+		obj.pointLight->linear = 0.09f;
+		obj.pointLight->quadratic = 0.032f;
+		this->lightcount++;
 	}
 	obj.name = objName;
 	this->objects.push_back(obj);
@@ -53,5 +58,10 @@ float ObjectManager::getElevation(glm::vec3 position)
 
 ObjectLoader  ObjectManager::getObjectloader() {
 	return *this->objectloader;
+}
+
+int ObjectManager::getLightCount() const
+{
+	return this->lightcount;
 }
 

@@ -35,7 +35,7 @@ void Application::start() {
 	//this->viewMatrix = glm::lookAt(glm::vec3(0, 0, 3), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 	this->camera = new Camera(glm::vec3(0, 0, 3), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0), this->window->getWindow());
 
-	this->prjMatrix = glm::perspective(glm::radians(65.0f), (float)this->window->getResolution().first / (float)this->window->getResolution().second, 0.1f, 20.0f);
+	this->prjMatrix = glm::perspective(glm::radians(65.0f), (float)this->window->getResolution().first / (float)this->window->getResolution().second, 0.1f, 50.0f);
 	
 	//Set View Matrix
 	this->shader->setMat4("viewMatrix", this->camera->getViewMatrix());
@@ -58,7 +58,7 @@ void Application::loadObjects() {
 }
 
 void Application::setupTextures(unsigned int &texture, std::string name) {
-
+	//Key-ShadowMap
 	glGenTextures(1, &texture);
 	glBindTexture(GL_TEXTURE_2D, texture);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -131,7 +131,7 @@ void Application::update() {
 		//Deltatime in ms
 		
 		this->deltaT = this->deltaTime->deltaTime();
-		std::cout << this->deltaT << std::endl;
+		//std::cout << this->deltaT << std::endl;
 		
 	}
 	this->objectManager->destroy();
@@ -161,7 +161,6 @@ void Application::cameraHandler() {
 	if (this->currentKey != ValidKeys::DUMMY) {
 		glm::vec3 cameraPos = camera->getCameraPosition();
 		float yValue = objectManager->getElevation(cameraPos);
-		std::cout << this->deltaTime->deltaTime() << std::endl;
 		camera->handleKeys(this->currentKey, yValue, this->deltaT);
 	}
 		

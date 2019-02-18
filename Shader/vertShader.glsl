@@ -6,11 +6,9 @@ layout(location=2) in vec2 uv;
 
 uniform int type;
 
+
 out vec2 geom_uv;   
 out vec3 geom_normals;
-
-
-
 
 out GEOM_DATA {
 	vec3 position;
