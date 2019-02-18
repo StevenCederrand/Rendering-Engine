@@ -52,6 +52,7 @@ private:
 	void start(); //Exists to reduce duplication
 	void loadObjects();
 	void setColours(); 
+	void depthMap();
 	
 //Private data
 private:

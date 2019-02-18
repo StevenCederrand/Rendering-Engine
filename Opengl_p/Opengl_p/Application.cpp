@@ -125,8 +125,8 @@ void Application::setupTextures(unsigned int &texture, std::string name) {
 void Application::update() {
 
 	this->setupShaders();
-	//this->setupGround();
-	this->setupObjects();
+	this->setupGround();
+	//this->setupObjects();
 
 
 	for (int i = 0; i < 2; i++) {
@@ -248,4 +248,29 @@ void Application::loadObjects() {
 void Application::setColours() {
 	this->shader->use();
 	this->objs.at(0).assignMaterial(this->shader);
+}
+
+void Application::depthMap()
+{
+	unsigned int depthWidth = 1024, depthHeight = 1024;
+
+	unsigned int depthMap;
+	unsigned int depthFramebuffer;
+	glGenFramebuffers(1, &depthFramebuffer);
+
+	glGenTextures(1, &depthMap);
+	glBindTexture(GL_TEXTURE_2D, depthMap);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, depthWidth, depthHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	
+	glBindFramebuffer(GL_FRAMEBUFFER, depthFramebuffer);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
+	glDrawBuffer(GL_NONE);
+	glReadBuffer(GL_NONE);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+
 }
