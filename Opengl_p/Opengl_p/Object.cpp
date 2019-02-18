@@ -13,6 +13,9 @@ Object::Object(const Object& other) {
 		this->v = other.v;
 		this->n = other.n;
 		this->uv = other.uv;
+		this->modelMatrix = other.modelMatrix;
+		this->type = other.type;
+		this->name = other.name;
 	}
 
 
@@ -80,22 +83,24 @@ Material Object::getMaterial() const {
 }
 
 void Object::setMesh(Mesh mesh) {
-	//delete this->mesh; //Could be a problem
 	this->mesh = Mesh(mesh);
 }
 
 void Object::setMaterial(Material material) {
-	this->material = material;//Material(material);
+	this->material = material;
 }
 
 Object& Object::operator=(const Object &other) {
 	//Self-assignment check
 	if (this != &other) {
 		this->mesh = Mesh(other.mesh);
-		this->material = other.getMaterial();//Material(*other.getMaterial());
+		this->material = other.getMaterial();
 		this->v = other.v;
 		this->n = other.n;
 		this->uv = other.uv;
+		this->modelMatrix = other.modelMatrix;
+		this->type = other.type;
+		this->name = other.name;
 	}
 
 

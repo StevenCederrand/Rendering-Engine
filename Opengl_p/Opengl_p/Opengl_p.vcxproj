@@ -70,7 +70,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(Solutiondir)\includes;$(IncludePath)</IncludePath>
+    <IncludePath>$(Solutiondir)\includes;$(SolutionDir)\Opengl_p\Imgui;$(IncludePath)</IncludePath>
     <LibraryPath>$(Solutiondir)\libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -124,29 +124,59 @@
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Deltatime.cpp" />
     <ClCompile Include="Fileloader.cpp" />
+    <ClCompile Include="gl3w.c" />
     <ClCompile Include="glad.c" />
+    <ClCompile Include="Imgui\Examples\imgui_impl_glfw.cpp" />
+    <ClCompile Include="Imgui\Examples\imgui_impl_opengl3.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Imgui\imgui.cpp" />
+    <ClCompile Include="Imgui\imgui_demo.cpp" />
+    <ClCompile Include="Imgui\imgui_draw.cpp" />
+    <ClCompile Include="Imgui\imgui_widgets.cpp" />
+    <ClCompile Include="main.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Object.cpp" />
+    <ClCompile Include="ObjectLoader.cpp" />
     <ClCompile Include="ObjectManager.cpp" />
+    <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Shader.cpp" />
-    <ClCompile Include="Window.cpp" />
+    <ClCompile Include="Window.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="WND.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Containers.h" />
+    <ClInclude Include="Deltatime.h" />
     <ClInclude Include="Fileloader.h" />
+    <ClInclude Include="Imgui\Examples\imgui_impl_glfw.h" />
+    <ClInclude Include="Imgui\Examples\imgui_impl_opengl3.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Imgui\imconfig.h" />
+    <ClInclude Include="Imgui\imgui.h" />
+    <ClInclude Include="Imgui\imgui_internal.h" />
+    <ClInclude Include="Imgui\imstb_rectpack.h" />
+    <ClInclude Include="Imgui\imstb_textedit.h" />
+    <ClInclude Include="Imgui\imstb_truetype.h" />
     <ClInclude Include="Object.h" />
+    <ClInclude Include="ObjectLoader.h" />
     <ClInclude Include="ObjectManager.h" />
+    <ClInclude Include="Renderer.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="WND.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\Shader\tempFShader.glsl" />
-    <None Include="..\..\Shader\tempGShader.glsl" />
-    <None Include="..\..\Shader\tempVShader.glsl" />
+    <None Include="..\..\Shader\fragShader.glsl" />
+    <None Include="..\..\Shader\geomShader.glsl" />
+    <None Include="..\..\Shader\vertShader.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

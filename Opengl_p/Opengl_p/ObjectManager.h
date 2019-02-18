@@ -2,6 +2,7 @@
 #define OBJECTMANAGER_h
 
 #include "Object.h"
+#include "ObjectLoader.h"
 #include "Fileloader.h"
 #include "Shader.h"
 
@@ -12,18 +13,18 @@ public:
 	~ObjectManager();
 
 	std::vector<Object> getObjects() const;
-	//Load an object by filename
-	void loadObject(std::string filename);
-	void loadObject(std::string path, std::string name);
-	void loadMap(std::string path);
-
-	void setupObjects(Shader* shader);
-
+	
+	void start();
+	//Read files -> input the type of object
+	void readFromFile(std::string filename, std::string objName, ObjectTypes objectType, Shader* shader);
+	void destroy();
 	float getElevation(glm::vec3 position);
+	ObjectLoader getObjectloader();
 
 private:
 	std::vector<Object> objects;
-	Fileloader* loader;
+	Fileloader* fileloader;
+	ObjectLoader* objectloader; //Contains VBOs, VAOs etc. I,e data for rendering 
 };
 
 

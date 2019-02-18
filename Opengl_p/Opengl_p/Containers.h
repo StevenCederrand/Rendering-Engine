@@ -17,18 +17,35 @@ Simple container file. Used to contain general enums that may be/are used in the
 
 const std::string OBJECTSPATH = "..\\..\\Objects\\";
 const std::string SHADERPATH = "..\\..\\Shader\\";
-
+#pragma region ENUMS
 enum Texturetypes {
 	Diffuse, 
 	Normal, 
 };
+
+enum ValidKeys {
+	W,
+	S,
+	A,
+	D,
+	Q, 
+	E,
+	ESC,
+	DUMMY
+};
+
+enum ObjectTypes {
+	Standard,
+	HeightMapBased,
+	LightSource,
+};
+#pragma endregion
 
 struct Texture {
 	Texturetypes type;
 	std::string name;
 	unsigned int texture; //Assigned when loading the texture into the texture buffer
 	float textureStr;
-
 };
 
 //Each vertex should contain a tangent and bitangent? Look in deeper to normalmapping
@@ -56,16 +73,8 @@ struct TangentBasis {
 	std::vector<glm::vec3> tangents;
 	std::vector<glm::vec3> bitangents;
 };
-enum ValidKeys {
-	W,
-	S,
-	A,
-	D,
-	Q, 
-	E,
-	ESC,
-	DUMMY
-};
+
+
 struct Material {
 
 	Material() {
@@ -97,6 +106,7 @@ struct Material {
 	std::vector<Texture> textures;
 
 };
+
 //Struct of functions that make rotations a lot more conveniant --- the struct can be removed. But we may find it a little bit more comfortable.
 struct Rotations {
 	//Get the rotation matrix of a specific angle(Converts the angle into radians)

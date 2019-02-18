@@ -203,28 +203,28 @@ Shader::~Shader() {
 void Shader::use() {
 	glUseProgram(this->shaderProg);
 }
-
+//Set uniform matrix4x4
 void Shader::setMat4(std::string name, glm::mat4 mat) {
 	GLint uniformLoc = glGetUniformLocation(this->getShaderID(), name.c_str());
 	if (uniformLoc != -1) {
 		glUniformMatrix4fv(uniformLoc, 1, GL_FALSE, &mat[0][0]);
 	}
 }
-
+//Set uniform vector3
 void Shader::setVec3(std::string name, glm::vec3 vec) {
 	GLint uniformLoc = glGetUniformLocation(this->getShaderID(), name.c_str());
 	if (uniformLoc != -1) {
 		glUniform3fv(uniformLoc, 1, &vec[0]);
 	}
 }
-
+//Set uniform float
 void Shader::setFloat(std::string name, float val) {
 	GLint uniformLoc = glGetUniformLocation(this->getShaderID(), name.c_str());
 	if (uniformLoc != -1) {
 		glUniform1f(uniformLoc, val);
 	}
 }
-
+//Set uniform int
 void Shader::setInt(std::string name, int val) {
 	GLint uniformLoc = glGetUniformLocation(this->getShaderID(), name.c_str());
 	if (uniformLoc != -1) {

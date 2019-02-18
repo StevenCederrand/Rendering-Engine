@@ -75,6 +75,7 @@ void WND::inputKey(ValidKeys & key) {
 		key = ValidKeys::E;
 	}
 	if (glfwGetKey(this->window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+		glfwSetWindowShouldClose(this->window, true);
 		key = ValidKeys::ESC;
 	}
 }
