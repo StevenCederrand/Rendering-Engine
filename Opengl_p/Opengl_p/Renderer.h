@@ -5,6 +5,7 @@
 class Renderer {
 public:
 	Renderer();
+	Renderer(int width, int height);
 	~Renderer();
 
 	void render(ObjectLoader *objloader, std::vector<Object> objects);
@@ -16,7 +17,15 @@ public:
 	int lightCount = 0;
 
 private: 
-
+	GLuint gBuffer;
+	GLuint gNormal;
+	GLuint gPosition;
+	GLuint gColorSpecular;
+	//Depth buffer
+	GLuint rboDepth; //Rename this
+	GLuint colAttachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
+	int scrWidth;
+	int scrHeight;
 	std::string getNextLight();
 };
 

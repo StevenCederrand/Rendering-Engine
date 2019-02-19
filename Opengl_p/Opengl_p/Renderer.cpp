@@ -4,6 +4,11 @@ Renderer::Renderer() {
 
 }
 
+Renderer::Renderer(int width, int height) {
+	this->scrWidth = width;
+	this->scrHeight = height;
+}
+
 Renderer::~Renderer() {
 
 }
@@ -84,7 +89,7 @@ void Renderer::render(ObjectLoader objloader, ObjectManager *objManager, Shader 
 
 void Renderer::render(ObjectLoader objloader, std::vector<Object> objects, Shader* shader) {
 	this->clearBuffers();
-	
+
 	//Itterate through every object
 	for (int i = 0; i < objects.size(); i++) {
 		objloader.bindVAO(i);
@@ -135,6 +140,47 @@ void Renderer::start() {
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	
+	//Generate a frame buffer for the gBuffer
+	glGenFramebuffers(1, &this->gBuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, this->gBuffer);
+
+	//Normal colour buffer
+	glGenTextures(1, &gNormal);
+	glBindTexture(GL_TEXTURE_2D, gNormal);
+	glTexImage2D(gNormal, 0, GL_RGB16F, scrWidth, scrHeight, 0, GL_RGB, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, gNormal, 0);
+
+	//Position colour buffer
+	glGenTextures(1, &gPosition);
+	glBindTexture(GL_TEXTURE_2D, gPosition);
+	glTexImage2D(gPosition, 0, GL_RGB16F, scrWidth, scrHeight, 0, GL_RGB, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, gPosition, 0);
+
+	//Colour Speculare buffer
+	glGenTextures(1, &gColorSpecular);
+	glBindTexture(GL_TEXTURE_2D, gColorSpecular);
+	glTexImage2D(gColorSpecular, 0, GL_RGB16F, scrWidth, scrHeight, 0, GL_RGB, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, gColorSpecular, 0);
+
+	glDrawBuffers(3, this->colAttachments);
+	//Depth buffer
+	glGenRenderbuffers(1, &rboDepth);
+	glBindRenderbuffer(GL_RENDERBUFFER, rboDepth);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, scrWidth, scrHeight);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboDepth);
+
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+		std::cout << "Framebuffer incomplete" << std::endl;
+	}
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
 }
 
 void Renderer::clearBuffers() {

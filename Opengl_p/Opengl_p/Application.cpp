@@ -8,20 +8,20 @@ Application::Application() {
 
 	this->window = new WND();
 	this->window->start();
+	this->renderer = Renderer(this->window->getResolution().first, this->window->getResolution().second);
 }
 
 //Creates a window with a specific size
 Application::Application(int WNDW, int WNDH) {
-
 	this->window = new WND(WNDW, WNDH);
 	this->window->start();
 	this->objectManager = new ObjectManager();
 	this->deltaTime = new Deltatime();
+	this->renderer = Renderer(this->window->getResolution().first, this->window->getResolution().second);
 
 }
 
 Application::~Application() {
-	//Critical error when deleting this->window??
 	delete this->window;
 	delete this->shader;
 	delete this->camera;
@@ -130,9 +130,8 @@ void Application::update() {
 		this->deltaTime->end();
 		//Deltatime in ms
 		
-		this->deltaT = this->deltaTime->deltaTime();
-		//std::cout << this->deltaT << std::endl;
-		
+		this->deltaT = this->deltaTime->deltaTime();		
+		std::cout << this->deltaT << std::endl;
 	}
 	this->objectManager->destroy();
 	this->window->close();
