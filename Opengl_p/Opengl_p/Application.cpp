@@ -131,7 +131,7 @@ void Application::update() {
 		//Deltatime in ms
 		
 		this->deltaT = this->deltaTime->deltaTime();		
-		std::cout << this->deltaT << std::endl;
+		//std::cout << this->deltaT << std::endl;
 	}
 	this->objectManager->destroy();
 	this->window->close();

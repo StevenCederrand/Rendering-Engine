@@ -1,5 +1,10 @@
 #version 440 core
 
+layout(location=0) out vec3 gPosition;
+layout(location=1) out vec3 gNormal;
+layout(location=2) out vec4 gColor;
+
+
 #define LIGHTS 2
 uniform vec3 cameraPos;
 
@@ -9,7 +14,6 @@ uniform vec3 diffuseCol;
 uniform vec3 specCol;
 uniform float transparency;
 uniform float specularWeight;
-
 
 struct PointLight{	
 	vec3 lPos;
@@ -71,6 +75,56 @@ vec3 phongShading(PointLight pl, vec3 diffCol) {
 	return vec3(ambient + diffuse + specular);
 }
 
+
+vec4 temp(PointLight pl) {
+
+	vec3 normal = mat3(transpose(inverse(matrices.mat_world))) * frag_data.frag_normals;
+
+	vec3 lightDir = normalize(pl.lPos - frag_data.frag_position);
+
+	vec3 viewDirection = normalize(cameraPos - frag_data.frag_position);
+	vec3 reflectDir = reflect(-lightDir, normalize(normal));
+	float specW = specularWeight ;
+	if(specW <= 0) {
+		specW = 32;
+	}
+	float specStr = 0.9f;
+	float spec = pow(max(dot(viewDirection, reflectDir), 0), specW);
+
+
+	vec3 specular =	specStr * lightCol * spec;
+	return vec4(1);
+}
+
+
+
+void main() {
+	if(frag_data.frag_type != 2) { 
+		vec3 normalText = texture(normalMap, frag_data.frag_uv).rgb;
+		vec3 diffText = texture(colorTexture, frag_data.frag_uv).rgb;
+
+		vec3 result = vec3(0);
+		result += phongShading(pointLights[0], diffText);
+		result += phongShading(pointLights[1], diffText);
+		
+		fragment_color = vec4(result, 1);
+	}
+	else {
+		fragment_color = vec4(1);
+	}
+
+
+	//vec4(frag_data.frag_position, 1);
+
+	gPosition = frag_data.frag_position;
+	gNormal = normalize(frag_data.frag_normals);
+	gColor = vec4(texture(colorTexture, frag_data.frag_uv).rgb, 1);
+
+}
+
+
+
+
 /*
 	//Light attenuation
 	
@@ -101,18 +155,3 @@ vec3 phongShading(PointLight pl, vec3 diffCol) {
 	specular *= attenuation;
 
 */
-void main() {
-	if(frag_data.frag_type != 2) { 
-		vec3 normalText = texture(normalMap, frag_data.frag_uv).rgb;
-		vec3 diffText = texture(colorTexture, frag_data.frag_uv).rgb;
-
-		vec3 result = vec3(0);
-		result += phongShading(pointLights[0], diffText);
-		result += phongShading(pointLights[1], diffText);
-		
-		fragment_color = vec4(result, 1);
-	}
-	else {
-		fragment_color = vec4(1);
-	}
-}

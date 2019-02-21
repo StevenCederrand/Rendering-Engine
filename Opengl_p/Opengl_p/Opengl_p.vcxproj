@@ -177,6 +177,8 @@
     <None Include="..\..\Shader\fragShader.glsl" />
     <None Include="..\..\Shader\geomShader.glsl" />
     <None Include="..\..\Shader\vertShader.glsl" />
+    <None Include="deferred_shading_fs.glsl" />
+    <None Include="deferred_shading_vs.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
