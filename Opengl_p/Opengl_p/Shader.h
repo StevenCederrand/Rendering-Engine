@@ -10,14 +10,17 @@
 
 class Shader {
 public:
+	Shader();
 	//Input vertex path & fragment path
 	Shader(std::string vPath, std::string fPath);
 	//When we have a geometry shader
 	Shader(std::string vPath, std::string gPath, std::string fPath);
 	~Shader();
-
+	
 	void use();
-
+	
+	void setName(std::string name);
+	std::string getName() const;
 	void setMat4(std::string name, glm::mat4 mat);
 	void setVec3(std::string name, glm::vec3 vec);
 	void setFloat(std::string name, float val);
@@ -26,6 +29,8 @@ public:
 
 private: 
 	unsigned int shaderProg;
+	//Shader name. Used for shader look up in the manager
+	std::string name;
 };
 
 #endif

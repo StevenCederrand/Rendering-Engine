@@ -17,6 +17,7 @@ public:
 	void start();
 	//Read files -> input the type of object
 	void readFromFile(std::string filename, std::string objName, ObjectTypes objectType, Shader* shader);
+	void readFromFile(std::string filename, std::string objName, ObjectTypes objectType, Shader shader);
 	void destroy();
 	float getElevation(glm::vec3 position);
 	ObjectLoader getObjectloader();

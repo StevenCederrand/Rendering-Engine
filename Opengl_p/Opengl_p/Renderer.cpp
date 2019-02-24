@@ -136,6 +136,7 @@ void Renderer::render(ObjectLoader objloader, std::vector<Object> objects, Shade
 	}
 }
 
+//Configure buffers for deferred shading. 
 void Renderer::start() {
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
@@ -160,9 +161,8 @@ void Renderer::start() {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, gNormal, 0);
-
-
-	//Colour Speculare buffer
+	
+	//Colour Specular buffer
 	glGenTextures(1, &gColorSpecular);
 	glBindTexture(GL_TEXTURE_2D, gColorSpecular);
 	glTexImage2D(gColorSpecular, 0, GL_RGB16F, scrWidth, scrHeight, 0, GL_RGB, GL_FLOAT, NULL);
@@ -171,6 +171,7 @@ void Renderer::start() {
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, gColorSpecular, 0);
 
 	glDrawBuffers(3, this->colAttachments);
+
 	//Depth buffer
 	glGenRenderbuffers(1, &rboDepth);
 	glBindRenderbuffer(GL_RENDERBUFFER, rboDepth);
@@ -184,11 +185,29 @@ void Renderer::start() {
 
 }
 
+//Configure Lighting Pass Shader
+void Renderer::setupLightPassShader(Shader* lighPassShader) {
+	lighPassShader->setInt("gPosition", 0);
+	lighPassShader->setInt("gNormal", 1);
+	lighPassShader->setInt("gColor", 2);
+
+}
 void Renderer::clearBuffers() {
 	glClearColor(0.1f, 0.1f, 0.1f, 1);
 
 	//Clear color and depth buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
+void Renderer::bindBufferTextures() {
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, this->gPosition);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, this->gNormal);
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, this->gColorSpecular);
+
 }
 
 std::string Renderer::getNextLight() {

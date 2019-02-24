@@ -47,6 +47,10 @@ void ObjectManager::readFromFile(std::string filename, std::string objName, Obje
 	this->objects.push_back(obj);
 }
 
+void ObjectManager::readFromFile(std::string filename, std::string objName, ObjectTypes objectType, Shader shader) {
+
+}
+
 void ObjectManager::destroy() {
 	this->objectloader->clean();
 }

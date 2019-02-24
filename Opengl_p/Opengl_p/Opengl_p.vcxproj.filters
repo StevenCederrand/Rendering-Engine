@@ -61,6 +61,15 @@
     <Filter Include="Source Files\Imgui\Example">
       <UniqueIdentifier>{1e9f208f-10ed-44f1-934c-f809d9cbaaba}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shader\GLSL">
+      <UniqueIdentifier>{313c3d6a-cd7c-4c55-a3e1-85d0fdc64da4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader\GLSL\Geometry Pass">
+      <UniqueIdentifier>{8dfe85fc-f01c-4ca7-b08f-2d3333f0d018}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader\GLSL\Lighting Pass">
+      <UniqueIdentifier>{fb0456dd-83c2-4eb6-86aa-db8ac89cc5d9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Shader.cpp">
@@ -122,6 +131,9 @@
     </ClCompile>
     <ClCompile Include="Deltatime.cpp">
       <Filter>Source Files\Other</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderManager.cpp">
+      <Filter>Shader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -185,16 +197,25 @@
     <ClInclude Include="Deltatime.h">
       <Filter>Header Files\Other</Filter>
     </ClInclude>
+    <ClInclude Include="ShaderManager.h">
+      <Filter>Shader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\Shader\fragShader.glsl">
-      <Filter>Shader</Filter>
+    <None Include="..\..\Shader\vertShader.glsl">
+      <Filter>Shader\GLSL\Geometry Pass</Filter>
     </None>
     <None Include="..\..\Shader\geomShader.glsl">
-      <Filter>Shader</Filter>
+      <Filter>Shader\GLSL\Geometry Pass</Filter>
     </None>
-    <None Include="..\..\Shader\vertShader.glsl">
-      <Filter>Shader</Filter>
+    <None Include="..\..\Shader\fragShader.glsl">
+      <Filter>Shader\GLSL\Geometry Pass</Filter>
+    </None>
+    <None Include="deferred_shading_vs.glsl">
+      <Filter>Shader\GLSL\Lighting Pass</Filter>
+    </None>
+    <None Include="deferred_shading_fs.glsl">
+      <Filter>Shader\GLSL\Lighting Pass</Filter>
     </None>
   </ItemGroup>
 </Project>

@@ -23,7 +23,7 @@ Application::Application(int WNDW, int WNDH) {
 
 Application::~Application() {
 	delete this->window;
-	delete this->shader;
+	delete this->shaderGeometryPass;
 	delete this->camera;
 	delete this->objectManager;
 	delete this->deltaTime;
@@ -38,23 +38,38 @@ void Application::start() {
 	this->prjMatrix = glm::perspective(glm::radians(65.0f), (float)this->window->getResolution().first / (float)this->window->getResolution().second, 0.1f, 50.0f);
 	
 	//Set View Matrix
-	this->shader->setMat4("viewMatrix", this->camera->getViewMatrix());
+	this->shaderManager.getSpecific("geometryPass")->setMat4("viewMatrix", this->camera->getViewMatrix());
 	//Set Projection Matrix
-	this->shader->setMat4("prjMatrix", this->prjMatrix);
+	this->shaderManager.getSpecific("geometryPass")->setMat4("prjMatrix", this->prjMatrix);
 
-	this->currentKey = ValidKeys::DUMMY;	
+	this->currentKey = ValidKeys::DUMMY;
 }
 
 void Application::setupShaders() {
+
+	this->shaderManager.insertShader(SHADERPATH + "vertShader.glsl", SHADERPATH + "geomShader.glsl",
+		SHADERPATH + "fragShader.glsl", "geometryPass");
+	this->shaderManager.insertShader(SHADERPATH + "deferred_shading_vs.glsl",
+		SHADERPATH + "deferred_shading_fs.glsl", "lightPass");
+
 	//Our standard shader
-	this->shader = new Shader(SHADERPATH + "vertShader.glsl", SHADERPATH + "geomShader.glsl" ,SHADERPATH + "fragShader.glsl");
+	this->shaderGeometryPass = new Shader(SHADERPATH + "vertShader.glsl", SHADERPATH + "geomShader.glsl", SHADERPATH + "fragShader.glsl");
+	this->shaderLightPass = new Shader(SHADERPATH + "deferred_shading_vs.glsl", SHADERPATH + "deferred_shading_fs.glsl");
 }
 
 void Application::loadObjects() {
-	this->objectManager->readFromFile("ExampleOBJ.obj", "Cube", ObjectTypes::Standard, this->shader);
-	this->objectManager->readFromFile("HeightMap3.png", "Terrain", ObjectTypes::HeightMapBased, this->shader);
-	this->objectManager->readFromFile("ExampleOBJ.obj", "L1", ObjectTypes::LightSource, this->shader);
-	this->objectManager->readFromFile("ExampleOBJ.obj", "L2", ObjectTypes::LightSource, this->shader);
+
+	this->objectManager->readFromFile("ExampleOBJ.obj", "Cube", ObjectTypes::Standard, 
+		this->shaderManager.getSpecific("geometryPass"));
+
+	this->objectManager->readFromFile("HeightMap3.png", "Terrain", ObjectTypes::HeightMapBased, 
+		this->shaderManager.getSpecific("geometryPass"));
+
+	this->objectManager->readFromFile("ExampleOBJ.obj", "L1", ObjectTypes::LightSource, 
+		this->shaderManager.getSpecific("geometryPass"));	//Should be "lightpass"
+	
+	this->objectManager->readFromFile("ExampleOBJ.obj", "L2", ObjectTypes::LightSource, 
+		this->shaderManager.getSpecific("geometryPass"));	//Should be "lightpass"
 }
 
 void Application::setupTextures(unsigned int &texture, std::string name) {
@@ -68,7 +83,7 @@ void Application::setupTextures(unsigned int &texture, std::string name) {
 	std::string path = OBJECTSPATH + name;
 
 	int width, height, nrChannels;
-	
+
 	unsigned char *data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
 
 	if (data) {
@@ -87,7 +102,7 @@ void Application::update() {
 	this->setupShaders();
 	this->loadObjects();
 
-	
+
 	for (int i = 0; i < 2; i++) {
 		unsigned int tex;
 		if (i == 0) {
@@ -98,20 +113,28 @@ void Application::update() {
 		}
 		this->textures.push_back(tex);
 	}
-	
-	this->shader->use();
 
-	this->shader->setInt("colorTexture", 0);
-	this->shader->setInt("normalMap", 1);
-	
+	this->shaderManager.getSpecific("geometryPass")->use();
+
+	this->shaderManager.getSpecific("geometryPass")->setInt("colorTexture", 0);
+	this->shaderManager.getSpecific("geometryPass")->setInt("normalMap", 1);
+
+	this->shaderLightPass->use();
+	this->shaderLightPass->setInt("lightCount", this->objectManager->getLightCount());
+
+	//Configure Defered shading
 	this->renderer.start();
+	this->renderer.setupLightPassShader(this->shaderLightPass);
 
-
+	//Configure Matrices
 	this->start();
 
+	//Configure Deltatimer
 	this->deltaTime->start();
 	this->deltaTime->end();
-	
+
+	std::cout << this->objectManager->getLightCount() << std::endl;
+
 	while (!glfwWindowShouldClose(this->window->getWindow())) {
 
 		this->window->update();
@@ -122,16 +145,14 @@ void Application::update() {
 
 		//Camera function 
 		this->cameraHandler();
-		this->shader->setVec3("cameraPos", this->camera->getCameraPosition());
 
 		//Render the VAO with the loaded shader
 		this->render();
 
 		this->deltaTime->end();
+
 		//Deltatime in ms
-		
-		this->deltaT = this->deltaTime->deltaTime();		
-		//std::cout << this->deltaT << std::endl;
+		this->deltaT = this->deltaTime->deltaTime();
 	}
 	this->objectManager->destroy();
 	this->window->close();
@@ -145,11 +166,11 @@ void Application::render() {
 		glActiveTexture(GL_TEXTURE0 + i);
 		glBindTexture(GL_TEXTURE_2D, textures.at(i));
 	}
-	
-	this->shader->use();
-	
 
-	this->renderer.render(this->objectManager->getObjectloader(), this->objectManager->getObjects(), this->shader);
+	this->shaderManager.getSpecific("geometryPass")->use();
+
+
+	this->renderer.render(this->objectManager->getObjectloader(), this->objectManager->getObjects(), this->shaderManager.getSpecific("geometryPass"));
 }
 
 //Have this be in an object class
@@ -162,11 +183,13 @@ void Application::cameraHandler() {
 		float yValue = objectManager->getElevation(cameraPos);
 		camera->handleKeys(this->currentKey, yValue, this->deltaT);
 	}
-		
+
 	this->currentKey = ValidKeys::DUMMY;
 
-	this->shader->setMat4("worldMatrix", this->worldMatrix);
+	this->shaderManager.getSpecific("geometryPass")->setMat4("worldMatrix", this->worldMatrix);
 	// This is so that we can "walk" with wasd keys
-	this->shader->setMat4("viewMatrix", this->camera->getViewMatrix());
+	this->shaderManager.getSpecific("geometryPass")->setMat4("viewMatrix", this->camera->getViewMatrix());
+	//Configure Camera Positioning
+	this->shaderManager.getSpecific("geometryPass")->setVec3("cameraPos", this->camera->getCameraPosition());
 }
 

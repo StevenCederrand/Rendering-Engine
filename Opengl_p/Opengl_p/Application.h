@@ -14,10 +14,10 @@
 #include "Object.h"
 #include "Camera.h"
 #include "Object.h"	//Contains basic 3D object class
-#include "Shader.h"
 #include "ObjectManager.h"
 #include "Renderer.h"
 #include "Deltatime.h"
+#include "ShaderManager.h"
 #pragma endregion
 
 #pragma region Default_Includes 
@@ -59,12 +59,15 @@ private:
 	
 	WND* window;
 	Camera* camera;
-	Shader* shader;
+	ShaderManager shaderManager;
+	Shader* shaderGeometryPass;
+	Shader* shaderLightPass;
+
 	Fileloader fileloader;
 
 	std::vector<unsigned int> textures;
 
-	//the world matrix is used as a modelmatrix
+	//The world matrix is used as a modelmatrix
 	glm::mat4 worldMatrix = glm::mat4(1.f);
 	glm::mat4 prjMatrix = glm::mat4(1.f);
 

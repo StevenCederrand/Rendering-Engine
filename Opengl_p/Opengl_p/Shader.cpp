@@ -1,5 +1,9 @@
 #include "Shader.h"
 
+Shader::Shader() {
+
+}
+
 Shader::Shader(std::string vPath, std::string fPath) {
 
 	std::string vCode; //Vertex shader code
@@ -202,6 +206,12 @@ Shader::~Shader() {
 
 void Shader::use() {
 	glUseProgram(this->shaderProg);
+}
+void Shader::setName(std::string name) {
+	this->name = name;
+}
+std::string Shader::getName() const {
+	return this->name;
 }
 //Set uniform matrix4x4
 void Shader::setMat4(std::string name, glm::mat4 mat) {
