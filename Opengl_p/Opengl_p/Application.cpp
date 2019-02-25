@@ -125,15 +125,13 @@ void Application::update() {
 	//Configure Defered shading
 	this->renderer.start();
 	this->renderer.setupLightPassShader(this->shaderLightPass);
-
+	this->renderer.setLightCount(this->objectManager->getLightCount());
 	//Configure Matrices
 	this->start();
 
 	//Configure Deltatimer
 	this->deltaTime->start();
 	this->deltaTime->end();
-
-	std::cout << this->objectManager->getLightCount() << std::endl;
 
 	while (!glfwWindowShouldClose(this->window->getWindow())) {
 
@@ -190,6 +188,9 @@ void Application::cameraHandler() {
 	// This is so that we can "walk" with wasd keys
 	this->shaderManager.getSpecific("geometryPass")->setMat4("viewMatrix", this->camera->getViewMatrix());
 	//Configure Camera Positioning
+	this->shaderManager.getSpecific("geometryPass")->use();
 	this->shaderManager.getSpecific("geometryPass")->setVec3("cameraPos", this->camera->getCameraPosition());
+	this->shaderManager.getSpecific("lightPass")->use();
+	this->shaderManager.getSpecific("lightPass")->setVec3("cameraPos", this->camera->getCameraPosition());
 }
 

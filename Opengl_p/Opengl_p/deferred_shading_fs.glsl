@@ -5,7 +5,9 @@ in vec2 frag_textCoord;
 uniform sampler2D gPosition;
 uniform sampler2D gNormal;
 uniform sampler2D gColor;
+
 uniform int lightCount;
+
 struct PointLight{	
 	vec3 lPos;
 	vec3 color;
@@ -23,38 +25,6 @@ uniform vec3 cameraPos;
 
 out vec4 fragment_color;
 
-/*
-vec3 phongShading(PointLight pl) { 
-
-
-
-
-	vec3 lightDir = normalize(pl.lPos - frag_data.frag_position);
-	//Used for diffuse shading
-	float angle = max(dot(frag_data.frag_normals, lightDir), 0.0);
-	//Used for specular shading
-	vec3 viewDirection = normalize(cameraPos - frag_data.frag_position);
-	vec3 reflectDir = reflect(-lightDir, normalize(normal));
-	float specW = specularWeight ;
-	if(specW <= 0) {
-		specW = 32;
-	}
-	float specStr = 0.5f;
-	float spec = pow(max(dot(viewDirection, reflectDir), 0), specW);
-
-	float lDistance = length(pl.lPos - frag_data.frag_position);
-	float attenuation = 1.0/(pl.lConstant + (pl.lLinear * lDistance) + pl.lQuadratic * pow(lDistance, 2));
-	
-	vec3 ambient = lightCol * lightStr * diffCol;
-	vec3 diffuse = diffCol * angle * lightStr;
-	vec3 specular =	specStr * lightCol * spec;
-
-	ambient *= attenuation;
-	diffuse *= attenuation;
-	specular *= attenuation;
-
-	return vec3(ambient + diffuse + specular);
-}*/
 
 
 void main() {

@@ -17,9 +17,6 @@ public:
 
 private:
 	std::vector<Shader*> shaders;
-
-
-	
 };
 
 

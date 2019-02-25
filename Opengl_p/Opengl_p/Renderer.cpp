@@ -106,6 +106,8 @@ void Renderer::render(ObjectLoader objloader, std::vector<Object> objects, Shade
 			shader->setFloat("pointLights[1].lLinear", objects.at(i).pointLight->linear);
 			shader->setFloat("pointLights[1].lQuadratic", objects.at(i).pointLight->quadratic);
 
+			shader->setInt("type", 2);
+
 		}
 
 		if (objects.at(i).name == "L1") {
@@ -134,6 +136,93 @@ void Renderer::render(ObjectLoader objloader, std::vector<Object> objects, Shade
 		objloader.unbindVAO();
 		objloader.unbindVBO();
 	}
+}
+
+void Renderer::render(ObjectLoader objLoader, std::vector<Object> objects, ShaderManager * shaderManager) {
+	this->clearBuffers();
+
+	this->geometryPass(objLoader, objects, shaderManager->getSpecific("geometryPass"));
+}
+
+//For rendering geometry to the gBuffers. We issue draw calls to the geometryShader
+void Renderer::geometryPass(ObjectLoader objLoader, std::vector<Object> objects, Shader * geometryPass) {	
+	//Use the geometry shader 
+	geometryPass->use();
+	ObjectTypes objType;
+
+	for (int i = 0; i < objects.size(); i++) {
+		objType = objects.at(i).type;
+		//We don't want to do anything with lightsources in this pass. We are only intrested in the geometry. 
+		if (objType != ObjectTypes::LightSource) {
+			objLoader.bindVAO(i);
+			objLoader.bindVBO(i);
+
+			if (objType == ObjectTypes::Standard) {
+				geometryPass->setInt("type", 0);
+			}
+			else if (objType == ObjectTypes::HeightMapBased) {
+				geometryPass->setInt("type", 1);
+			}
+			geometryPass->setMat4("worldMatrix", objects.at(i).modelMatrix);
+
+			glDrawArrays(GL_TRIANGLES, 0, objects.at(i).getMesh().verts.size());
+
+			objLoader.unbindVAO();
+			objLoader.unbindVBO();
+		}
+	}
+}
+
+void Renderer::lightPass(ObjectLoader objLoader, std::vector<Object> objects, Shader * lightPass) {
+	this->clearBuffers();
+	
+	lightPass->use();
+	this->bindBufferTextures();
+	for (int i = 0; i < objects.size(); i++) {
+		if (objects.at(i).name == "L2") {
+			objLoader.bindVAO(i);
+			objLoader.bindVBO(i);
+
+			objects.at(i).position = glm::vec3(45, 3, 10);
+
+			objects.at(i).modelMatrix = glm::translate(objects.at(i).position);
+			lightPass->setVec3("lightPos", objects.at(i).position);
+
+			lightPass->setVec3("pointLights[1].lPos", objects.at(i).position);
+			lightPass->setFloat("pointLights[1].lConstant", objects.at(i).pointLight->constant);
+			lightPass->setFloat("pointLights[1].lLinear", objects.at(i).pointLight->linear);
+			lightPass->setFloat("pointLights[1].lQuadratic", objects.at(i).pointLight->quadratic);
+
+			lightPass->setInt("type", 2);
+
+			lightPass->setMat4("worldMatrix", objects.at(i).modelMatrix);
+
+			glDrawArrays(GL_TRIANGLES, 0, objects.at(i).getMesh().verts.size());
+
+			objLoader.unbindVAO();
+			objLoader.unbindVBO();
+		}
+
+		if (objects.at(i).name == "L1") {
+			objLoader.bindVAO(i);
+			objLoader.bindVBO(i);
+
+			//std::cout << this->getNextLight() << std::endl;
+			lightPass->setVec3("pointLights[0].lPos", objects.at(i).position);
+			lightPass->setFloat("pointLights[0].lConstant", objects.at(i).pointLight->constant);
+			lightPass->setFloat("pointLights[0].lLinear", objects.at(i).pointLight->linear);
+			lightPass->setFloat("pointLights[0].lQuadratic", objects.at(i).pointLight->quadratic);
+
+
+			lightPass->setInt("type", 2);
+
+			glDrawArrays(GL_TRIANGLES, 0, objects.at(i).getMesh().verts.size());
+
+			objLoader.unbindVAO();
+			objLoader.unbindVBO();
+		}
+	}
+
 }
 
 //Configure buffers for deferred shading. 
@@ -185,13 +274,18 @@ void Renderer::start() {
 
 }
 
-//Configure Lighting Pass Shader
-void Renderer::setupLightPassShader(Shader* lighPassShader) {
-	lighPassShader->setInt("gPosition", 0);
-	lighPassShader->setInt("gNormal", 1);
-	lighPassShader->setInt("gColor", 2);
-
+void Renderer::setLightCount(int lights) {
+	this->lightCount = lights;
 }
+
+//Configure Lighting Pass Shader
+void Renderer::setupLightPassShader(Shader* lightPassShader) {
+	lightPassShader->use();
+	lightPassShader->setInt("gPosition", 0);
+	lightPassShader->setInt("gNormal", 1);
+	lightPassShader->setInt("gColor", 2);
+}
+
 void Renderer::clearBuffers() {
 	glClearColor(0.1f, 0.1f, 0.1f, 1);
 

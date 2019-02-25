@@ -24,11 +24,6 @@ out FRAG_DATA {
 	flat int frag_type;
 } frag_data;
 
-out MATRICES {
-	mat4 mat_world;
-	mat4 mat_view;
-	mat4 mat_prj;
-} matrices;
 
 vec3 getNormal() {
 	vec4 vertices[3];
@@ -62,10 +57,6 @@ void culling() {
 			frag_data.frag_position = vec3(worldMatrix * vec4(geom_data[i].position, 1));
 			frag_data.frag_normals = geom_data[i].normals;
 			frag_data.frag_type = geom_data[i].type;
-
-			matrices.mat_world = worldMatrix;
-			matrices.mat_view = viewMatrix;
-			matrices.mat_prj = prjMatrix;
 
 			EmitVertex();
 		}
