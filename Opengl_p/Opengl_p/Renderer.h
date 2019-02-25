@@ -26,7 +26,7 @@ public:
 
 private:
 	void bindBufferTextures();
-
+	void renderQuad(); //Render the quad infront of the camera
 
 private: 
 	GLuint gBuffer;
@@ -42,6 +42,10 @@ private:
 	int scrHeight;
 	int lightCount = 0;
 	std::string getNextLight();
+	
+
+	GLuint quadVAO;
+	GLuint quadVBO;
 };
 
 
