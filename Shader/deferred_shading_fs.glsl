@@ -37,17 +37,19 @@ void main() {
 
 	vec3 ambient = diffCol * lightStr;
 	vec3 viewDirection = normalize(cameraPos - fragPos);
-
+	vec3 lightPos = vec3(0);
 	for(int i = 0; i < lightCount; i++) {
 		float dist = length(lights[i].lPos - fragPos);
 
-		if(dist < lights[i].radius) {
+		//if(dist < lights[i].radius) {
 			//Diffuse
 			vec3 lightDirection = normalize(lights[i].lPos - fragPos);
 			vec3 diffuse = max(dot(normal, lightDirection), 0.0f) * diffCol * lights[i].color;
 			//Calculate attenuation
 			float attenuation = 1.0/(lights[i].lConstant + (lights[i].lLinear * dist) + lights[i].lQuadratic * pow(dist, 2));
-		}
+			ambient += (diffuse * attenuation);
+		//}
 	}
 
+	fragment_color = vec4(ambient, 1);
 }

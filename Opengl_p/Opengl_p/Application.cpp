@@ -119,12 +119,17 @@ void Application::update() {
 	this->shaderManager.getSpecific("geometryPass")->setInt("colorTexture", 0);
 	this->shaderManager.getSpecific("geometryPass")->setInt("normalMap", 1);
 
+	this->shaderManager.getSpecific("lightPass")->use();
+	this->shaderManager.getSpecific("lightPass")->setInt("lightCount", this->objectManager->getLightCount());
+
+	/*
 	this->shaderLightPass->use();
 	this->shaderLightPass->setInt("lightCount", this->objectManager->getLightCount());
-
+	*/
+	
 	//Configure Defered shading
 	this->renderer.start();
-	this->renderer.setupLightPassShader(this->shaderLightPass);
+	this->renderer.setupLightPassShader(this->shaderManager.getSpecific("lightPass"));
 	this->renderer.setLightCount(this->objectManager->getLightCount());
 	//Configure Matrices
 	this->start();
@@ -151,6 +156,7 @@ void Application::update() {
 
 		//Deltatime in ms
 		this->deltaT = this->deltaTime->deltaTime();
+		std::cout << deltaT << std::endl;
 	}
 	this->objectManager->destroy();
 	this->window->close();
@@ -165,10 +171,11 @@ void Application::render() {
 		glBindTexture(GL_TEXTURE_2D, textures.at(i));
 	}
 
-	this->shaderManager.getSpecific("geometryPass")->use();
+	//this->shaderManager.getSpecific("geometryPass")->use();
 
 
-	this->renderer.render(this->objectManager->getObjectloader(), this->objectManager->getObjects(), this->shaderManager.getSpecific("geometryPass"));
+	//this->renderer.render(this->objectManager->getObjectloader(), this->objectManager->getObjects(), this->shaderManager.getSpecific("geometryPass"));
+	this->renderer.render(this->objectManager->getObjectloader(), this->objectManager->getObjects(), &this->shaderManager);
 }
 
 //Have this be in an object class

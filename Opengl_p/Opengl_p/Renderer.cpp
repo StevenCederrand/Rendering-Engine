@@ -142,6 +142,9 @@ void Renderer::render(ObjectLoader objLoader, std::vector<Object> objects, Shade
 	this->clearBuffers();
 
 	this->geometryPass(objLoader, objects, shaderManager->getSpecific("geometryPass"));
+	this->bindBufferTextures();
+	this->lightPass(objLoader, objects, shaderManager->getSpecific("lightPass"));
+	this->renderQuad();
 }
 
 //For rendering geometry to the gBuffers. We issue draw calls to the geometryShader
@@ -174,7 +177,6 @@ void Renderer::geometryPass(ObjectLoader objLoader, std::vector<Object> objects,
 }
 
 void Renderer::lightPass(ObjectLoader objLoader, std::vector<Object> objects, Shader * lightPass) {
-	this->clearBuffers();
 	
 	lightPass->use();
 	this->bindBufferTextures();
@@ -238,7 +240,7 @@ void Renderer::start() {
 	//Position colour buffer
 	glGenTextures(1, &gPosition);
 	glBindTexture(GL_TEXTURE_2D, gPosition);
-	glTexImage2D(gPosition, 0, GL_RGB16F, scrWidth, scrHeight, 0, GL_RGB, GL_FLOAT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, scrWidth, scrHeight, 0, GL_RGB, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, gPosition, 0);
@@ -246,7 +248,7 @@ void Renderer::start() {
 	//Normal colour buffer
 	glGenTextures(1, &gNormal);
 	glBindTexture(GL_TEXTURE_2D, gNormal);
-	glTexImage2D(gNormal, 0, GL_RGB16F, scrWidth, scrHeight, 0, GL_RGB, GL_FLOAT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, scrWidth, scrHeight, 0, GL_RGB, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, gNormal, 0);
@@ -254,11 +256,12 @@ void Renderer::start() {
 	//Colour Specular buffer
 	glGenTextures(1, &gColorSpecular);
 	glBindTexture(GL_TEXTURE_2D, gColorSpecular);
-	glTexImage2D(gColorSpecular, 0, GL_RGB16F, scrWidth, scrHeight, 0, GL_RGB, GL_FLOAT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, scrWidth, scrHeight, 0, GL_RGB, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, gColorSpecular, 0);
 
+	//Tell opengl what attachments we'll use
 	glDrawBuffers(3, this->colAttachments);
 
 	//Depth buffer

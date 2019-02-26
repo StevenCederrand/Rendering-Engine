@@ -176,6 +176,8 @@
     <ClInclude Include="WND.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\Shader\deferred_shading_fs.glsl" />
+    <None Include="..\..\Shader\deferred_shading_vs.glsl" />
     <None Include="..\..\Shader\fragShader.glsl" />
     <None Include="..\..\Shader\geomShader.glsl" />
     <None Include="..\..\Shader\vertShader.glsl" />
