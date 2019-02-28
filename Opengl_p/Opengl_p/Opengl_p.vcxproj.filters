@@ -211,12 +211,6 @@
     <None Include="..\..\Shader\fragShader.glsl">
       <Filter>Shader\GLSL\Geometry Pass</Filter>
     </None>
-    <None Include="deferred_shading_vs.glsl">
-      <Filter>Shader\GLSL\Lighting Pass</Filter>
-    </None>
-    <None Include="deferred_shading_fs.glsl">
-      <Filter>Shader\GLSL\Lighting Pass</Filter>
-    </None>
     <None Include="..\..\Shader\deferred_shading_fs.glsl">
       <Filter>Shader\GLSL\Lighting Pass</Filter>
     </None>

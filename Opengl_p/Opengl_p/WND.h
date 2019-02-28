@@ -27,6 +27,7 @@ private:
 	int WNDW = 0;
 	int WNDH = 0;
 	GLFWwindow* window;
+	GLint flags;
 };
 
 #endif

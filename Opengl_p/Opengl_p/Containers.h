@@ -14,6 +14,7 @@ Simple container file. Used to contain general enums that may be/are used in the
 #include <glm\gtx\transform.hpp>
 #include <vector>
 
+	
 
 const std::string OBJECTSPATH = "..\\..\\Objects\\";
 const std::string SHADERPATH = "..\\..\\Shader\\";

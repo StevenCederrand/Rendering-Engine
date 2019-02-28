@@ -30,6 +30,7 @@ private:
 
 private: 
 	GLuint gBuffer;
+	
 	GLuint gNormal;
 	GLuint gPosition;
 	GLuint gColorSpecular;
@@ -46,6 +47,17 @@ private:
 
 	GLuint quadVAO;
 	GLuint quadVBO;
+
+	float quadVertices[24] = {
+		-1.0f,  1.0f, 0.0f, 1.0f,
+		-1.0f, -1.0f, 0.0f, 0.0f,
+		 1.0f,  -1.0f, 1.0f, 1.0f,
+
+		 1.0f,  -1.0f, 1.0f, 1.0f,
+		 1.0f, 1.0f, 1.0f, 1.0f,
+		 -1.0f, 1.0f, 0.0f, 1.0f,
+	};
+
 };
 
 

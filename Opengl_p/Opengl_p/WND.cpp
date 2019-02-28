@@ -2,6 +2,7 @@
 
 void setViewport(GLFWwindow* window, int width, int height);
 
+
 WND::WND()
 {
 	this->WNDW = 800;
@@ -26,6 +27,8 @@ int WND::start()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE); // comment this line in a release build! 
+	
 
 	this->window = glfwCreateWindow(this->WNDW, this->WNDH, "OPENGL Project", NULL, NULL);
 
@@ -44,7 +47,14 @@ int WND::start()
 		glfwTerminate();
 		return -1;
 	}
-
+	/*
+	if (flags & GL_CONTEXT_FLAG_DEBUG_BIT)
+	{
+		glEnable(GL_DEBUG_OUTPUT);
+		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+		glDebugMessageCallback(glDebugOutput, nullptr);
+		glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
+	}*/
 	glfwSetFramebufferSizeCallback(this->window, setViewport);
 
 	return 0;

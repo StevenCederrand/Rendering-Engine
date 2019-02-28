@@ -219,12 +219,18 @@ void Shader::setMat4(std::string name, glm::mat4 mat) {
 	if (uniformLoc != -1) {
 		glUniformMatrix4fv(uniformLoc, 1, GL_FALSE, &mat[0][0]);
 	}
+	else {
+		std::cout << "Uniform doesn't exist with name: " + name << std::endl;
+	}
 }
 //Set uniform vector3
 void Shader::setVec3(std::string name, glm::vec3 vec) {
 	GLint uniformLoc = glGetUniformLocation(this->getShaderID(), name.c_str());
 	if (uniformLoc != -1) {
 		glUniform3fv(uniformLoc, 1, &vec[0]);
+	}
+	else {
+		std::cout << "Uniform doesn't exist with name: " + name << std::endl;
 	}
 }
 //Set uniform float
@@ -233,12 +239,18 @@ void Shader::setFloat(std::string name, float val) {
 	if (uniformLoc != -1) {
 		glUniform1f(uniformLoc, val);
 	}
+	else {
+		std::cout << "Uniform doesn't exist with name: " + name << std::endl;
+	}
 }
 //Set uniform int
 void Shader::setInt(std::string name, int val) {
 	GLint uniformLoc = glGetUniformLocation(this->getShaderID(), name.c_str());
 	if (uniformLoc != -1) {
 		glUniform1i(uniformLoc, val);
+	}
+	else {
+		std::cout << "Uniform doesn't exist with name: " + name << std::endl;
 	}
 
 }

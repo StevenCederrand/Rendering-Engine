@@ -59,9 +59,9 @@ private:
 	
 	WND* window;
 	Camera* camera;
-	ShaderManager shaderManager;
-	Shader* shaderGeometryPass;
-	Shader* shaderLightPass;
+	ShaderManager* shaderManager;
+	//Shader* shaderGeometryPass;
+	//Shader* shaderLightPass;
 
 	Fileloader fileloader;
 

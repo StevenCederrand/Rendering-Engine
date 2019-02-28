@@ -24,6 +24,7 @@ out FRAG_DATA {
 	flat int frag_type;
 } frag_data;
 
+mat3 normalMatrix = transpose(inverse(mat3(worldMatrix)));
 
 vec3 getNormal() {
 	vec4 vertices[3];
@@ -54,8 +55,9 @@ void culling() {
 		else {
 			gl_Position = vertex;
 			frag_data.frag_uv = geom_data[i].uv;
+			//The vertex position is kept in world space
 			frag_data.frag_position = vec3(worldMatrix * vec4(geom_data[i].position, 1));
-			frag_data.frag_normals = geom_data[i].normals;
+			frag_data.frag_normals = normalMatrix * geom_data[i].normals;
 			frag_data.frag_type = geom_data[i].type;
 
 			EmitVertex();
@@ -66,6 +68,17 @@ void culling() {
 	}
 }
 void main() {
-	culling();
-
+	//culling();
+	for(int i = 0; i < 3; i++) {
+		vec4 vertex = prjMatrix * viewMatrix * worldMatrix * vec4(geom_data[i].position, 1);
+		
+		gl_Position = vertex;
+		frag_data.frag_uv = geom_data[i].uv;
+		//The vertex position is kept in world space
+		frag_data.frag_position = vec3(worldMatrix * vec4(geom_data[i].position, 1));
+		frag_data.frag_normals = normalMatrix * geom_data[i].normals;
+		frag_data.frag_type = geom_data[i].type;
+		EmitVertex();
+	}
+	EndPrimitive();
 }
