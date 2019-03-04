@@ -59,6 +59,7 @@ void Camera::handleKeys(ValidKeys currentKey, float yPos, float deltaTime) {
 	temp.y= yPos;
 	//cameraPosition.y = yPos+1;
 	this->viewMatrix = glm::lookAt(this->cameraPosition, this->cameraPosition + this->cameraFront, this->cameraUp);
+	
 }
 
 glm::vec3 Camera::getCameraPosition() const
@@ -113,8 +114,7 @@ void Camera::mouse_callback(GLFWwindow * window)// ,double xpos, double ypos)
 	front2.x = cos(glm::radians(pitch)) * cos(glm::radians(yaw));
 	front2.y = sin(glm::radians(pitch));
 	front2.z = cos(glm::radians(pitch)) * sin(glm::radians(yaw));
-	this->cameraFront = glm::normalize(front2);
-
+	this->cameraFront = glm::normalize(front2);	
 	this->viewMatrix = glm::lookAt(this->cameraPosition, this->cameraPosition + this->cameraFront, this->cameraUp);
 }
 

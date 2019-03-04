@@ -17,6 +17,7 @@ Application::Application(int WNDW, int WNDH) {
 	this->window->start();
 	this->objectManager = new ObjectManager();
 	this->deltaTime = new Deltatime();
+	this->shaderManager = new ShaderManager();
 
 }
 
@@ -27,6 +28,7 @@ Application::~Application() {
 	delete this->camera;
 	delete this->objectManager;
 	delete this->deltaTime;
+	delete this->shaderManager;
 
 }
 //Setup the matrixes
@@ -38,23 +40,34 @@ void Application::start() {
 	this->prjMatrix = glm::perspective(glm::radians(65.0f), (float)this->window->getResolution().first / (float)this->window->getResolution().second, 0.1f, 50.0f);
 	
 	//Set View Matrix
-	this->shader->setMat4("viewMatrix", this->camera->getViewMatrix());
+	this->shaderManager->getSpecific("GeometryPass")->setMat4("viewMatrix", this->camera->getViewMatrix());
 	//Set Projection Matrix
-	this->shader->setMat4("prjMatrix", this->prjMatrix);
+	this->shaderManager->getSpecific("GeometryPass")->setMat4("prjMatrix", this->prjMatrix);
 
-	this->currentKey = ValidKeys::DUMMY;	
+	this->currentKey = ValidKeys::DUMMY;
 }
 
 void Application::setupShaders() {
-	//Our standard shader
-	this->shader = new Shader(SHADERPATH + "vertShader.glsl", SHADERPATH + "geomShader.glsl" ,SHADERPATH + "fragShader.glsl");
+	this->shaderManager->insertShader(
+		SHADERPATH + "GeometryPassVS.glsl",
+		SHADERPATH + "GeometryPassGS.glsl",
+		SHADERPATH + "GeometryPassFS.glsl", "GeometryPass");
+
+	Shader* lightPass = this->shaderManager->insertShader(
+		SHADERPATH + "LightPassVS.glsl",
+		SHADERPATH + "LightPassFS.glsl", "LightPass");
+	lightPass->use();
+	lightPass->setInt("positionBuffer", 0);
+	lightPass->setInt("normalBuffer", 1);
+	lightPass->setInt("colourBuffer", 2);
+
 }
 
 void Application::loadObjects() {
-	this->objectManager->readFromFile("ExampleOBJ.obj", "Cube", ObjectTypes::Standard, this->shader);
-	this->objectManager->readFromFile("HeightMap3.png", "Terrain", ObjectTypes::HeightMapBased, this->shader);
-	this->objectManager->readFromFile("ExampleOBJ.obj", "L1", ObjectTypes::LightSource, this->shader);
-	this->objectManager->readFromFile("ExampleOBJ.obj", "L2", ObjectTypes::LightSource, this->shader);
+	this->objectManager->readFromFile("ExampleOBJ.obj", "Cube", ObjectTypes::Standard, this->shaderManager->getSpecific("GeometryPass"));
+	this->objectManager->readFromFile("HeightMap3.png", "Terrain", ObjectTypes::HeightMapBased, this->shaderManager->getSpecific("GeometryPass"));
+	this->objectManager->readFromFile("ExampleOBJ.obj", "L1", ObjectTypes::LightSource, this->shaderManager->getSpecific("GeometryPass"));
+	this->objectManager->readFromFile("ExampleOBJ.obj", "L2", ObjectTypes::LightSource, this->shaderManager->getSpecific("GeometryPass"));
 }
 
 void Application::setupTextures(unsigned int &texture, std::string name) {
@@ -68,7 +81,7 @@ void Application::setupTextures(unsigned int &texture, std::string name) {
 	std::string path = OBJECTSPATH + name;
 
 	int width, height, nrChannels;
-	
+
 	unsigned char *data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
 
 	if (data) {
@@ -86,7 +99,6 @@ void Application::setupTextures(unsigned int &texture, std::string name) {
 void Application::update() {
 	this->setupShaders();
 	this->loadObjects();
-
 	
 	for (int i = 0; i < 2; i++) {
 		unsigned int tex;
@@ -98,42 +110,65 @@ void Application::update() {
 		}
 		this->textures.push_back(tex);
 	}
-	
-	this->shader->use();
 
-	this->shader->setInt("colorTexture", 0);
-	this->shader->setInt("normalMap", 1);
-	
-	this->renderer.start();
+	Shader* geometryPass = this->shaderManager->getSpecific("GeometryPass");
+	geometryPass->use();
+	geometryPass->setInt("colorTexture", 0);
+	geometryPass->setInt("normalMap", 1);
+
+	this->renderer.start(this->window->getResolution().first, this->window->getResolution().second);
 
 
 	this->start();
 
 	this->deltaTime->start();
 	this->deltaTime->end();
+	Shader* lightPass = this->shaderManager->getSpecific("LightPass");
+	lightPass->use();
+	lightPass->setInt("lightCount", this->objectManager->getLightCount());
 	
-	while (!glfwWindowShouldClose(this->window->getWindow())) {
+	//for (int i = 0; i < this->objectManager->getObjects().size(); i++) {
+	//	if (this->objectManager->getObjects().at(i).type == ObjectTypes::LightSource) {
+	//		if (this->objectManager->getObjects().at(i).name == "L1") {
+	//			this->objectManager->getObjects().at(i).position = glm::vec3(45, 3, 10);
+	//			this->objectManager->getObjects().at(i).modelMatrix = glm::translate(this->objectManager->getObjects().at(i).position);
+	//			
+	//			lightPass->setVec3("pointLights[0].position", this->objectManager->getObjects().at(i).position);
+	//			lightPass->setFloat("pointLights[0].constant", this->objectManager->getObjects().at(i).pointLight->constant);
+	//			lightPass->setFloat("pointLights[0].linear", this->objectManager->getObjects().at(i).pointLight->linear);
+	//			lightPass->setFloat("pointLights[0].quadratic", this->objectManager->getObjects().at(i).pointLight->quadratic);
+	//		}
 
+	//		if (this->objectManager->getObjects().at(i).name == "L2") {
+	//			lightPass->setVec3("pointLights[1].position", this->objectManager->getObjects().at(i).position);
+	//			lightPass->setFloat("pointLights[1].constant", this->objectManager->getObjects().at(i).pointLight->constant);
+	//			lightPass->setFloat("pointLights[1].linear", this->objectManager->getObjects().at(i).pointLight->linear);
+	//			lightPass->setFloat("pointLights[1].quadratic", this->objectManager->getObjects().at(i).pointLight->quadratic);
+	//		}
+	//	}
+	//}
+	while (!glfwWindowShouldClose(this->window->getWindow())) {
 		this->window->update();
+
 		this->deltaTime->start();
 
 		//Check input
 		this->window->inputKey(this->currentKey);
 
 		//Camera function 
-		this->cameraHandler();
-		this->shader->setVec3("cameraPos", this->camera->getCameraPosition());
+		this->cameraHandler(geometryPass);
+		lightPass->use();
+		lightPass->setVec3("cameraPos", camera->getCameraPosition());
 
 		//Render the VAO with the loaded shader
 		this->render();
 
-		this->deltaTime->end();
 		//Deltatime in ms
-		
+		this->deltaTime->end();
+
 		this->deltaT = this->deltaTime->deltaTime();
-		//std::cout << this->deltaT << std::endl;
-		
 	}
+
 	this->objectManager->destroy();
 	this->window->close();
 }
@@ -146,15 +181,12 @@ void Application::render() {
 		glActiveTexture(GL_TEXTURE0 + i);
 		glBindTexture(GL_TEXTURE_2D, textures.at(i));
 	}
-	
-	this->shader->use();
-	
 
-	this->renderer.render(this->objectManager->getObjectloader(), this->objectManager->getObjects(), this->shader);
+	this->renderer.deferredRender(this->objectManager->getObjectloader(), this->objectManager->getObjects(), this->shaderManager);
 }
 
 //Have this be in an object class
-void Application::cameraHandler() {
+void Application::cameraHandler(Shader* geometryPass) {
 
 	this->camera->update();
 
@@ -163,11 +195,12 @@ void Application::cameraHandler() {
 		float yValue = objectManager->getElevation(cameraPos);
 		camera->handleKeys(this->currentKey, yValue, this->deltaT);
 	}
-		
-	this->currentKey = ValidKeys::DUMMY;
 
-	this->shader->setMat4("worldMatrix", this->worldMatrix);
+	this->currentKey = ValidKeys::DUMMY;
+	geometryPass->use();
+	geometryPass->setMat4("worldMatrix", this->worldMatrix);
 	// This is so that we can "walk" with wasd keys
-	this->shader->setMat4("viewMatrix", this->camera->getViewMatrix());
+	geometryPass->setMat4("viewMatrix", this->camera->getViewMatrix());
 }
+
 

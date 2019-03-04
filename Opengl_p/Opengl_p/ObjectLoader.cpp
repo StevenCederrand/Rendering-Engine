@@ -4,6 +4,7 @@ ObjectLoader::ObjectLoader() {
 }
 
 ObjectLoader::~ObjectLoader() {
+
 }
 
 void ObjectLoader::loadObject(Object obj, Shader* shader) {

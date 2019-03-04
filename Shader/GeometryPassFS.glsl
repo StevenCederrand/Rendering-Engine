@@ -1,5 +1,9 @@
 #version 440 core
 
+layout(location=0) out vec3 positionBuffer;
+layout(location=1) out vec3 normalBuffer;
+layout(location=2) out vec4 colourBuffer;
+/*
 #define LIGHTS 2
 uniform vec3 cameraPos;
 
@@ -19,7 +23,7 @@ struct PointLight{
 };
 
 uniform PointLight pointLights[LIGHTS];
-
+*/
 in MATRICES {
 	mat4 mat_world;
 	mat4 mat_view;
@@ -33,11 +37,12 @@ in FRAG_DATA {
 	flat int frag_type;
 } frag_data;
 
-out vec4 fragment_color;
+//out vec4 fragment_color;
 
 uniform sampler2D colorTexture;
 uniform sampler2D normalMap;
 
+/*
 float lightStr = 1.0f;
 vec3 lightCol = vec3(1, 1, 1);
 
@@ -71,7 +76,7 @@ vec3 phongShading(PointLight pl, vec3 diffCol) {
 	return vec3(ambient + diffuse + specular);
 }
 
-/*
+
 	//Light attenuation
 	
 	
@@ -102,17 +107,7 @@ vec3 phongShading(PointLight pl, vec3 diffCol) {
 
 */
 void main() {
-	if(frag_data.frag_type != 2) { 
-		vec3 normalText = texture(normalMap, frag_data.frag_uv).rgb;
-		vec3 diffText = texture(colorTexture, frag_data.frag_uv).rgb;
-
-		vec3 result = vec3(0);
-		result += phongShading(pointLights[0], diffText);
-		result += phongShading(pointLights[1], diffText);
-		
-		fragment_color = vec4(result, 1);
-	}
-	else {
-		fragment_color = vec4(1);
-	}
+	colourBuffer = texture(colorTexture, frag_data.frag_uv);
+	normalBuffer = mat3(transpose(inverse(matrices.mat_world))) * frag_data.frag_normals;
+	positionBuffer = frag_data.frag_position;
 }

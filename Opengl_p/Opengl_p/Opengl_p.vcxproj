@@ -138,12 +138,14 @@
     <ClCompile Include="Imgui\imgui_widgets.cpp" />
     <ClCompile Include="main.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="ObjectLoader.cpp" />
     <ClCompile Include="ObjectManager.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="ShaderManager.cpp" />
     <ClCompile Include="Window.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClCompile>
@@ -170,13 +172,16 @@
     <ClInclude Include="ObjectManager.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="ShaderManager.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="WND.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\Shader\fragShader.glsl" />
-    <None Include="..\..\Shader\geomShader.glsl" />
-    <None Include="..\..\Shader\vertShader.glsl" />
+    <None Include="..\..\Shader\GeometryPassFS.glsl" />
+    <None Include="..\..\Shader\GeometryPassGS.glsl" />
+    <None Include="..\..\Shader\GeometryPassVS.glsl" />
+    <None Include="..\..\Shader\LightPassFS.glsl" />
+    <None Include="..\..\Shader\LightPassVS.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

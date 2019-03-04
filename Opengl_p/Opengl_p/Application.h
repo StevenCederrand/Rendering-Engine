@@ -17,6 +17,7 @@
 #include "Shader.h"
 #include "ObjectManager.h"
 #include "Renderer.h"
+#include "ShaderManager.h"
 #include "Deltatime.h"
 #pragma endregion
 
@@ -47,7 +48,7 @@ public:
 		
 	void update();
 	void render();
-	void cameraHandler();	
+	void cameraHandler(Shader* shader);	
 	
 //Private functions
 private:
@@ -72,7 +73,7 @@ private:
 	Renderer renderer;
 	ObjectManager* objectManager;
 	Deltatime* deltaTime;
-
+	ShaderManager *shaderManager;
 	float deltaT;
 };
 #endif

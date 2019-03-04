@@ -51,8 +51,8 @@ int WND::start()
 }
 
 void WND::update() {
-	glfwPollEvents();
 	glfwSwapBuffers(this->window);
+	glfwPollEvents();
 }
 
 void WND::inputKey(ValidKeys & key) {
