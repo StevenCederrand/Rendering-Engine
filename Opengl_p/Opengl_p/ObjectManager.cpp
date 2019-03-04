@@ -65,3 +65,7 @@ int ObjectManager::getLightCount() const
 	return this->lightcount;
 }
 
+void ObjectManager::destroyLight(int at) {
+	this->objects.at(at).destroyLight();
+}
+

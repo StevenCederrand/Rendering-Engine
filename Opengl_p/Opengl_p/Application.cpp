@@ -24,13 +24,12 @@ Application::Application(int WNDW, int WNDH) {
 Application::~Application() {
 	//Critical error when deleting this->window??
 	delete this->window;
-	delete this->shader;
 	delete this->camera;
 	delete this->objectManager;
 	delete this->deltaTime;
 	delete this->shaderManager;
-
 }
+
 //Setup the matrixes
 void Application::start() {
 
@@ -147,6 +146,7 @@ void Application::update() {
 	//		}
 	//	}
 	//}
+
 	while (!glfwWindowShouldClose(this->window->getWindow())) {
 		this->window->update();
 
@@ -168,8 +168,13 @@ void Application::update() {
 
 		this->deltaT = this->deltaTime->deltaTime();
 	}
-
+	for (int i = 0; i < this->objectManager->getObjects().size(); i++) {
+		if (this->objectManager->getObjects().at(i).type == ObjectTypes::LightSource) {
+			this->objectManager->destroyLight(i);
+		}
+	}
 	this->objectManager->destroy();
+	this->renderer.clear();
 	this->window->close();
 }
 

@@ -7,6 +7,13 @@ ObjectLoader::~ObjectLoader() {
 
 }
 
+void ObjectLoader::clean() {
+	for (int i = 0; i < this->VAOs.size(); i++) {
+		glDeleteVertexArrays(1, &this->VAOs.at(i));
+		glDeleteBuffers(1, &this->VBOs.at(i));
+	}	
+}
+
 void ObjectLoader::loadObject(Object obj, Shader* shader) {
 	this->genVAO();
 	this->genVBO();
@@ -36,13 +43,6 @@ void ObjectLoader::attributePointers(int attributeLocation, int nrOfValues, int 
 
 }
 
-void ObjectLoader::clean() {
-	for (int i = 0; i < this->VBOs.size(); i++) {
-		glDeleteBuffers(1, &this->VBOs.at(i));
-		glDeleteVertexArrays(1, &this->VAOs.at(i));
-	}
-	
-}
 int ObjectLoader::getNumberOfVAOs() const {
 	return this->VAOs.size();
 }

@@ -21,7 +21,7 @@ public:
 	float getElevation(glm::vec3 position);
 	ObjectLoader getObjectloader();
 	int getLightCount() const;
-
+	void destroyLight(int at);
 private:
 	std::vector<Object> objects;
 	Fileloader* fileloader;

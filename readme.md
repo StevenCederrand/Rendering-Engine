@@ -1,7 +1,9 @@
 # 3D rendering engine for the course DV1568.
 
 Task list 
-- [ ] Deferred Rendering
+- [x] Deferred Rendering
+> What is left is the shading. But that'll be done today, 
+then the description for this technique will be added.
 - [x] Obj Parsing - Steven 
 > I have reworked the parser and now it works well. What 
 happens is the following. Initially the Fileloader inserts 

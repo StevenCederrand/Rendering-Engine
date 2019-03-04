@@ -60,7 +60,6 @@ private:
 	
 	WND* window;
 	Camera* camera;
-	Shader* shader;
 	Fileloader fileloader;
 
 	std::vector<unsigned int> textures;

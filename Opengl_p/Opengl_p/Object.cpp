@@ -93,6 +93,10 @@ void Object::setMaterial(Material material) {
 	this->material = material;
 }
 
+void Object::destroyLight() {
+	delete this->pointLight;
+}
+
 Object& Object::operator=(const Object &other) {
 	//Self-assignment check
 	if (this != &other) {

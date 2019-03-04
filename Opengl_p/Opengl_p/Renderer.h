@@ -10,25 +10,19 @@ public:
 	Renderer();
 	~Renderer();
 
-	void render(ObjectLoader *objloader, std::vector<Object> objects);
-	void render(ObjectLoader objloader, ObjectManager *objManager, Shader* shader);
-	void render(ObjectLoader objloader, std::vector<Object> objects, Shader* shader);
-
 	void deferredRender(ObjectLoader objloader, 
 		std::vector<Object> objects, 
 		ShaderManager* shaderManager);
 
 	void start(int x, int y);
 	void clearBuffers();
-	int lightCount = 0;
-
+	void clear();
 private:
 	void initRenderQuad();
 	void geometryPass(ObjectLoader objloader, std::vector<Object> objects, Shader* geometryPass);
 	void lightPass(std::vector<Object> objects, Shader* lightPass);
 	void bindTextures(Shader* lightPass);
 	
-
 private: 
 
 	unsigned int FBO;
@@ -40,17 +34,16 @@ private:
 
 	unsigned int attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2};	
 	
-	
 	unsigned int rQuadVAO;
 	unsigned int rQUadVBO;
 
 	float rQuadData[24] = {
-	//VP			UV
-	-1.0f,  1.0f,  0.0f, 1.0f,
-	-1.0f, -1.0f,  0.0f, 0.0f,
+		//VP			UV
+		-1.0f,  1.0f,  0.0f, 1.0f,
+		-1.0f, -1.0f,  0.0f, 0.0f,
 		1.0f, -1.0f,  1.0f, 0.0f,
 
-	-1.0f,  1.0f,  0.0f, 1.0f,
+		-1.0f,  1.0f,  0.0f, 1.0f,
 		1.0f, -1.0f,  1.0f, 0.0f,
 		1.0f,  1.0f,  1.0f, 1.0f
 	};

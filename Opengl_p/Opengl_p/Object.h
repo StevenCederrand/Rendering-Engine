@@ -18,7 +18,7 @@ public:
 	void calculateTangentBasis();
 	void setMesh(Mesh mesh);
 	void setMaterial(Material material);
-	
+	void destroyLight();
 
 	Object& operator=(const Object &other);
 

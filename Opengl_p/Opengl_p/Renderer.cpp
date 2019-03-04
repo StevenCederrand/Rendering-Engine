@@ -8,6 +8,11 @@ Renderer::~Renderer() {
 	glDeleteFramebuffers(1, &this->FBO);
 }
 
+void Renderer::clear() {
+	glDeleteVertexArrays(1, &this->rQuadVAO);
+	glDeleteBuffers(1, &this->rQUadVBO);
+
+}
 void Renderer::start(int scrX, int scrY) {
 	this->scrX = scrX;
 	this->scrY = scrY;
@@ -51,139 +56,6 @@ void Renderer::start(int scrX, int scrY) {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	this->initRenderQuad();
-}
-
-void Renderer::render(ObjectLoader *objloader, std::vector<Object> objects) {
-	this->clearBuffers();
-	std::cout << objects.size() << std::endl;
-
-	int step = 0;
-	//Itterate through every object
-	for (int i = 0; i < objects.size(); i++) {
-		objloader->bindVAO(i);
-		objloader->bindVBO(i);
-		
-		glDrawArrays(GL_TRIANGLES, step, objects.at(i).getMesh().verts.size());
-
-		step = objects.at(i).getMesh().verts.size();
-		objloader->unbindVAO();
-		objloader->unbindVBO();
-	}
-}
-
-void Renderer::render(ObjectLoader objloader, ObjectManager *objManager, Shader *shader) {
-
-	this->clearBuffers();
-
-	//Itterate through every object
-	for (int i = 0; i < objManager->getObjects().size(); i++) {
-		objloader.bindVAO(i);
-		objloader.bindVBO(i);
-
-		if (objManager->getObjects().at(i).type == ObjectTypes::LightSource) {
-			//std::cout << this->getNextLight() << std::endl;
-
-
-			shader->setVec3("pointLights[0].lPos", objManager->getObjects().at(i).position);
-			shader->setFloat("pointLights[0].lConstant", objManager->getObjects().at(i).pointLight->constant);
-			shader->setFloat("pointLights[0].lLinear", objManager->getObjects().at(i).pointLight->linear);
-			shader->setFloat("pointLights[0].lQuadratic", objManager->getObjects().at(i).pointLight->quadratic);
-
-			shader->setVec3("pointLights[1].lPos", objManager->getObjects().at(i).position);
-			shader->setFloat("pointLights[1].lConstant", objManager->getObjects().at(i).pointLight->constant);
-			shader->setFloat("pointLights[1].lLinear", objManager->getObjects().at(i).pointLight->linear);
-			shader->setFloat("pointLights[1].lQuadratic", objManager->getObjects().at(i).pointLight->quadratic);
-			shader->setInt("type", 2);
-		}
-		else if (objManager->getObjects().at(i).type == ObjectTypes::HeightMapBased) {
-			shader->setInt("type", 1);
-		}
-		else if (objManager->getObjects().at(i).type == ObjectTypes::Standard) {
-			shader->setInt("type", 0);
-		}
-		if (objManager->getObjects().at(i).name == "L2") {
-			objManager->getObjects().at(i).position = glm::vec3(10, 3, 10);
-
-			objManager->getObjects().at(i).modelMatrix = glm::translate(objManager->getObjects().at(i).position);
-			shader->setVec3("lightPos", objManager->getObjects().at(i).position);
-		}
-		//shader->setInt("lights", 2);
-		shader->setMat4("worldMatrix", objManager->getObjects().at(i).modelMatrix);
-
-		glDrawArrays(GL_TRIANGLES, 0, objManager->getObjects().at(i).getMesh().verts.size());
-
-		objloader.unbindVAO();
-		objloader.unbindVBO();
-	}
-}
-
-void Renderer::render(ObjectLoader objloader, std::vector<Object> objects, Shader* shader) {
-	//Use the framebuffer that we created
-	glBindFramebuffer(GL_FRAMEBUFFER, this->FBO);
-	glEnable(GL_DEPTH_TEST);
-
-	this->clearBuffers();
-	shader->use();
-
-	objloader.bindVAO(0);
-	objloader.bindVBO(0);
-	if (objects.at(0).type == ObjectTypes::HeightMapBased) {
-		shader->setInt("type", 1);
-	}
-	else if (objects.at(0).type == ObjectTypes::Standard) {
-		shader->setInt("type", 0);
-	}
-	shader->setMat4("worldMatrix", objects.at(0).modelMatrix);
-
-	glDrawArrays(GL_TRIANGLES, 0, objects.at(0).getMesh().verts.size());
-	objloader.unbindVAO();
-	objloader.unbindVBO();
-
-	/*
-	//Itterate through every object
-	for (int i = 0; i < objects.size(); i++) {
-		objloader.bindVAO(i);
-		objloader.bindVBO(i);
-
-		if (objects.at(i).name == "L2") {
-			objects.at(i).position = glm::vec3(45, 3, 10);
-
-			objects.at(i).modelMatrix = glm::translate(objects.at(i).position);
-			shader->setVec3("lightPos", objects.at(i).position);
-
-			shader->setVec3("pointLights[1].lPos", objects.at(i).position);
-			shader->setFloat("pointLights[1].lConstant", objects.at(i).pointLight->constant);
-			shader->setFloat("pointLights[1].lLinear", objects.at(i).pointLight->linear);
-			shader->setFloat("pointLights[1].lQuadratic", objects.at(i).pointLight->quadratic);
-
-		}
-
-		if (objects.at(i).name == "L1") {
-			//std::cout << this->getNextLight() << std::endl;
-			shader->setVec3("pointLights[0].lPos", objects.at(i).position);
-			shader->setFloat("pointLights[0].lConstant", objects.at(i).pointLight->constant);
-			shader->setFloat("pointLights[0].lLinear", objects.at(i).pointLight->linear);
-			shader->setFloat("pointLights[0].lQuadratic", objects.at(i).pointLight->quadratic);
-
-			lightCount++; //Problem here
-
-			shader->setInt("type", 2);
-		}
-		else if (objects.at(i).type == ObjectTypes::HeightMapBased) {
-			shader->setInt("type", 1);
-		}
-		else if (objects.at(i).type == ObjectTypes::Standard) {
-			shader->setInt("type", 0);
-		}
-
-		//shader->setInt("lights", 2);
-		shader->setMat4("worldMatrix", objects.at(i).modelMatrix);
-
-		glDrawArrays(GL_TRIANGLES, 0, objects.at(i).getMesh().verts.size());
-		objloader.unbindVAO();
-		objloader.unbindVBO();
-	}*/
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void Renderer::deferredRender(ObjectLoader objloader, std::vector<Object> objects, ShaderManager* shaderManager) {
@@ -251,7 +123,6 @@ void Renderer::lightPass(std::vector<Object> objects, Shader* lightPass) {
 				lightPass->setFloat("pointLights[1].constant", objects.at(i).pointLight->constant);
 				lightPass->setFloat("pointLights[1].linear", objects.at(i).pointLight->linear);
 				lightPass->setFloat("pointLights[1].quadratic", objects.at(i).pointLight->quadratic);
-
 			}
 		}
 	}
@@ -273,8 +144,6 @@ void Renderer::bindTextures(Shader* lightPass) {
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, this->colourBuffer);
 }
-
-
 
 void Renderer::clearBuffers() {
 	glClearColor(0.1f, 0.1f, 0.1f, 1);
