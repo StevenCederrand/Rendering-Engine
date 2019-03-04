@@ -53,7 +53,7 @@ public:
 private:
 	void start(); //Exists to reduce duplication
 	void loadObjects();
-	void depthMap();
+	void depthMapFunction(unsigned int depthWidth, unsigned int depthHeight, unsigned int &depthMap, unsigned int &depthFramebuffer);
 	
 //Private data
 private:

@@ -5,6 +5,7 @@ layout(location=1) in vec3 normal;
 layout(location=2) in vec2 uv;
 
 uniform int type;
+//uniform vec4 lightMatrixes;
 
 out vec2 geom_uv;   
 out vec3 geom_normals;
@@ -17,6 +18,7 @@ out GEOM_DATA {
 	vec3 normals;
 	vec2 uv;
 	int type;
+	//vec4 FragLightPos;
 } geom_data;
 
 
@@ -42,5 +44,7 @@ void main() {
 		heighMapBased();
 	}
 	geom_data.type = type;
+	//geom_data.FragLightPos= lightMatrixes* vec4(geom_data.position,1.0f);
+
 }
 

@@ -19,6 +19,7 @@ public:
 	void update();
 	void inputKey(ValidKeys& key);
 	void close();
+	void setViewport1(int x, int y);
 	std::pair<int, int> getResolution() const;
 
 	GLFWwindow* getWindow() const;

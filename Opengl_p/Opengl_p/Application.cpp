@@ -35,7 +35,7 @@ void Application::start() {
 	//this->viewMatrix = glm::lookAt(glm::vec3(0, 0, 3), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 	this->camera = new Camera(glm::vec3(0, 0, 3), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0), this->window->getWindow());
 
-	this->prjMatrix = glm::perspective(glm::radians(65.0f), (float)this->window->getResolution().first / (float)this->window->getResolution().second, 0.1f, 20.0f);
+	this->prjMatrix = glm::perspective(glm::radians(65.0f), (float)this->window->getResolution().first / (float)this->window->getResolution().second, 0.1f, 50.0f);
 	
 	//Set View Matrix
 	this->shader->setMat4("viewMatrix", this->camera->getViewMatrix());
@@ -106,6 +106,18 @@ void Application::update() {
 	this->shader->setInt("colorTexture", 0);
 	this->shader->setInt("normalMap", 1);
 	
+	//shadows
+	/*
+	unsigned int depthWidth = 1024, depthHeight = 1024;
+	unsigned int depthMap;
+	unsigned int depthFramebuffer;
+	depthMapFunction(depthWidth, depthHeight, depthMap, depthFramebuffer);
+
+	shader->use();
+	shader->setInt("shadowMap", 2);
+	//end
+	*/
+	
 	this->renderer.start();
 
 
@@ -113,6 +125,9 @@ void Application::update() {
 
 	this->deltaTime->start();
 	this->deltaTime->end();
+
+	
+
 	
 	while (!glfwWindowShouldClose(this->window->getWindow())) {
 
@@ -129,11 +144,44 @@ void Application::update() {
 		//Render the VAO with the loaded shader
 		this->render();
 
+
+
+		//shadows 
+		//unsigned int depthWidth = 1024, depthHeight = 1024;
+		/*
+		glm::mat4 lightprjMatrix = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 50.0f);
+		glm::mat4 lightViewMatrix = glm::lookAt(glm::vec3(-2.0f, 4.0f, -1.0f),
+												glm::vec3(0.0f, 0.0f, 0.0f), 
+												glm::vec3(0.0f, 1.0f, 0.0f));
+		glm::mat4 lightMatrixes = lightprjMatrix * lightViewMatrix;
+
+
+		this->window->setViewport1(depthWidth, depthHeight);
+		glBindFramebuffer(GL_FRAMEBUFFER, depthFramebuffer);
+		glClear(GL_DEPTH_BUFFER_BIT);
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, textures.at(1));											//change to a new shader
+		this->renderer.render(this->objectManager->getObjectloader(), this->objectManager->getObjects(), this->shader);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+		std::pair <int, int> temp;
+		temp = window->getResolution();
+		this->window->setViewport1(temp.first, temp.second);
+		this->renderer.clearBuffers();
+		shader->use();
+
+		this->shader->setMat4("viewMatrix", this->camera->getViewMatrix());
+		this->shader->setMat4("prjMatrix", this->prjMatrix);
+		
+		this->shader->setMat4("lightMatrixes", lightMatrixes);
+
+		*/
+
 		this->deltaTime->end();
 		//Deltatime in ms
 		
 		this->deltaT = this->deltaTime->deltaTime();
-		std::cout << this->deltaT << std::endl;
+		//std::cout << this->deltaT << std::endl;
 		
 	}
 	this->objectManager->destroy();
@@ -141,18 +189,23 @@ void Application::update() {
 }
 
 void Application::render() {
+	int temp1;
 	this->renderer.clearBuffers();
 
 	//Assign Textures
 	for (int i = 0; i < this->textures.size(); i++) {
+		//from 0 to 1
 		glActiveTexture(GL_TEXTURE0 + i);
 		glBindTexture(GL_TEXTURE_2D, textures.at(i));
+		temp1 = i;
 	}
-	
+	//glActiveTexture(GL_TEXTURE0+(temp1+1));
+	//glBindTexture(GL_TEXTURE_2D, depthMapT);
 	this->shader->use();
 	
 
 	this->renderer.render(this->objectManager->getObjectloader(), this->objectManager->getObjects(), this->shader);
+
 }
 
 //Have this be in an object class
@@ -163,7 +216,7 @@ void Application::cameraHandler() {
 	if (this->currentKey != ValidKeys::DUMMY) {
 		glm::vec3 cameraPos = camera->getCameraPosition();
 		float yValue = objectManager->getElevation(cameraPos);
-		std::cout << this->deltaTime->deltaTime() << std::endl;
+		//std::cout << this->deltaTime->deltaTime() << std::endl;
 		camera->handleKeys(this->currentKey, yValue, this->deltaT);
 	}
 		
@@ -174,12 +227,14 @@ void Application::cameraHandler() {
 	this->shader->setMat4("viewMatrix", this->camera->getViewMatrix());
 }
 
-void Application::depthMap()
-{
-	unsigned int depthWidth = 1024, depthHeight = 1024;
 
-	unsigned int depthMap;
-	unsigned int depthFramebuffer;
+
+void Application::depthMapFunction(unsigned int depthWidth, unsigned int depthHeight, unsigned int &depthMap, unsigned int &depthFramebuffer)
+{
+	//unsigned int depthWidth = 1024, depthHeight = 1024;
+
+	//unsigned int depthMap;
+	//unsigned int depthFramebuffer;
 	glGenFramebuffers(1, &depthFramebuffer);
 
 	glGenTextures(1, &depthMap);
@@ -198,4 +253,5 @@ void Application::depthMap()
 
 
 }
+
 
