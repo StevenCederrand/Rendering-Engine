@@ -16,12 +16,11 @@ Object::Object(const Object& other) {
 		this->modelMatrix = other.modelMatrix;
 		this->type = other.type;
 		this->name = other.name;
+		this->position = other.position;
 		if (this->pointLight != nullptr) {
 			this->pointLight = other.pointLight;
 		}
 	}
-
-
 }
 
 Object::~Object() {
@@ -97,6 +96,15 @@ void Object::destroyLight() {
 	delete this->pointLight;
 }
 
+void Object::setPosition(glm::vec3 position) {
+	this->position = position;
+	this->modelMatrix = glm::translate(this->position);
+}
+
+glm::vec3 Object::getPosition() const {
+	return this->position;
+}
+
 Object& Object::operator=(const Object &other) {
 	//Self-assignment check
 	if (this != &other) {
@@ -108,6 +116,7 @@ Object& Object::operator=(const Object &other) {
 		this->modelMatrix = other.modelMatrix;
 		this->type = other.type;
 		this->name = other.name;
+		this->position = other.position;
 		if (this->pointLight != nullptr) {
 			this->pointLight = other.pointLight;
 		}

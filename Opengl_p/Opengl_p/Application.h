@@ -54,6 +54,7 @@ public:
 private:
 	void start(); //Exists to reduce duplication
 	void loadObjects();
+	void end();
 	
 //Private data
 private:

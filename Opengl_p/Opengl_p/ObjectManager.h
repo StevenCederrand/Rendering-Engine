@@ -12,7 +12,7 @@ public:
 
 	~ObjectManager();
 
-	std::vector<Object> getObjects() const;
+	std::vector<Object> getObjects(); //Should really be const
 	
 	void start();
 	//Read files -> input the type of object

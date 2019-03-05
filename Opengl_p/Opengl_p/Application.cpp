@@ -55,6 +55,7 @@ void Application::setupShaders() {
 	Shader* lightPass = this->shaderManager->insertShader(
 		SHADERPATH + "LightPassVS.glsl",
 		SHADERPATH + "LightPassFS.glsl", "LightPass");
+
 	lightPass->use();
 	lightPass->setInt("positionBuffer", 0);
 	lightPass->setInt("normalBuffer", 1);
@@ -65,8 +66,8 @@ void Application::setupShaders() {
 void Application::loadObjects() {
 	this->objectManager->readFromFile("ExampleOBJ.obj", "Cube", ObjectTypes::Standard, this->shaderManager->getSpecific("GeometryPass"));
 	this->objectManager->readFromFile("HeightMap3.png", "Terrain", ObjectTypes::HeightMapBased, this->shaderManager->getSpecific("GeometryPass"));
-	this->objectManager->readFromFile("ExampleOBJ.obj", "L1", ObjectTypes::LightSource, this->shaderManager->getSpecific("GeometryPass"));
-	this->objectManager->readFromFile("ExampleOBJ.obj", "L2", ObjectTypes::LightSource, this->shaderManager->getSpecific("GeometryPass"));
+	this->objectManager->readFromFile("ExampleOBJ.obj", "L1", ObjectTypes::LightSource, this->shaderManager->getSpecific("LightPass"));
+	this->objectManager->readFromFile("ExampleOBJ.obj", "L2", ObjectTypes::LightSource, this->shaderManager->getSpecific("LightPass"));
 }
 
 void Application::setupTextures(unsigned int &texture, std::string name) {
@@ -102,7 +103,7 @@ void Application::update() {
 	for (int i = 0; i < 2; i++) {
 		unsigned int tex;
 		if (i == 0) {
-			this->setupTextures(tex, this->objectManager->getObjects().at(1).getTexture(Texturetypes::Diffuse).name);//this->objs.at(0).getTexture(Texturetypes::Diffuse).name);
+			this->setupTextures(tex, this->objectManager->getObjects().at(1).getTexture(Texturetypes::Diffuse).name);
 		}
 		else {
 			this->setupTextures(tex, this->objectManager->getObjects().at(1).getTexture(Texturetypes::Normal).name);
@@ -122,35 +123,18 @@ void Application::update() {
 
 	this->deltaTime->start();
 	this->deltaTime->end();
+
 	Shader* lightPass = this->shaderManager->getSpecific("LightPass");
 	lightPass->use();
 	lightPass->setInt("lightCount", this->objectManager->getLightCount());
-	
-	//for (int i = 0; i < this->objectManager->getObjects().size(); i++) {
-	//	if (this->objectManager->getObjects().at(i).type == ObjectTypes::LightSource) {
-	//		if (this->objectManager->getObjects().at(i).name == "L1") {
-	//			this->objectManager->getObjects().at(i).position = glm::vec3(45, 3, 10);
-	//			this->objectManager->getObjects().at(i).modelMatrix = glm::translate(this->objectManager->getObjects().at(i).position);
-	//			
-	//			lightPass->setVec3("pointLights[0].position", this->objectManager->getObjects().at(i).position);
-	//			lightPass->setFloat("pointLights[0].constant", this->objectManager->getObjects().at(i).pointLight->constant);
-	//			lightPass->setFloat("pointLights[0].linear", this->objectManager->getObjects().at(i).pointLight->linear);
-	//			lightPass->setFloat("pointLights[0].quadratic", this->objectManager->getObjects().at(i).pointLight->quadratic);
-	//		}
 
-	//		if (this->objectManager->getObjects().at(i).name == "L2") {
-	//			lightPass->setVec3("pointLights[1].position", this->objectManager->getObjects().at(i).position);
-	//			lightPass->setFloat("pointLights[1].constant", this->objectManager->getObjects().at(i).pointLight->constant);
-	//			lightPass->setFloat("pointLights[1].linear", this->objectManager->getObjects().at(i).pointLight->linear);
-	//			lightPass->setFloat("pointLights[1].quadratic", this->objectManager->getObjects().at(i).pointLight->quadratic);
-	//		}
-	//	}
-	//}
+
 
 	while (!glfwWindowShouldClose(this->window->getWindow())) {
 		this->window->update();
 
 		this->deltaTime->start();
+
 
 		//Check input
 		this->window->inputKey(this->currentKey);
@@ -168,14 +152,8 @@ void Application::update() {
 
 		this->deltaT = this->deltaTime->deltaTime();
 	}
-	for (int i = 0; i < this->objectManager->getObjects().size(); i++) {
-		if (this->objectManager->getObjects().at(i).type == ObjectTypes::LightSource) {
-			this->objectManager->destroyLight(i);
-		}
-	}
-	this->objectManager->destroy();
-	this->renderer.clear();
-	this->window->close();
+	//Quit the program
+	this->end();
 }
 
 void Application::render() {
@@ -208,4 +186,13 @@ void Application::cameraHandler(Shader* geometryPass) {
 	geometryPass->setMat4("viewMatrix", this->camera->getViewMatrix());
 }
 
-
+void Application::end() {
+	for (int i = 0; i < this->objectManager->getObjects().size(); i++) {
+		if (this->objectManager->getObjects().at(i).type == ObjectTypes::LightSource) {
+			this->objectManager->destroyLight(i);
+		}
+	}
+	this->objectManager->destroy();
+	this->renderer.clear();
+	this->window->close();
+}

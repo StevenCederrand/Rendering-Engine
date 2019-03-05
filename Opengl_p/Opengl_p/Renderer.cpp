@@ -92,8 +92,7 @@ void Renderer::geometryPass(ObjectLoader objloader, std::vector<Object> objects,
 			glDrawArrays(GL_TRIANGLES, 0, objects.at(i).getMesh().verts.size());
 			objloader.unbindVAO();
 			objloader.unbindVBO();
-		}
-		
+		}	
 	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -105,21 +104,26 @@ void Renderer::lightPass(std::vector<Object> objects, Shader* lightPass) {
 	glDisable(GL_DEPTH_TEST);
 	
 	glClear(GL_COLOR_BUFFER_BIT);
+
 	//Loop through all of the lights in the scene
 	for (int i = 0; i < objects.size(); i++) {
 		if (objects.at(i).type == ObjectTypes::LightSource) {
-			if (objects.at(i).name == "L1") {
-				objects.at(i).position = glm::vec3(45, 3, 10);
-				objects.at(i).modelMatrix = glm::translate(objects.at(i).position);
 
-				lightPass->setVec3("pointLights[0].position", objects.at(i).position);
+			if (objects.at(i).name == "L1") {
+
+				//If we're not in the right position --- Reduced CPU calculations
+				if (objects.at(i).getPosition() != glm::vec3(45, 3, 10)) {
+					objects.at(i).setPosition(glm::vec3(45, 3, 10));
+				}
+
+				lightPass->setVec3("pointLights[0].position", objects.at(i).getPosition());
 				lightPass->setFloat("pointLights[0].constant", objects.at(i).pointLight->constant);
 				lightPass->setFloat("pointLights[0].linear", objects.at(i).pointLight->linear);
 				lightPass->setFloat("pointLights[0].quadratic", objects.at(i).pointLight->quadratic);
 			}
 
 			if (objects.at(i).name == "L2") {
-				lightPass->setVec3("pointLights[1].position", objects.at(i).position);
+				lightPass->setVec3("pointLights[1].position", objects.at(i).getPosition());
 				lightPass->setFloat("pointLights[1].constant", objects.at(i).pointLight->constant);
 				lightPass->setFloat("pointLights[1].linear", objects.at(i).pointLight->linear);
 				lightPass->setFloat("pointLights[1].quadratic", objects.at(i).pointLight->quadratic);

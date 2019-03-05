@@ -9,7 +9,15 @@ uniform sampler2D colourBuffer;
 uniform vec3 cameraPos; //used to determine where in the world the camera is
 uniform int lightCount; //Used for looping through all of the lights
 
-float lightStr = 0.75f;
+//Material values
+uniform vec3 ambientCol;
+uniform vec3 diffuseCol;
+uniform vec3 specCol;
+uniform float transparency;
+uniform float specularWeight;
+
+
+float lightStr = 0.5f;
 vec3 lightColour = vec3(1);
 
 const int LIGHTS = 32;
@@ -27,35 +35,21 @@ uniform Pointlight pointLights[LIGHTS];
 
 vec3 phong(vec3 position, vec3 normal, vec4 colour) {
 	vec3 result = vec3(0);
+	vec3 ambient = colour.rgb * lightStr;
+	vec3 viewDirection = normalize(cameraPos - position);
 
-	//Ambient Colour
-	vec3 ambient = colour.rgb * lightStr * lightColour;
-	result = ambient;
+	vec3 diffuse = vec3(0);
+	
+	
 	for(int i = 0; i < lightCount; i++) {
-		//Diffuse Colour
 		vec3 lightDirection = normalize(pointLights[i].position - position);
-		float angle = max(dot(normal, lightDirection), 0.0);
-		vec3 diffuse = colour.rgb * angle * lightStr;
-
-		//Specular Colour
-		vec3 viewDirection = normalize(cameraPos - position);
-		vec3 reflectDirection = reflect(-lightDirection, normal);
-		float specW = 32;
-		float specStr = 10.0f;
-		float spec = pow(max(dot(viewDirection, reflectDirection), 0), specW);
-		vec3 specular = specStr * spec * lightColour;
-
-		float rayDistance = length(pointLights[i].position - position);
-		float attenuation =  1.0/
-		(pointLights[i].constant + (pointLights[i].linear * rayDistance) + pointLights[i].quadratic * pow(rayDistance, 2));
-		result += diffuse;
+		float angle = max(dot(lightDirection, normal), 0.0);
+		diffuse += colour.rgb * angle * lightStr;
+		float dist = length(pointLights[i].position - position);
+		float attenuation = 1/(pointLights[i].constant + (pointLights[i].linear * dist) + (pointLights[i].quadratic * dist * dist));
+		diffuse *= attenuation;
 	}
-//
-//	ambient *= attenuation;
-//	diffuse *= attenuation;
-//	specular *= attenuation;
-	//result = diffuse;
-
+	result = ambient + diffuse;
 	return result;
 }
 
@@ -64,7 +58,6 @@ void main() {
 	vec3 posCol = texture(positionBuffer, frag_uv).rgb;
 	vec3 normCol = normalize(texture(normalBuffer, frag_uv).rgb);
 	vec4 colour = texture(colourBuffer, frag_uv);
-	//vec3 lCol = normalize(pointLights[0].position);
 
 	vec3 result = phong(posCol, normCol, colour);
 

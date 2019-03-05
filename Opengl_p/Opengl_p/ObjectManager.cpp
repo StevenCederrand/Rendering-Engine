@@ -15,7 +15,7 @@ void ObjectManager::start() {
 
 }
 
-std::vector<Object> ObjectManager::getObjects() const {
+std::vector<Object> ObjectManager::getObjects() {
 	return this->objects;
 }
 
@@ -35,12 +35,12 @@ void ObjectManager::readFromFile(std::string filename, std::string objName, Obje
 	this->objectloader->loadObject(obj, shader);
 
 	if (objectType == ObjectTypes::LightSource) {
-		obj.position = glm::vec3(0, 10, 0);
-		obj.modelMatrix = glm::translate(obj.position);
+		obj.setPosition(glm::vec3(0, 10, 0));
+		
 		obj.pointLight = new PointLight();
 		obj.pointLight->constant = 1.0f;
-		obj.pointLight->linear = 0.09f;
-		obj.pointLight->quadratic = 0.032f;
+		obj.pointLight->linear = 0.7f;
+		obj.pointLight->quadratic = 1.8f;
 		this->lightcount++;
 	}
 	obj.name = objName;
