@@ -44,7 +44,8 @@ void main() {
 
 	vec3 cameraDirection = normalize(cameraPos - position);
 	for(int i = 0; i < lightCount; i++) {
-        // diffuse
+		
+		// diffuse
         vec3 lightDir = normalize(pointLights[i].position.xyz - position);
         vec3 diffuse = max(dot(normal, lightDir), 0.0) * Diffuse.rgb * lightColour;
         // specular
@@ -58,7 +59,7 @@ void main() {
         diffuse *= attenuation;
 
 
-//        specular *= attenuation;
+		//specular *= attenuation;
         result += diffuse + Specular;
 	}
 	

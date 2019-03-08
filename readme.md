@@ -28,7 +28,16 @@ Add the vertex vector to the Mesh and then add the
 mesh to our Object and return the Object.
 - [ ] Normal Mapping - Steven
 - [ ] Shadow Mapping - Ludwig 
-- [ ] Front and Back Rendering - Ludwig
+- [x] Front and Back Rendering - Steven
+>Front to back rendering is a simple technique to implement. My 
+implementation of this technique is straight forward as well. 
+Before we issue the draw calls and send the object data to the gpu
+we sort the vector of objects based on the quadratic distance to the
+camera. That is we take mathematical vector between the camera and 
+object[i], take thereafter the dot product between it and itself. 
+This will result in the value beneath the root. This is a way to
+reduce cumbersome mathematical operations, that are to be handled
+by the CPU. 
 - [x] Back Face Culling in GS - Steven 
 >This was a very simple problem to be honest. What I did to solve this 
 was to send 3 vertices to the geometry shader. Then I took the normal 

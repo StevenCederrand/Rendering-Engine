@@ -2,13 +2,10 @@
 
 ObjectManager::ObjectManager() {
 	this->fileloader = new Fileloader();
-	this->objectloader = new ObjectLoader();
-
 }
 
 ObjectManager::~ObjectManager() {
 	delete this->fileloader;
-	delete this->objectloader;
 }
 
 void ObjectManager::start() {
@@ -58,17 +55,9 @@ void ObjectManager::readFromFile(std::string filename, std::string objName, Obje
 	this->objects.push_back(obj);
 }
 
-void ObjectManager::destroy() {
-	this->objectloader->clean();
-}
-
 float ObjectManager::getElevation(glm::vec3 position)
 {
 	return fileloader->getElevation(position);
-}
-
-ObjectLoader  ObjectManager::getObjectloader() {
-	return *this->objectloader;
 }
 
 int ObjectManager::getLightCount() const

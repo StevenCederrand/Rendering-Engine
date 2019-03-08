@@ -166,7 +166,6 @@ void Application::render() {
 void Application::cameraHandler(Shader* geometryPass) {
 
 	this->camera->update();
-
 	if (this->currentKey != ValidKeys::DUMMY) {
 		glm::vec3 cameraPos = camera->getCameraPosition();
 		float yValue = objectManager->getElevation(cameraPos);
@@ -186,7 +185,6 @@ void Application::end() {
 			this->objectManager->destroyLight(i);
 		}
 	}
-	this->objectManager->destroy();
 	this->renderer.clear();
 	this->window->close();
 }

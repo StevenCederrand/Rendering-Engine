@@ -17,10 +17,7 @@ void Renderer::clear() {
 void Renderer::start(int scrX, int scrY) {
 	this->scrX = scrX;
 	this->scrY = scrY;
-
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	
-
 	glGenFramebuffers(1, &this->FBO);
 	glBindFramebuffer(GL_FRAMEBUFFER, this->FBO);
 
@@ -120,20 +117,15 @@ void Renderer::lightPass(std::vector<Object> objects, Shader* lightPass) {
 			if (objects.at(i).name == "L1") {
 				glm::vec4 position = glm::vec4(objects.at(i).getPosition(), 0);
 				lightPass->setVec4("pointLights[0].position", position);
+				//Attenuation factors
 				lightPass->setVec4("pointLights[0].factors", objects.at(i).pointLight->factors);
-				//std::cout << vec3ToString(objects.at(i).getPosition());
-				//lightPass->setFloat("pointLights[0].constant", objects.at(i).pointLight->constant);
-				//lightPass->setFloat("pointLights[0].linear", objects.at(i).pointLight->linear);
-				//lightPass->setFloat("pointLights[0].quadratic", objects.at(i).pointLight->quadratic);
 			}
 
 			if (objects.at(i).name == "L2") {
 				glm::vec4 position = glm::vec4(objects.at(i).getPosition(), 0);
 				lightPass->setVec3("pointLights[1].position", position);
+				//Attenuation factors
 				lightPass->setVec4("pointLights[1].factors", objects.at(i).pointLight->factors);
-				//lightPass->setFloat("pointLights[1].constant", objects.at(i).pointLight->constant);
-				//lightPass->setFloat("pointLights[1].linear", objects.at(i).pointLight->linear);
-				//lightPass->setFloat("pointLights[1].quadratic", objects.at(i).pointLight->quadratic);
 			}
 		}
 	}
