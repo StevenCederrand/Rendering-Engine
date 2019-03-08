@@ -60,7 +60,7 @@ void culling() {
 			gl_Position = vertex;
 			frag_data.frag_uv = geom_data[i].uv;
 			frag_data.frag_position = vec3(worldMatrix * vec4(geom_data[i].position, 1));
-			frag_data.frag_normals = geom_data[i].normals;
+			frag_data.frag_normals =  mat3(transpose(inverse(matrices.mat_world))) * geom_data[i].normals;
 			frag_data.frag_type = geom_data[i].type;
 
 			matrices.mat_world = worldMatrix;

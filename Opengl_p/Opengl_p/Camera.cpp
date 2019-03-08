@@ -94,8 +94,8 @@ void Camera::mouse_callback(GLFWwindow * window)// ,double xpos, double ypos)
 		ypos = mouse_y;
 	}
 
-	float x_offset = xpos - mouse_x;
-	float y_offset = mouse_y - ypos;
+	float x_offset = (float)xpos - mouse_x;
+	float y_offset = mouse_y - (float)ypos;
 
 	float mouse_sensetivity = 0.1f;
 	x_offset *= mouse_sensetivity;

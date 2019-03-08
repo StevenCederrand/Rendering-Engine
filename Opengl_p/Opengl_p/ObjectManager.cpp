@@ -19,6 +19,10 @@ std::vector<Object> ObjectManager::getObjects() {
 	return this->objects;
 }
 
+std::vector<Object>& ObjectManager::handleObjects() {
+	return this->objects;
+}
+
 
 void ObjectManager::readFromFile(std::string filename, std::string objName, ObjectTypes objectType, Shader* shader) {
 	
@@ -28,11 +32,16 @@ void ObjectManager::readFromFile(std::string filename, std::string objName, Obje
 	if (objectType == ObjectTypes::HeightMapBased) {
 		obj = fileloader->loadMap(OBJECTSPATH + filename);
 	}
+	else if(objectType == ObjectTypes::Standard){
+		obj = fileloader->readFile(OBJECTSPATH + filename);
+		obj.setPosition(glm::vec3(10, 2, 10));
+	}
 	else {
 		obj = fileloader->readFile(OBJECTSPATH + filename);
 	}
 	obj.type = objectType;
-	this->objectloader->loadObject(obj, shader);
+	//this->objectloader->loadObject(obj, shader);
+	obj.init();
 
 	if (objectType == ObjectTypes::LightSource) {
 		obj.setPosition(glm::vec3(0, 10, 0));
@@ -42,6 +51,9 @@ void ObjectManager::readFromFile(std::string filename, std::string objName, Obje
 		obj.pointLight->linear = 0.7f;
 		obj.pointLight->quadratic = 1.8f;
 		this->lightcount++;
+	}
+	if (objName == "L1") {
+		obj.setPosition(glm::vec3(45, 3, 10));
 	}
 	obj.name = objName;
 	this->objects.push_back(obj);

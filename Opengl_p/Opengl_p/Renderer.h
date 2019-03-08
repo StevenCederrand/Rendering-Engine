@@ -4,27 +4,31 @@
 #include "ObjectLoader.h"
 #include "ObjectManager.h"
 #include "ShaderManager.h"
+#include "Acceleration.h"
 
 class Renderer {
 public:
 	Renderer();
 	~Renderer();
 
-	void deferredRender(ObjectLoader objloader, 
-		std::vector<Object> objects, 
+	void deferredRender(std::vector<Object> objects, 
 		ShaderManager* shaderManager);
 
 	void start(int x, int y);
 	void clearBuffers();
 	void clear();
+
+	glm::vec3 cameraPosition;
+
 private:
 	void initRenderQuad();
-	void geometryPass(ObjectLoader objloader, std::vector<Object> objects, Shader* geometryPass);
+	void geometryPass(std::vector<Object> objects, Shader* geometryPass);
 	void lightPass(std::vector<Object> objects, Shader* lightPass);
 	void bindTextures(Shader* lightPass);
 	
 private: 
-
+	//Variables associated with deferred rendering
+#pragma region Deferred rendering
 	unsigned int FBO;
 	unsigned int RBO;
 
@@ -47,8 +51,10 @@ private:
 		1.0f, -1.0f,  1.0f, 0.0f,
 		1.0f,  1.0f,  1.0f, 1.0f
 	};
+#pragma endregion
 
-
+	Acceleration *acceleration;
+	
 	int scrX;
 	int scrY;
 

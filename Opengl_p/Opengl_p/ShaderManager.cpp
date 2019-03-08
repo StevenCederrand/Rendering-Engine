@@ -4,7 +4,7 @@ ShaderManager::ShaderManager() {
 }
 
 ShaderManager::~ShaderManager() {
-	for (int i = 0; i < this->shaders.size(); i++) {
+	for (size_t i = 0; i < this->shaders.size(); i++) {
 		delete this->shaders.at(i);
 	}
 }
@@ -28,8 +28,7 @@ std::vector<Shader*> ShaderManager::getShaders() const {
 }
 
 Shader* ShaderManager::getSpecific(std::string name) const {
-	Shader* shader;
-	for (int i = 0; i < this->shaders.size(); i++) {
+	for (size_t i = 0; i < this->shaders.size(); i++) {
 		if (this->shaders.at(i)->getName() == name) {
 			return this->shaders.at(i);
 		}

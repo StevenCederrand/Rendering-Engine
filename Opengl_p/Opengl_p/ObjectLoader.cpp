@@ -8,7 +8,7 @@ ObjectLoader::~ObjectLoader() {
 }
 
 void ObjectLoader::clean() {
-	for (int i = 0; i < this->VAOs.size(); i++) {
+	for (size_t i = 0; i < this->VAOs.size(); i++) {
 		glDeleteVertexArrays(1, &this->VAOs.at(i));
 		glDeleteBuffers(1, &this->VBOs.at(i));
 	}	
@@ -17,8 +17,7 @@ void ObjectLoader::clean() {
 void ObjectLoader::loadObject(Object obj, Shader* shader) {
 	this->genVAO();
 	this->genVBO();
-
-	
+		
 	std::vector<Vertex> meshData = obj.getMesh().verts;
 	int memorySize = meshData.size() * sizeof(Vertex);
 	
@@ -91,37 +90,3 @@ void ObjectLoader::genVBO() {
 
 	this->VBOs.push_back(tempVBO);
 }
-
-
-
-/*
-
-	GLint attributeLocation = 0;
-	if (attributeLocation == -1) {
-		std::cout << "ERROR::LOCATING::VERTEX::POS" << std::endl;
-		return;
-	}
-
-	//Set the vertices in the glsl-code
-	glVertexAttribPointer(attributeLocation, 3, GL_FLOAT, GL_FALSE, sizeof(float)*8, BUFFER_OFFSET(0));
-	glEnableVertexAttribArray(0);
-
-	//Load normals
-	attributeLocation = 1;
-	if (attributeLocation == -1) {
-		std::cout << "ERROR::LOCATING::NORMAL::POS" << std::endl;
-		return;
-	}
-	glVertexAttribPointer(attributeLocation, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, BUFFER_OFFSET(sizeof(glm::vec3)));
-	glEnableVertexAttribArray(attributeLocation);
-
-	//Load uv's
-	attributeLocation = 2;
-	if (attributeLocation == -1) {
-		std::cout << "ERROR::LOCATING::UV::POS" << std::endl;
-		return;
-	}
-	glVertexAttribPointer(attributeLocation, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 8, BUFFER_OFFSET(sizeof(float) * 6));
-	glEnableVertexAttribArray(attributeLocation);
-
-*/

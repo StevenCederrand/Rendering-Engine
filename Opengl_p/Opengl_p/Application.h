@@ -19,6 +19,7 @@
 #include "Renderer.h"
 #include "ShaderManager.h"
 #include "Deltatime.h"
+#include "Acceleration.h"
 #pragma endregion
 
 #pragma region Default_Includes 
@@ -27,7 +28,6 @@
 #include <chrono>
 #include <string>
 #include <vector>
-#include "stb_image.h"
 #pragma endregion
 
 
@@ -74,6 +74,7 @@ private:
 	ObjectManager* objectManager;
 	Deltatime* deltaTime;
 	ShaderManager *shaderManager;
-	float deltaT;
+	Acceleration *acceleration;
+	double deltaT;
 };
 #endif

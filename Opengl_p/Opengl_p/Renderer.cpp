@@ -5,6 +5,7 @@ Renderer::Renderer() {
 }
 
 Renderer::~Renderer() {
+	delete this->acceleration;
 	glDeleteFramebuffers(1, &this->FBO);
 }
 
@@ -13,6 +14,7 @@ void Renderer::clear() {
 	glDeleteBuffers(1, &this->rQUadVBO);
 
 }
+
 void Renderer::start(int scrX, int scrY) {
 	this->scrX = scrX;
 	this->scrY = scrY;
@@ -56,31 +58,41 @@ void Renderer::start(int scrX, int scrY) {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	this->initRenderQuad();
+	this->acceleration = new Acceleration();
 }
 
-void Renderer::deferredRender(ObjectLoader objloader, std::vector<Object> objects, ShaderManager* shaderManager) {
+void Renderer::deferredRender(std::vector<Object> objects, ShaderManager* shaderManager) {
+	//Sort all of the objects based on the distance to the camera
+
+	//for (uint8_t i = 0; i < objects.size(); i++)
+	//{
+	//	std::cout << objects.at(i).name << std::endl;
+	//}
+
+	//this->acceleration->frontBackRendering(objects, this->cameraPosition);
+
+
 	//Geometry Pass
 	//Use the framebuffer that we created
-	this->geometryPass(objloader, objects, shaderManager->getSpecific("GeometryPass"));
+	this->geometryPass(objects, shaderManager->getSpecific("GeometryPass"));
 
 	//LightPass
 	this->lightPass(objects, shaderManager->getSpecific("LightPass"));
 }
 
 
-void Renderer::geometryPass(ObjectLoader objloader, std::vector<Object> objects, Shader* geometryPass) {
+void Renderer::geometryPass(std::vector<Object> objects, Shader* geometryPass) {
 	geometryPass->use();
 	glBindFramebuffer(GL_FRAMEBUFFER, this->FBO);
 	glEnable(GL_DEPTH_TEST);
 
 	this->clearBuffers();
 
-	for (int i = 0; i < objects.size(); i++) {
+	for (size_t i = 0; i < objects.size(); i++) {
 		ObjectTypes type = objects.at(i).type;
-		if (type != ObjectTypes::LightSource) {
-			objloader.bindVAO(i);
-			objloader.bindVBO(i);
 
+		if (type != ObjectTypes::LightSource) {
+			
 			if (type == ObjectTypes::HeightMapBased) {
 				geometryPass->setInt("type", 1);
 			}
@@ -89,41 +101,45 @@ void Renderer::geometryPass(ObjectLoader objloader, std::vector<Object> objects,
 			}
 			geometryPass->setMat4("worldMatrix", objects.at(i).modelMatrix);
 
+			objects.at(i).draw(geometryPass);
+
+		}	
+		/*if (objects.at(i).name == "L1") {
+			objloader.bindVAO(i);
+			objloader.bindVBO(i);
+			geometryPass->setInt("type", 2);
+
+			geometryPass->setMat4("worldMatrix", objects.at(i).modelMatrix);
+
 			glDrawArrays(GL_TRIANGLES, 0, objects.at(i).getMesh().verts.size());
 			objloader.unbindVAO();
 			objloader.unbindVBO();
-		}	
+		}*/
 	}
-
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void Renderer::lightPass(std::vector<Object> objects, Shader* lightPass) {
 	lightPass->use();
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glDisable(GL_DEPTH_TEST);
 	
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	//Loop through all of the lights in the scene
-	for (int i = 0; i < objects.size(); i++) {
+	for (size_t i = 0; i < objects.size(); i++) {
 		if (objects.at(i).type == ObjectTypes::LightSource) {
 
 			if (objects.at(i).name == "L1") {
 
-				//If we're not in the right position --- Reduced CPU calculations
-				if (objects.at(i).getPosition() != glm::vec3(45, 3, 10)) {
-					objects.at(i).setPosition(glm::vec3(45, 3, 10));
-				}
-
 				lightPass->setVec3("pointLights[0].position", objects.at(i).getPosition());
-				lightPass->setFloat("pointLights[0].constant", objects.at(i).pointLight->constant);
-				lightPass->setFloat("pointLights[0].linear", objects.at(i).pointLight->linear);
-				lightPass->setFloat("pointLights[0].quadratic", objects.at(i).pointLight->quadratic);
+				//std::cout << vec3ToString(objects.at(i).getPosition());
+				//lightPass->setFloat("pointLights[0].constant", objects.at(i).pointLight->constant);
+				//lightPass->setFloat("pointLights[0].linear", objects.at(i).pointLight->linear);
+				//lightPass->setFloat("pointLights[0].quadratic", objects.at(i).pointLight->quadratic);
 			}
 
 			if (objects.at(i).name == "L2") {
-				lightPass->setVec3("pointLights[1].position", objects.at(i).getPosition());
+				lightPass->setVec3("pointLights[0].position", objects.at(i).getPosition());
 				lightPass->setFloat("pointLights[1].constant", objects.at(i).pointLight->constant);
 				lightPass->setFloat("pointLights[1].linear", objects.at(i).pointLight->linear);
 				lightPass->setFloat("pointLights[1].quadratic", objects.at(i).pointLight->quadratic);
@@ -131,6 +147,7 @@ void Renderer::lightPass(std::vector<Object> objects, Shader* lightPass) {
 		}
 	}
 
+	glDisable(GL_DEPTH_TEST);
 	//RenderQuad
 	glBindVertexArray(this->rQuadVAO);
 	glBindBuffer(GL_ARRAY_BUFFER, this->rQUadVBO);

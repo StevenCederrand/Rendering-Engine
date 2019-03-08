@@ -52,9 +52,6 @@
     <Filter Include="Source Files\Imgui">
       <UniqueIdentifier>{9ab28645-dae4-4cb9-809c-2d0cb7046923}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Rendering\Parser">
-      <UniqueIdentifier>{79bc1c2a-ad27-44de-8be2-760d1ba23cb7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Imgui\Example">
       <UniqueIdentifier>{5e136011-f1d8-4a45-81aa-b868cec87844}</UniqueIdentifier>
     </Filter>
@@ -70,6 +67,15 @@
     <Filter Include="Shader\LightPass">
       <UniqueIdentifier>{1e50d3c1-181e-4b9e-9d75-9bcfa11a3d41}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Rendering\Acceleration">
+      <UniqueIdentifier>{0678c9db-578a-4d9e-b686-27b989ebc2a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Other\Parser">
+      <UniqueIdentifier>{79bc1c2a-ad27-44de-8be2-760d1ba23cb7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Rendering\Acceleration">
+      <UniqueIdentifier>{670ddc61-d457-45e3-b6f2-024599239307}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Object.cpp">
@@ -82,7 +88,7 @@
       <Filter>Source Files\Object</Filter>
     </ClCompile>
     <ClCompile Include="Fileloader.cpp">
-      <Filter>Source Files\Rendering\Parser</Filter>
+      <Filter>Source Files\Other\Parser</Filter>
     </ClCompile>
     <ClCompile Include="Application.cpp">
       <Filter>Source Files\Rendering</Filter>
@@ -134,6 +140,9 @@
     </ClCompile>
     <ClCompile Include="ShaderManager.cpp">
       <Filter>Shader\CShader</Filter>
+    </ClCompile>
+    <ClCompile Include="Acceleration.cpp">
+      <Filter>Source Files\Rendering\Acceleration</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -216,6 +225,9 @@
     </None>
     <None Include="..\..\Shader\LightPassVS.glsl">
       <Filter>Shader\LightPass</Filter>
+    </None>
+    <None Include="Acceleration.h">
+      <Filter>Header Files\Rendering\Acceleration</Filter>
     </None>
   </ItemGroup>
 </Project>

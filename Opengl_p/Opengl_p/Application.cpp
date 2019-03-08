@@ -1,8 +1,5 @@
 #include "Application.h"
 
-#define STB_IMAGE_IMPLEMENTATION
-
-
 //Creates a default window. 
 Application::Application() {
 
@@ -33,7 +30,6 @@ Application::~Application() {
 //Setup the matrixes
 void Application::start() {
 
-	//this->viewMatrix = glm::lookAt(glm::vec3(0, 0, 3), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 	this->camera = new Camera(glm::vec3(0, 0, 3), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0), this->window->getWindow());
 
 	this->prjMatrix = glm::perspective(glm::radians(65.0f), (float)this->window->getResolution().first / (float)this->window->getResolution().second, 0.1f, 50.0f);
@@ -60,7 +56,6 @@ void Application::setupShaders() {
 	lightPass->setInt("positionBuffer", 0);
 	lightPass->setInt("normalBuffer", 1);
 	lightPass->setInt("colourBuffer", 2);
-
 }
 
 void Application::loadObjects() {
@@ -72,27 +67,27 @@ void Application::loadObjects() {
 
 void Application::setupTextures(unsigned int &texture, std::string name) {
 	//Key-ShadowMap
-	glGenTextures(1, &texture);
-	glBindTexture(GL_TEXTURE_2D, texture);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	std::string path = OBJECTSPATH + name;
+	//glGenTextures(1, &texture);
+	//glBindTexture(GL_TEXTURE_2D, texture);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	//std::string path = OBJECTSPATH + name;
 
-	int width, height, nrChannels;
+	//int width, height, nrChannels;
 
-	unsigned char *data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
+	//unsigned char *data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
 
-	if (data) {
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-		glGenerateMipmap(GL_TEXTURE_2D);
-		std::cout << "GENERATED::TEXTURE" << std::endl;
-	}
-	else {
-		std::cout << "ERROR::LOADING::TEXTURE" << std::endl;
-	}
-	stbi_image_free(data);
+	//if (data) {
+	//	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+	//	glGenerateMipmap(GL_TEXTURE_2D);
+	//	std::cout << "GENERATED::TEXTURE" << std::endl;
+	//}
+	//else {
+	//	std::cout << "ERROR::LOADING::TEXTURE" << std::endl;
+	//}
+	//stbi_image_free(data);
 }
 
 //Runs every tick while the window is open
@@ -100,22 +95,22 @@ void Application::update() {
 	this->setupShaders();
 	this->loadObjects();
 	
+	/*
 	for (int i = 0; i < 2; i++) {
 		unsigned int tex;
 		if (i == 0) {
-			this->setupTextures(tex, this->objectManager->getObjects().at(1).getTexture(Texturetypes::Diffuse).name);
+			this->setupTextures(tex, this->objectManager->getObjects().at(0).getTexture(Texturetypes::Diffuse).name);
 		}
 		else {
-			this->setupTextures(tex, this->objectManager->getObjects().at(1).getTexture(Texturetypes::Normal).name);
+			this->setupTextures(tex, this->objectManager->getObjects().at(0).getTexture(Texturetypes::Normal).name);
 		}
 		this->textures.push_back(tex);
 	}
-
-	Shader* geometryPass = this->shaderManager->getSpecific("GeometryPass");
 	geometryPass->use();
 	geometryPass->setInt("colorTexture", 0);
 	geometryPass->setInt("normalMap", 1);
-
+	*/
+	Shader* geometryPass = this->shaderManager->getSpecific("GeometryPass");
 	this->renderer.start(this->window->getResolution().first, this->window->getResolution().second);
 
 
@@ -128,13 +123,10 @@ void Application::update() {
 	lightPass->use();
 	lightPass->setInt("lightCount", this->objectManager->getLightCount());
 
-
-
 	while (!glfwWindowShouldClose(this->window->getWindow())) {
 		this->window->update();
 
 		this->deltaTime->start();
-
 
 		//Check input
 		this->window->inputKey(this->currentKey);
@@ -158,14 +150,15 @@ void Application::update() {
 
 void Application::render() {
 	this->renderer.clearBuffers();
+	this->acceleration->frontBackRendering(objectManager->handleObjects(), camera->getCameraPosition());
 
 	//Assign Textures
-	for (int i = 0; i < this->textures.size(); i++) {
-		glActiveTexture(GL_TEXTURE0 + i);
-		glBindTexture(GL_TEXTURE_2D, textures.at(i));
-	}
+	//for (int i = 0; i < this->textures.size(); i++) {
+	//	glActiveTexture(GL_TEXTURE0 + i);
+	//	glBindTexture(GL_TEXTURE_2D, textures.at(i));
+	//}
 
-	this->renderer.deferredRender(this->objectManager->getObjectloader(), this->objectManager->getObjects(), this->shaderManager);
+	this->renderer.deferredRender(objectManager->getObjects(), this->shaderManager);
 }
 
 //Have this be in an object class
@@ -176,7 +169,7 @@ void Application::cameraHandler(Shader* geometryPass) {
 	if (this->currentKey != ValidKeys::DUMMY) {
 		glm::vec3 cameraPos = camera->getCameraPosition();
 		float yValue = objectManager->getElevation(cameraPos);
-		camera->handleKeys(this->currentKey, yValue, this->deltaT);
+		camera->handleKeys(this->currentKey, yValue, (float)this->deltaT);
 	}
 
 	this->currentKey = ValidKeys::DUMMY;
@@ -187,7 +180,7 @@ void Application::cameraHandler(Shader* geometryPass) {
 }
 
 void Application::end() {
-	for (int i = 0; i < this->objectManager->getObjects().size(); i++) {
+	for (size_t i = 0; i < this->objectManager->getObjects().size(); i++) {
 		if (this->objectManager->getObjects().at(i).type == ObjectTypes::LightSource) {
 			this->objectManager->destroyLight(i);
 		}

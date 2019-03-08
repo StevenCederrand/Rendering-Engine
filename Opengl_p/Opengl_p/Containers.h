@@ -74,6 +74,11 @@ struct TangentBasis {
 	std::vector<glm::vec3> bitangents;
 };
 
+static std::string vec3ToString(glm::vec3 vec) {
+	std::string x = "X: " + std::to_string(vec.x) + " Y: " + std::to_string(vec.y) + " Z: " + std::to_string(vec.z) + "\n";
+	return x;
+};
+
 struct Material {
 
 	Material() {
