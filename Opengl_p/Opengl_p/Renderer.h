@@ -4,7 +4,6 @@
 #include "ObjectLoader.h"
 #include "ObjectManager.h"
 #include "ShaderManager.h"
-#include "Acceleration.h"
 
 class Renderer {
 public:
@@ -18,7 +17,6 @@ public:
 	void clearBuffers();
 	void clear();
 
-	glm::vec3 cameraPosition;
 
 private:
 	void initRenderQuad();
@@ -28,6 +26,7 @@ private:
 	
 private: 
 	//Variables associated with deferred rendering
+
 #pragma region Deferred rendering
 	unsigned int FBO;
 	unsigned int RBO;
@@ -53,8 +52,6 @@ private:
 	};
 #pragma endregion
 
-	Acceleration *acceleration;
-	
 	int scrX;
 	int scrY;
 

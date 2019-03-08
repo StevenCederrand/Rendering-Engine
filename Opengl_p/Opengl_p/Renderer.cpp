@@ -5,7 +5,6 @@ Renderer::Renderer() {
 }
 
 Renderer::~Renderer() {
-	delete this->acceleration;
 	glDeleteFramebuffers(1, &this->FBO);
 }
 
@@ -58,20 +57,9 @@ void Renderer::start(int scrX, int scrY) {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	this->initRenderQuad();
-	this->acceleration = new Acceleration();
 }
 
 void Renderer::deferredRender(std::vector<Object> objects, ShaderManager* shaderManager) {
-	//Sort all of the objects based on the distance to the camera
-
-	//for (uint8_t i = 0; i < objects.size(); i++)
-	//{
-	//	std::cout << objects.at(i).name << std::endl;
-	//}
-
-	//this->acceleration->frontBackRendering(objects, this->cameraPosition);
-
-
 	//Geometry Pass
 	//Use the framebuffer that we created
 	this->geometryPass(objects, shaderManager->getSpecific("GeometryPass"));
@@ -130,8 +118,9 @@ void Renderer::lightPass(std::vector<Object> objects, Shader* lightPass) {
 		if (objects.at(i).type == ObjectTypes::LightSource) {
 
 			if (objects.at(i).name == "L1") {
-
-				lightPass->setVec3("pointLights[0].position", objects.at(i).getPosition());
+				glm::vec4 position = glm::vec4(objects.at(i).getPosition(), 0);
+				lightPass->setVec4("pointLights[0].position", position);
+				lightPass->setVec4("pointLights[0].factors", objects.at(i).pointLight->factors);
 				//std::cout << vec3ToString(objects.at(i).getPosition());
 				//lightPass->setFloat("pointLights[0].constant", objects.at(i).pointLight->constant);
 				//lightPass->setFloat("pointLights[0].linear", objects.at(i).pointLight->linear);
@@ -139,10 +128,12 @@ void Renderer::lightPass(std::vector<Object> objects, Shader* lightPass) {
 			}
 
 			if (objects.at(i).name == "L2") {
-				lightPass->setVec3("pointLights[0].position", objects.at(i).getPosition());
-				lightPass->setFloat("pointLights[1].constant", objects.at(i).pointLight->constant);
-				lightPass->setFloat("pointLights[1].linear", objects.at(i).pointLight->linear);
-				lightPass->setFloat("pointLights[1].quadratic", objects.at(i).pointLight->quadratic);
+				glm::vec4 position = glm::vec4(objects.at(i).getPosition(), 0);
+				lightPass->setVec3("pointLights[1].position", position);
+				lightPass->setVec4("pointLights[1].factors", objects.at(i).pointLight->factors);
+				//lightPass->setFloat("pointLights[1].constant", objects.at(i).pointLight->constant);
+				//lightPass->setFloat("pointLights[1].linear", objects.at(i).pointLight->linear);
+				//lightPass->setFloat("pointLights[1].quadratic", objects.at(i).pointLight->quadratic);
 			}
 		}
 	}

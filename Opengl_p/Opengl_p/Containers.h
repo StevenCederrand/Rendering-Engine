@@ -111,58 +111,13 @@ struct Material {
 
 };
 
-//Struct of functions that make rotations a lot more conveniant --- the struct can be removed. But we may find it a little bit more comfortable.
-struct Rotations {
-	//Get the rotation matrix of a specific angle(Converts the angle into radians)
-	void getXRotationAtAngle(float angle, glm::mat4& cMat) {
-		angle = glm::radians(angle);
-
-		float sinVal = glm::sin(angle);
-		float cosVal = glm::cos(angle);
-		cMat = glm::mat4(glm::vec4(1, 0, 0, 0),
-						 glm::vec4(0, cosVal, -sinVal, 0),
-						 glm::vec4(0, sinVal, cosVal, 0),
-						 glm::vec4(0, 0, 0, 1));
-	}
-
-	//Get the rotation matrix of a specific angle(Converts the angle into radians)
-	void getYRotationAtAngle(float angle, glm::mat4& cMat) {
-		angle = glm::radians(angle);
-
-		float sinVal = glm::sin(angle);
-		float cosVal = glm::cos(angle);
-		cMat = glm::mat4(
-			glm::vec4(cosVal, 0, -sinVal, 0), 
-			glm::vec4(0, 1, 0, 0), 
-			glm::vec4(sinVal, 0, cosVal, 0), 
-			glm::vec4(0, 0, 0, 1));
-	}
-
-	//Get the rotation matrix of a specific angle(Converts the angle into radians)
-	void getZRotationAtAngle(float angle, glm::mat4& cMat) {
-		angle = glm::radians(angle);
-
-		float sinVal = glm::sin(angle);
-		float cosVal = glm::cos(angle);
-		cMat = glm::mat4(
-			glm::vec4(cosVal, -sinVal, 0, 0),
-			glm::vec4(sinVal, cosVal, 0, 0),
-			glm::vec4(0, 0, 1, 0),
-			glm::vec4(0, 0, 0, 1));
-	}
-};
-
 struct PointLight {
 	PointLight& operator=(const PointLight& other) {
 		if (this != &other) {
-			this->constant = other.constant;
-			this->linear = other.linear;
-			this->quadratic = other.quadratic;
+			this->factors = other.factors;
 		}
 	}
-	float constant;
-	float linear;
-	float quadratic;
+	glm::vec4 factors; //x = constant, y = linear, z = quadratic
 };
 
 #endif

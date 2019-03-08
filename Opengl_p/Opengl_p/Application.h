@@ -28,6 +28,7 @@
 #include <chrono>
 #include <string>
 #include <vector>
+#include "stb_image.h"
 #pragma endregion
 
 

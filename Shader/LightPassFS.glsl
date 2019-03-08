@@ -23,12 +23,11 @@ vec3 lightColour = vec3(1);
 const int LIGHTS = 32;
 
 struct Pointlight {
-	vec3 position;
+	vec4 position;
 
-	//Values used for attenuating the light
-	float constant;
-	float linear;
-	float quadratic;
+	//Attenuation Values are here
+	vec4 factors;
+
 };
 
 float linear = 0.7f;
@@ -46,7 +45,7 @@ void main() {
 	vec3 cameraDirection = normalize(cameraPos - position);
 	for(int i = 0; i < lightCount; i++) {
         // diffuse
-        vec3 lightDir = normalize(pointLights[i].position - position);
+        vec3 lightDir = normalize(pointLights[i].position.xyz - position);
         vec3 diffuse = max(dot(normal, lightDir), 0.0) * Diffuse.rgb * lightColour;
         // specular
 		float specularStr = 0.5f;
@@ -54,11 +53,13 @@ void main() {
 		float spec = pow(max(dot(cameraDirection, reflectionDir), 0.0), 32);
 		vec3 Specular = specularStr * spec * lightColour;
         // attenuation
-        float dist = length(pointLights[i].position - position);
-        float attenuation = 1.0 / (1.0 + (pointLights[i].linear * dist) + (pointLights[i].quadratic * dist * dist));
+        float dist = length(pointLights[i].position.xyz - position);
+        float attenuation = 1.0 / (pointLights[i].factors.x + (pointLights[i].factors.y * dist) + (pointLights[i].factors.z * dist * dist));
         diffuse *= attenuation;
+
+
 //        specular *= attenuation;
-        result += diffuse;
+        result += diffuse + Specular;
 	}
 	
 	FragColor = vec4(result, 1);

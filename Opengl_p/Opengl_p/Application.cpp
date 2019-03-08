@@ -67,27 +67,27 @@ void Application::loadObjects() {
 
 void Application::setupTextures(unsigned int &texture, std::string name) {
 	//Key-ShadowMap
-	//glGenTextures(1, &texture);
-	//glBindTexture(GL_TEXTURE_2D, texture);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	//std::string path = OBJECTSPATH + name;
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	std::string path = OBJECTSPATH + name;
 
-	//int width, height, nrChannels;
+	int width, height, nrChannels;
 
-	//unsigned char *data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
+	unsigned char *data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
 
-	//if (data) {
-	//	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-	//	glGenerateMipmap(GL_TEXTURE_2D);
-	//	std::cout << "GENERATED::TEXTURE" << std::endl;
-	//}
-	//else {
-	//	std::cout << "ERROR::LOADING::TEXTURE" << std::endl;
-	//}
-	//stbi_image_free(data);
+	if (data) {
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+		std::cout << "GENERATED::TEXTURE" << std::endl;
+	}
+	else {
+		std::cout << "ERROR::LOADING::TEXTURE" << std::endl;
+	}
+	stbi_image_free(data);
 }
 
 //Runs every tick while the window is open
@@ -95,7 +95,7 @@ void Application::update() {
 	this->setupShaders();
 	this->loadObjects();
 	
-	/*
+	
 	for (int i = 0; i < 2; i++) {
 		unsigned int tex;
 		if (i == 0) {
@@ -106,11 +106,12 @@ void Application::update() {
 		}
 		this->textures.push_back(tex);
 	}
+
+	Shader* geometryPass = this->shaderManager->getSpecific("GeometryPass");
 	geometryPass->use();
 	geometryPass->setInt("colorTexture", 0);
 	geometryPass->setInt("normalMap", 1);
-	*/
-	Shader* geometryPass = this->shaderManager->getSpecific("GeometryPass");
+	
 	this->renderer.start(this->window->getResolution().first, this->window->getResolution().second);
 
 
@@ -153,10 +154,10 @@ void Application::render() {
 	this->acceleration->frontBackRendering(objectManager->handleObjects(), camera->getCameraPosition());
 
 	//Assign Textures
-	//for (int i = 0; i < this->textures.size(); i++) {
-	//	glActiveTexture(GL_TEXTURE0 + i);
-	//	glBindTexture(GL_TEXTURE_2D, textures.at(i));
-	//}
+	for (int i = 0; i < this->textures.size(); i++) {
+		glActiveTexture(GL_TEXTURE0 + i);
+		glBindTexture(GL_TEXTURE_2D, textures.at(i));
+	}
 
 	this->renderer.deferredRender(objectManager->getObjects(), this->shaderManager);
 }

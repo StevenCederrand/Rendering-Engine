@@ -127,7 +127,7 @@ void Object::init() {
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	std::cout << "Init complete" << std::endl;
-	this->loadTextures();
+	//this->loadTextures();
 }
 
 void Object::bind() {
@@ -142,9 +142,9 @@ void Object::unbind() {
 
 //Bind-Draw-Unbind
 void Object::draw(Shader* drawShader) {
-	drawShader->use();
-	drawShader->setInt("colorTexture", 0);
-	drawShader->setInt("normalMap", 1);
+	//drawShader->use();
+	//drawShader->setInt("colorTexture", 0);
+	//drawShader->setInt("normalMap", 1);
 
 	for (size_t i = 0; i < this->textures.size(); i++) {
 		glActiveTexture(GL_TEXTURE0 + i);

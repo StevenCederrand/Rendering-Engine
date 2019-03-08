@@ -222,6 +222,16 @@ void Shader::setVec3(std::string name, glm::vec3 vec) {
 		std::cout << "ERROR::NO::" + name + "::VEC3::FOUND" << std::endl;
 	}
 }
+
+void Shader::setVec4(std::string name, glm::vec4 vec) {
+	GLint uniformLoc = glGetUniformLocation(this->getShaderID(), name.c_str());
+	if (uniformLoc != -1) {
+		glUniform4fv(uniformLoc, 1, &vec[0]);
+	}
+	else {
+		std::cout << "ERROR::NO::" + name + "::VEC4::FOUND" << std::endl;
+	}
+}
 //Set uniform float
 void Shader::setFloat(std::string name, float val) {
 	GLint uniformLoc = glGetUniformLocation(this->getShaderID(), name.c_str());
