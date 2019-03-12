@@ -2,8 +2,14 @@
 
 Task list 
 - [x] Deferred Rendering - Steven
-> What is left is the shading. But that'll be done today, 
-then the description for this technique will be added.
+> I've completed deferred shading now. It was a very 
+tedious technique to implement. But it worked out fine. 
+What happens is that we create a framebuffer containing 
+3 different output textures. Normal, position and colour
+texture. These textures are created within and output 
+from the geometrypass shader. The textures are later bound 
+and used within the lightpass shader.
+
 - [x] Obj Parsing - Steven 
 > I have reworked the parser and now it works well. What 
 happens is the following. Initially the Fileloader inserts 
