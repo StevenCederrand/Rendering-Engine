@@ -23,21 +23,21 @@ void Renderer::start(int scrX, int scrY) {
 
 	glGenTextures(1, &this->positionBuffer);
 	glBindTexture(GL_TEXTURE_2D, this->positionBuffer);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, scrX, scrY, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, scrX, scrY, 0, GL_RGB, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->positionBuffer, 0);
 	
 	glGenTextures(1, &this->normalBuffer);
 	glBindTexture(GL_TEXTURE_2D, this->normalBuffer);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, scrX, scrY, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, scrX, scrY, 0, GL_RGB, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, this->normalBuffer, 0);
 
 	glGenTextures(1, &this->colourBuffer);
 	glBindTexture(GL_TEXTURE_2D, this->colourBuffer);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, scrX, scrY, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, scrX, scrY, 0, GL_RGBA, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, this->colourBuffer, 0);
@@ -88,18 +88,7 @@ void Renderer::geometryPass(std::vector<Object> objects, Shader* geometryPass) {
 
 			objects.at(i).draw(geometryPass);
 
-		}	
-		/*if (objects.at(i).name == "L1") {
-			objloader.bindVAO(i);
-			objloader.bindVBO(i);
-			geometryPass->setInt("type", 2);
-
-			geometryPass->setMat4("worldMatrix", objects.at(i).modelMatrix);
-
-			glDrawArrays(GL_TRIANGLES, 0, objects.at(i).getMesh().verts.size());
-			objloader.unbindVAO();
-			objloader.unbindVBO();
-		}*/
+		}
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
@@ -114,14 +103,15 @@ void Renderer::lightPass(std::vector<Object> objects, Shader* lightPass) {
 	for (size_t i = 0; i < objects.size(); i++) {
 		if (objects.at(i).type == ObjectTypes::LightSource) {
 
-			if (objects.at(i).name == "L1") {
+			if (objects.at(i).name == "L2") {
 				glm::vec4 position = glm::vec4(objects.at(i).getPosition(), 0);
 				lightPass->setVec4("pointLights[0].position", position);
+				//std::cout << vec3ToString(position);
 				//Attenuation factors
 				lightPass->setVec4("pointLights[0].factors", objects.at(i).pointLight->factors);
 			}
 
-			if (objects.at(i).name == "L2") {
+			if (objects.at(i).name == "L1") {
 				glm::vec4 position = glm::vec4(objects.at(i).getPosition(), 0);
 				lightPass->setVec3("pointLights[1].position", position);
 				//Attenuation factors

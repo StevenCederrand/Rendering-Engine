@@ -122,7 +122,8 @@ void Application::update() {
 
 	Shader* lightPass = this->shaderManager->getSpecific("LightPass");
 	lightPass->use();
-	lightPass->setInt("lightCount", this->objectManager->getLightCount());
+
+	std::cout << this->objectManager->getLightCount();
 
 	while (!glfwWindowShouldClose(this->window->getWindow())) {
 		this->window->update();
@@ -136,7 +137,7 @@ void Application::update() {
 		this->cameraHandler(geometryPass);
 		lightPass->use();
 		lightPass->setVec3("cameraPos", camera->getCameraPosition());
-
+		lightPass->setInt("lightCount", this->objectManager->getLightCount());
 		//Render the VAO with the loaded shader
 		this->render();
 
