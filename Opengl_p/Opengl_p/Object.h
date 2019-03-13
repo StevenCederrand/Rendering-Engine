@@ -26,7 +26,6 @@ public:
 
 	
 	void assignMaterial(Shader* shader);
-	void calculateTangentBasis();
 	void destroyLight();
 	void draw(Shader* drawShader);
 	void init();

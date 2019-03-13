@@ -30,22 +30,6 @@ Object::~Object() {
 
 }
 
-void Object::calculateTangentBasis() {
-	for (size_t i = 0; i < this->mesh.verts.size(); i+=3) {
-		//Get edges of a triangle
-		glm::vec3 edge1 = this->mesh.verts.at(i + 1).position - this->mesh.verts.at(i).position; //V1 - V0
-		glm::vec3 edge2 = this->mesh.verts.at(i + 2).position - this->mesh.verts.at(i).position; //V2 - V0
-		//Get delta UVs of a triangle
-		glm::vec2 dUV1 = this->mesh.verts.at(i + 1).uv - this->mesh.verts.at(i).uv; //UV1 - UV0
-		glm::vec2 dUV2 = this->mesh.verts.at(i + 2).uv - this->mesh.verts.at(i).uv; //UV2 - UV0
-
-		//Formula for calculating the tangent and bitangent
-
-
-
-	}
-}
-
 Texture Object::getTexture(Texturetypes type) {
 	Texture texture;
 	for (size_t i = 0; i < this->material.textures.size(); i++) {
@@ -100,15 +84,10 @@ void Object::init() {
 	this->attributePointers(0, 3, 8, 0);
 	this->attributePointers(1, 3, 8, sizeof(glm::vec3));
 	this->attributePointers(2, 2, 8, sizeof(float) * 6);
-
 	//unbind the VAO & VBO
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	
-	this->calculateTangentBasis();
 	std::cout << "Init complete" << std::endl;
-	
-
 }
 
 void Object::bind() {

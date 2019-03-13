@@ -32,7 +32,20 @@ where the y value is the value of the colour from our picture.
 Then we add them counterclockwiseto a vertex vector. 
 Add the vertex vector to the Mesh and then add the 
 mesh to our Object and return the Object.
-- [ ] Normal Mapping - Steven
+- [x] Normal Mapping - Steven
+>Normal mapping is quite an advanced technique. Most examples of
+this technique are implemented on the CPU, in C++ code. 
+I implemented this technique in the geometry shader. Because the 
+geometry shader takes in all of the data that we need to be able to 
+implement normal mapping. By this I mean that we have access to 
+vertices, normals and uvs for one triangle. 
+Implementing it on the GPU I believe is a create advantage over 
+implementing it on the CPU. For performance reasons. 
+By implementing it on the GPU we avoid having to issue CPU-GPU calls. We 
+won't be taking up as much memory on the CPU because we won't store the 
+Tangent/bitangent values in the RAM. We also reduce memory use on the 
+GPU by only setting out TBN on triangles that aren't culled by the 
+backface culling. 
 - [ ] Shadow Mapping - Ludwig 
 - [x] Front and Back Rendering - Steven
 >Front to back rendering is a simple technique to implement. My 
