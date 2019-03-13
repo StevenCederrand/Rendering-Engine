@@ -61,5 +61,5 @@ void main() {
 		result += lightCalc(pointLights[i], normal, position, Diffuse, viewDirection);
 	}
 
-	FragColor = vec4(normal, 1);
+	FragColor = vec4(result, 1);
 }

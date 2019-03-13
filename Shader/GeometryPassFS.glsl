@@ -14,6 +14,7 @@ in FRAG_DATA {
 	vec2 frag_uv;
 	vec3 frag_normals;
 	vec3 frag_position;
+	mat3 TBN;
 	flat int frag_type;
 } frag_data;
 
@@ -21,9 +22,14 @@ uniform sampler2D colorTexture;
 uniform sampler2D normalMap;
 
 void main() {
-	vec3 normals = (2*texture(normalMap, frag_data.frag_uv).rgb) - 1;
+
+
+	vec3 normals = texture(normalMap, frag_data.frag_uv).rgb;//normalize(2*texture(normalMap, frag_data.frag_uv).rgb) - 1;
+	normals = normalize(normals * 2 - 1);
+	normals = normalize(vec3(frag_data.TBN * normals));
 
 	colourBuffer = texture(colorTexture, frag_data.frag_uv);
-	normalBuffer = normalize(frag_data.frag_normals);
+	normalBuffer = normals; //normals;
+	//normalBuffer = normalize(frag_data.frag_normals);
 	positionBuffer = frag_data.frag_position;
 }

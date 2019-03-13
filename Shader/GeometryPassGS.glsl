@@ -21,6 +21,7 @@ out FRAG_DATA {
 	vec2 frag_uv;
 	vec3 frag_normals;
 	vec3 frag_position;
+	mat3 TBN;
 	flat int frag_type;
 
 } frag_data;
@@ -46,37 +47,7 @@ vec3 getNormal() {
 	return normal;
 }
 
-void culling() {
-	bool emit = true;
-	vec4 vertex;
-	//Commit to this loop so long as we emit the vertex 
-	for(int i = 0; i < 3 && emit; i++) {
-		//this vertex is in projection space
-		vertex = prjMatrix * viewMatrix * worldMatrix * vec4(geom_data[i].position, 1);
-		vec3 camToSurface = normalize(vec3(vertex) - cameraPosition);
-		if(dot(camToSurface, getNormal()) <= 0) {
-			emit = false;
-		}
-		else {
-			gl_Position = vertex;
-			frag_data.frag_uv = geom_data[i].uv;
-			frag_data.frag_position = vec3(worldMatrix * vec4(geom_data[i].position, 1));
-			frag_data.frag_normals =  mat3(transpose(inverse(matrices.mat_world))) * geom_data[i].normals;
-			frag_data.frag_type = geom_data[i].type;
-
-			matrices.mat_world = worldMatrix;
-			matrices.mat_view = viewMatrix;
-			matrices.mat_prj = prjMatrix;
-
-			EmitVertex();
-		}
-	}
-	if(emit) {
-		EndPrimitive();
-	}
-}
-
-void calculateTangentBasis() {
+mat3 calculateTangentBasis(vec3 normal) {
 	vec3 positions[3];
 	vec2 uvs[3];
 	
@@ -109,9 +80,48 @@ void calculateTangentBasis() {
 	bitangent.y = formula * (-deltaUVs[1].x * edges[0].z + deltaUVs[0].x * edges[1].z);
 	bitangent = normalize(bitangent);
 
+	vec3 T = normalize(vec3(worldMatrix*vec4(tangent, 0.0)));
+	vec3 B = normalize(vec3(worldMatrix*vec4(bitangent, 0.0)));
+	vec3 N = normalize(vec3(worldMatrix*vec4(normal, 0.0)));
+	
+	return mat3(T, B, N);
 }
+
+
+void culling() {
+	bool emit = true;
+	vec4 vertex;
+	//Commit to this loop so long as we emit the vertex 
+	for(int i = 0; i < 3 && emit; i++) {
+		//this vertex is in projection space
+		vertex = prjMatrix * viewMatrix * worldMatrix * vec4(geom_data[i].position, 1);
+		vec3 camToSurface = normalize(vec3(vertex) - cameraPosition);
+		if(dot(camToSurface, getNormal()) <= 0) {
+			emit = false;
+		}
+		else {
+			gl_Position = vertex;
+			frag_data.frag_uv = geom_data[i].uv;
+			frag_data.frag_position = vec3(worldMatrix * vec4(geom_data[i].position, 1));
+			
+			frag_data.TBN = calculateTangentBasis(geom_data[i].normals);
+
+			frag_data.frag_normals = mat3(transpose(inverse(matrices.mat_world))) * geom_data[i].normals;
+			frag_data.frag_type = geom_data[i].type;
+
+			matrices.mat_world = worldMatrix;
+			matrices.mat_view = viewMatrix;
+			matrices.mat_prj = prjMatrix;
+
+			EmitVertex();
+		}
+	}
+	if(emit) {
+		EndPrimitive();
+	}
+}
+
 void main() {
 	culling();
-	calculateTangentBasis();
 
 }
