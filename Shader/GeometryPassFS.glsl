@@ -21,6 +21,8 @@ uniform sampler2D colorTexture;
 uniform sampler2D normalMap;
 
 void main() {
+	vec3 normals = (2*texture(normalMap, frag_data.frag_uv).rgb) - 1;
+
 	colourBuffer = texture(colorTexture, frag_data.frag_uv);
 	normalBuffer = normalize(frag_data.frag_normals);
 	positionBuffer = frag_data.frag_position;

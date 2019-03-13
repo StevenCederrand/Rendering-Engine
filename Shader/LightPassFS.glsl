@@ -17,7 +17,7 @@ uniform float transparency;
 uniform float specularWeight;
 
 
-float lightStr = 1.f;
+float lightStr = 0.2f;
 vec3 lightColour = vec3(1);
 
 const int LIGHTS = 32;
@@ -55,11 +55,11 @@ void main() {
 	vec4 Diffuse = texture(colourBuffer, frag_uv);
 	
 	vec3 result = vec3(0);
-	result = Diffuse.rgb * 0.1f; //Ambience
+	result = Diffuse.rgb * lightStr; //Ambience
 	vec3 viewDirection = normalize(cameraPos - position);
 	for(int i = 0; i < lightCount; i++) {
 		result += lightCalc(pointLights[i], normal, position, Diffuse, viewDirection);
 	}
 
-	FragColor = vec4(result, 1);
+	FragColor = vec4(normal, 1);
 }

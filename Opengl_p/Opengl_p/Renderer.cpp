@@ -87,7 +87,6 @@ void Renderer::geometryPass(std::vector<Object> objects, Shader* geometryPass) {
 			geometryPass->setMat4("worldMatrix", objects.at(i).modelMatrix);
 
 			objects.at(i).draw(geometryPass);
-
 		}
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);

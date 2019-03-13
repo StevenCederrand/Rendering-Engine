@@ -31,40 +31,18 @@ Object::~Object() {
 }
 
 void Object::calculateTangentBasis() {
-	for (size_t i = 0; i < this->mesh.verts.size(); i+= 3) {
-		//Quickaccess to positions
-		glm::vec3 position0 = this->mesh.verts.at(i).position;
-		glm::vec3 position1 = this->mesh.verts.at(i + 1).position;
-		glm::vec3 position2 = this->mesh.verts.at(i + 2).position;
-		//Quickaccess to uv's
-		glm::vec2 uv0 = this->mesh.verts.at(i).uv;
-		glm::vec2 uv1 = this->mesh.verts.at(i+1).uv;
-		glm::vec2 uv2 = this->mesh.verts.at(i+2).uv;
+	for (size_t i = 0; i < this->mesh.verts.size(); i+=3) {
+		//Get edges of a triangle
+		glm::vec3 edge1 = this->mesh.verts.at(i + 1).position - this->mesh.verts.at(i).position; //V1 - V0
+		glm::vec3 edge2 = this->mesh.verts.at(i + 2).position - this->mesh.verts.at(i).position; //V2 - V0
+		//Get delta UVs of a triangle
+		glm::vec2 dUV1 = this->mesh.verts.at(i + 1).uv - this->mesh.verts.at(i).uv; //UV1 - UV0
+		glm::vec2 dUV2 = this->mesh.verts.at(i + 2).uv - this->mesh.verts.at(i).uv; //UV2 - UV0
 
-		//Triangle edge positions
-		glm::vec3 edge0 = position1 - position0;
-		glm::vec3 edge1 = position2 - position0;
+		//Formula for calculating the tangent and bitangent
 
-		//UV delta
-		glm::vec2 deltaUV0 = uv1 - uv0;
-		glm::vec2 deltaUV1 = uv2 - uv0;
 
-		//Compute tangent and bitangent
-		float r = 1 / (deltaUV0.x * deltaUV1.x - deltaUV0.y * deltaUV1.y);
-		glm::vec3 tangent = (edge0 * deltaUV1.y - edge1 * deltaUV0.y) * r;
-		tangent = glm::normalize(tangent);
 
-		glm::vec3 bitangent = (edge1 * deltaUV0.x - edge0 * deltaUV1.x) * r;
-		bitangent = glm::normalize(bitangent); 
-		
-		//Same tangent for all three positions
-		this->tangents.push_back(tangent);
-		this->tangents.push_back(tangent);
-		this->tangents.push_back(tangent);
-		//Same bitangent for all three positions
-		this->bitangents.push_back(bitangent);
-		this->bitangents.push_back(bitangent);
-		this->bitangents.push_back(bitangent);
 	}
 }
 
@@ -126,8 +104,11 @@ void Object::init() {
 	//unbind the VAO & VBO
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	
+	this->calculateTangentBasis();
 	std::cout << "Init complete" << std::endl;
-	//this->loadTextures();
+	
+
 }
 
 void Object::bind() {
