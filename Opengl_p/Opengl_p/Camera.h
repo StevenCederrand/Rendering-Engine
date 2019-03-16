@@ -16,6 +16,10 @@ public:
 	void resetCamera(glm::vec3 eye, glm::vec3 center, glm::vec3 up);
 	glm::mat4 getViewMatrix() const;
 	
+
+	glm::mat4 getshadowViewMatrix()const;
+	glm::vec3 getshadowPosition()const;
+
 	//Handle key presses
 	void handleKeys(ValidKeys currentKey, float yPos, float deltaTime);
 	
@@ -25,13 +29,19 @@ public:
 private:
 	glm::mat4 viewMatrix;
 	//Variables from Applcation.h
-	glm::vec3 cameraPosition = glm::vec3(0.0f, 0.0f, 3.0f);
+	glm::vec3 cameraPosition = glm::vec3(6.0f, 3.0f, 3.0f);
 	glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
-	glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+	glm::vec3 cameraFront = glm::vec3(4.0f, 0.0f, 3.0f);
 	float cameraSpeed = 1.f;
 	float yaw = -90.0f;
 	float pitch = 0.0f;
 	bool firstTime = true;
+
+	glm::mat4 shadowViewMatrix;
+	glm::vec3 shadowCameraPosition = glm::vec3(-2.0f, 4.0f, -1.0f);
+	glm::vec3 shadowCameraUp = glm::vec3(10.0f, 0.0f, 6.0f);
+	glm::vec3 shadowCameraFront = glm::vec3(0.0f, 1.0f, 0.0f);
+
 
 	void mouse_callback(GLFWwindow* window);//, double xpos, double ypos);
 	//save the window so that we can use it in the class

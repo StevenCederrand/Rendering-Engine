@@ -17,8 +17,10 @@
 #include <fstream>
 #include <iostream>
 
+using namespace glm;
 int main() {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+
 	
 	Application* app = new Application(1280, 900);
 

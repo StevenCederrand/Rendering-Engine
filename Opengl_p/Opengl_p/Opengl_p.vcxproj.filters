@@ -52,20 +52,35 @@
     <Filter Include="Source Files\Imgui">
       <UniqueIdentifier>{9ab28645-dae4-4cb9-809c-2d0cb7046923}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Rendering\Parser">
-      <UniqueIdentifier>{79bc1c2a-ad27-44de-8be2-760d1ba23cb7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Imgui\Example">
       <UniqueIdentifier>{5e136011-f1d8-4a45-81aa-b868cec87844}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Imgui\Example">
       <UniqueIdentifier>{1e9f208f-10ed-44f1-934c-f809d9cbaaba}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shader\GeometryPass">
+      <UniqueIdentifier>{bf91afc1-39b9-4565-aad5-77363db9deec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader\CShader">
+      <UniqueIdentifier>{7e0f916f-6151-41a8-bb1d-e9ab9892eea6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader\LightPass">
+      <UniqueIdentifier>{1e50d3c1-181e-4b9e-9d75-9bcfa11a3d41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Rendering\Acceleration">
+      <UniqueIdentifier>{0678c9db-578a-4d9e-b686-27b989ebc2a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Other\Parser">
+      <UniqueIdentifier>{79bc1c2a-ad27-44de-8be2-760d1ba23cb7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Rendering\Acceleration">
+      <UniqueIdentifier>{670ddc61-d457-45e3-b6f2-024599239307}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader\ShadowPass">
+      <UniqueIdentifier>{aaffe171-f2f6-4697-9e38-6e19034dfa3d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Shader.cpp">
-      <Filter>Shader</Filter>
-    </ClCompile>
     <ClCompile Include="Object.cpp">
       <Filter>Source Files\Object</Filter>
     </ClCompile>
@@ -76,7 +91,7 @@
       <Filter>Source Files\Object</Filter>
     </ClCompile>
     <ClCompile Include="Fileloader.cpp">
-      <Filter>Source Files\Rendering\Parser</Filter>
+      <Filter>Source Files\Other\Parser</Filter>
     </ClCompile>
     <ClCompile Include="Application.cpp">
       <Filter>Source Files\Rendering</Filter>
@@ -123,6 +138,15 @@
     <ClCompile Include="Deltatime.cpp">
       <Filter>Source Files\Other</Filter>
     </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>Shader\CShader</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderManager.cpp">
+      <Filter>Shader\CShader</Filter>
+    </ClCompile>
+    <ClCompile Include="Acceleration.cpp">
+      <Filter>Source Files\Rendering\Acceleration</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stb_image.h">
@@ -148,9 +172,6 @@
     </ClInclude>
     <ClInclude Include="Application.h">
       <Filter>Header Files\Rendering</Filter>
-    </ClInclude>
-    <ClInclude Include="Shader.h">
-      <Filter>Shader</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>Header Files\Other</Filter>
@@ -185,16 +206,37 @@
     <ClInclude Include="Deltatime.h">
       <Filter>Header Files\Other</Filter>
     </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Shader\CShader</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderManager.h">
+      <Filter>Shader\CShader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\Shader\fragShader.glsl">
-      <Filter>Shader</Filter>
+    <None Include="..\..\Shader\GeometryPassFS.glsl">
+      <Filter>Shader\GeometryPass</Filter>
     </None>
-    <None Include="..\..\Shader\geomShader.glsl">
-      <Filter>Shader</Filter>
+    <None Include="..\..\Shader\GeometryPassGS.glsl">
+      <Filter>Shader\GeometryPass</Filter>
     </None>
-    <None Include="..\..\Shader\vertShader.glsl">
-      <Filter>Shader</Filter>
+    <None Include="..\..\Shader\GeometryPassVS.glsl">
+      <Filter>Shader\GeometryPass</Filter>
+    </None>
+    <None Include="..\..\Shader\LightPassFS.glsl">
+      <Filter>Shader\LightPass</Filter>
+    </None>
+    <None Include="..\..\Shader\LightPassVS.glsl">
+      <Filter>Shader\LightPass</Filter>
+    </None>
+    <None Include="Acceleration.h">
+      <Filter>Header Files\Rendering\Acceleration</Filter>
+    </None>
+    <None Include="..\..\Shader\ShadowPassFS.glsl">
+      <Filter>Shader\ShadowPass</Filter>
+    </None>
+    <None Include="..\..\Shader\ShadowPassVS.glsl">
+      <Filter>Shader\ShadowPass</Filter>
     </None>
   </ItemGroup>
 </Project>

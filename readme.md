@@ -1,7 +1,15 @@
 # 3D rendering engine for the course DV1568.
 
 Task list 
-- [ ] Deferred Rendering
+- [x] Deferred Rendering - Steven
+> I've completed deferred shading now. It was a very 
+tedious technique to implement. But it worked out fine. 
+What happens is that we create a framebuffer containing 
+3 different output textures. Normal, position and colour
+texture. These textures are created within and output 
+from the geometrypass shader. The textures are later bound 
+and used within the lightpass shader.
+
 - [x] Obj Parsing - Steven 
 > I have reworked the parser and now it works well. What 
 happens is the following. Initially the Fileloader inserts 
@@ -24,9 +32,31 @@ where the y value is the value of the colour from our picture.
 Then we add them counterclockwiseto a vertex vector. 
 Add the vertex vector to the Mesh and then add the 
 mesh to our Object and return the Object.
-- [ ] Normal Mapping - Steven
+- [x] Normal Mapping - Steven
+>Normal mapping is quite an advanced technique. Most examples of
+this technique are implemented on the CPU, in C++ code. 
+I implemented this technique in the geometry shader. Because the 
+geometry shader takes in all of the data that we need to be able to 
+implement normal mapping. By this I mean that we have access to 
+vertices, normals and uvs for one triangle. 
+Implementing it on the GPU I believe is a create advantage over 
+implementing it on the CPU. For performance reasons. 
+By implementing it on the GPU we avoid having to issue CPU-GPU calls. We 
+won't be taking up as much memory on the CPU because we won't store the 
+Tangent/bitangent values in the RAM. We also reduce memory use on the 
+GPU by only setting out TBN on triangles that aren't culled by the 
+backface culling. 
 - [ ] Shadow Mapping - Ludwig 
-- [ ] Front and Back Rendering - Ludwig
+- [x] Front and Back Rendering - Steven
+>Front to back rendering is a simple technique to implement. My 
+implementation of this technique is straight forward as well. 
+Before we issue the draw calls and send the object data to the gpu
+we sort the vector of objects based on the quadratic distance to the
+camera. That is we take mathematical vector between the camera and 
+object[i], take thereafter the dot product between it and itself. 
+This will result in the value beneath the root. This is a way to
+reduce cumbersome mathematical operations, that are to be handled
+by the CPU. 
 - [x] Back Face Culling in GS - Steven 
 >This was a very simple problem to be honest. What I did to solve this 
 was to send 3 vertices to the geometry shader. Then I took the normal 

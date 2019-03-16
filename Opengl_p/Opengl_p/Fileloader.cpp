@@ -1,4 +1,5 @@
 #include "Fileloader.h"
+
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
@@ -27,7 +28,7 @@ std::string Fileloader::getExtension(std::string path) {
 		}
 	}
 	std::string correct;
-	for (int i = 0; i < extension.length(); i++) {
+	for (size_t i = 0; i < extension.length(); i++) {
 		correct.push_back(extension.at(extension.length() - i - 1));
 	}
 	return correct;
@@ -75,9 +76,9 @@ Object Fileloader::loadMap(std::string path)
 	int position1, position2, position3, position4;
 	float height2 = 1.0f / height;
 	float width2 = 1.0f / width;
-	for (size_t j = 0; j < (height-1); j++)
+	for (int j = 0; j < (height-1); j++)
 	{
-		for (size_t i = 0; i < (width-1); i++)
+		for (int i = 0; i < (width-1); i++)
 		{
 			position1 = (width * j) + i;				//upper left			
 			triangleVertices2.x = (float)i;
@@ -259,9 +260,6 @@ Material Fileloader::loadMaterial(std::string path) {
 	
 	std::string line;
 	
-	glm::vec3 col;
-	float x;
-
 	while (std::getline(iFile, line)) {
 		//Grab the first word
 		std::string fWord = line.substr(0, line.find(' '));
@@ -323,7 +321,7 @@ glm::vec3 Fileloader::extractVector(std::string line) {
 	uint8_t traversal = 0;
 	std::string fWord = "";
 
-	for (int i = line.find(' ') + 1; i < line.length(); i++) {
+	for (size_t i = line.find(' ') + 1; i < line.length(); i++) {
 
 		//If we haven't stumbled upon a gap
 		if (line[i] != ' ') {
@@ -357,7 +355,7 @@ void Fileloader::interpretMesh(std::string line, Mesh &mesh, std::vector<Vertex>
 
 	Vertex temp;
 
-	for (int i = 0; i < line.length(); i++) {
+	for (size_t i = 0; i < line.length(); i++) {
 		//Normals
 		if (line[i] == ' ') {
 			slashes = 0;
@@ -421,7 +419,7 @@ Texture Fileloader::interpretTexture(std::string line) {
 
 		//Get the file-name
 		std::string name = "";
-		for (int i = 0; i < text.length(); i++) {
+		for (size_t i = 0; i < text.length(); i++) {
 			name.push_back(text.at(text.length() - i - 1));
 		}
 		texture.name = name;
@@ -441,7 +439,7 @@ glm::vec3 Fileloader::interpretVec3(std::string line) {
 	glm::vec3 pos = glm::vec3(0, 0, 0);
 	int val = 0;
 	std::string temp = "";
-	for (int i = 0; i < line.length(); i++) {
+	for (size_t i = 0; i < line.length(); i++) {
 		if (line[i] == ' ' || i == line.length() - 1) {
 			pos[val++] = std::stof(temp);
 			temp = "";
@@ -458,7 +456,7 @@ glm::vec2 Fileloader::interpretVec2(std::string line) {
 	int val = 0;
 	std::string temp = "";
 
-	for (int i = 0; i < line.length(); i++) {
+	for (size_t i = 0; i < line.length(); i++) {
 		if (line[i] == ' ' || i == line.length() - 1) {
 			pos[val] = std::stof(temp);
 			val++;
@@ -473,7 +471,7 @@ glm::vec2 Fileloader::interpretVec2(std::string line) {
 
 std::string Fileloader::splitAt(std::string path, int at) {
 	std::string word = "";
-	for (int i = at; i < path.length(); i++) {
+	for (size_t i = at; i < path.length(); i++) {
 		word += path[i];
 	}
 
@@ -486,7 +484,7 @@ bool Fileloader::validExtension(std::string path) {
 	std::string extension = splitAt(path, length - 4);
 	bool retVal = false;
 
-	for (int i = 0; i < this->validFiletypes.size(); i++) {
+	for (size_t i = 0; i < this->validFiletypes.size(); i++) {
 		if (this->validFiletypes.at(i) == extension) {
 			retVal = true;
 			break;

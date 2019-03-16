@@ -17,7 +17,9 @@
 #include "Shader.h"
 #include "ObjectManager.h"
 #include "Renderer.h"
+#include "ShaderManager.h"
 #include "Deltatime.h"
+#include "Acceleration.h"
 #pragma endregion
 
 #pragma region Default_Includes 
@@ -47,20 +49,23 @@ public:
 		
 	void update();
 	void render();
-	void cameraHandler();	
+	void cameraHandler(Shader* shader);	
 	
 //Private functions
 private:
 	void start(); //Exists to reduce duplication
 	void loadObjects();
+
 	void depthMapFunction(unsigned int depthWidth, unsigned int depthHeight, unsigned int &depthMap, unsigned int &depthFramebuffer);
+
+	void end();
+
 	
 //Private data
 private:
 	
 	WND* window;
 	Camera* camera;
-	Shader* shader;
 	Fileloader fileloader;
 
 	std::vector<unsigned int> textures;
@@ -73,7 +78,9 @@ private:
 	Renderer renderer;
 	ObjectManager* objectManager;
 	Deltatime* deltaTime;
-
-	float deltaT;
+	ShaderManager *shaderManager;
+	Acceleration *acceleration;
+	double deltaT;
+	unsigned int depthMap;
 };
 #endif

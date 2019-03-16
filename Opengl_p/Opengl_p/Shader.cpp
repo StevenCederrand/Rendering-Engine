@@ -1,7 +1,6 @@
 #include "Shader.h"
 
 Shader::Shader(std::string vPath, std::string fPath) {
-
 	std::string vCode; //Vertex shader code
 	std::string fCode; //Fragment shader code
 
@@ -209,12 +208,28 @@ void Shader::setMat4(std::string name, glm::mat4 mat) {
 	if (uniformLoc != -1) {
 		glUniformMatrix4fv(uniformLoc, 1, GL_FALSE, &mat[0][0]);
 	}
+	else {
+		std::cout << "ERROR::NO::" + name + "::MAT4::FOUND" << std::endl;
+	}
 }
 //Set uniform vector3
 void Shader::setVec3(std::string name, glm::vec3 vec) {
-	GLint uniformLoc = glGetUniformLocation(this->getShaderID(), name.c_str());
+	GLint uniformLoc = glGetUniformLocation		(this->getShaderID(), name.c_str());
 	if (uniformLoc != -1) {
 		glUniform3fv(uniformLoc, 1, &vec[0]);
+	}
+	else {
+		std::cout << "ERROR::NO::" + name + "::VEC3::FOUND" << std::endl;
+	}
+}
+
+void Shader::setVec4(std::string name, glm::vec4 vec) {
+	GLint uniformLoc = glGetUniformLocation(this->getShaderID(), name.c_str());
+	if (uniformLoc != -1) {
+		glUniform4fv(uniformLoc, 1, &vec[0]);
+	}
+	else {
+		std::cout << "ERROR::NO::" + name + "::VEC4::FOUND" << std::endl;
 	}
 }
 //Set uniform float
@@ -223,6 +238,9 @@ void Shader::setFloat(std::string name, float val) {
 	if (uniformLoc != -1) {
 		glUniform1f(uniformLoc, val);
 	}
+	else {
+		std::cout << "ERROR::NO::" + name + "::FLOAT::FOUND" << std::endl;
+	}
 }
 //Set uniform int
 void Shader::setInt(std::string name, int val) {
@@ -230,9 +248,29 @@ void Shader::setInt(std::string name, int val) {
 	if (uniformLoc != -1) {
 		glUniform1i(uniformLoc, val);
 	}
+	else {
+		std::cout << "ERROR::NO::" + name + "::INT::FOUND" << std::endl;
+	}
 
+}
+
+void Shader::setName(std::string name) {
+	this->name = name;
+}
+
+std::string Shader::getName() const {
+	return this->name;
 }
 
 unsigned int Shader::getShaderID() const {
 	return this->shaderProg;
+}
+
+Shader & Shader::operator=(const Shader & otherShader) {
+	if (this != &otherShader) {
+		this->name = otherShader.name;
+		this->shaderProg = otherShader.shaderProg;
+	}
+
+	return *this;
 }
