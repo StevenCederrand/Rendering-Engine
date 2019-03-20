@@ -85,7 +85,7 @@ GLFWwindow* WND::getWindow() const {
 	return this->window;
 }
 
-void setViewport(GLFWwindow* window, int x, int y) {
+void WND::setViewport1(int x, int y) {
 	glViewport(0, 0, x, y);
 }
 
@@ -96,3 +96,9 @@ std::pair<int, int> WND::getResolution() const {
 void WND::close() {
 	glfwTerminate();
 }
+
+void setViewport(GLFWwindow * window, int width, int height)
+{
+	glViewport(0, 0, width, height);
+}
+

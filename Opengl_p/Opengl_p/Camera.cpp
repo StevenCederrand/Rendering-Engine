@@ -9,7 +9,10 @@ Camera::Camera(glm::vec3 eye, glm::vec3 center, glm::vec3 up, GLFWwindow* window
 	this->window = window;
 	//this should make the mouse invisible and able to move how far we want
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-	 
+
+
+	this->shadowViewMatrix = glm::lookAt(this->shadowCameraPosition, this->shadowCameraUp, this->shadowCameraFront);
+
 	//idk should work
 	//glfwSetCursorPosCallback(window, mouse_callback);
 	
@@ -55,9 +58,26 @@ void Camera::handleKeys(ValidKeys currentKey, float yPos, float deltaTime) {
 			this->cameraSpeed = 1.f;
 		}
 	}
+	if (currentKey == ValidKeys::I || currentKey == ValidKeys::K || currentKey == ValidKeys::J || currentKey == ValidKeys::L) {
+
+		if (currentKey == ValidKeys::I) {
+			this->shadowCameraPosition += glm::vec3(1, 0, 0); //velocity * this->shadowCameraFront;
+		}
+		else if (currentKey == ValidKeys::K) {
+			this->shadowCameraPosition -= glm::vec3(1, 0, 0); //velocity * this->shadowCameraFront;
+		}
+		else if (currentKey == ValidKeys::J) {
+			this->shadowCameraPosition -= glm::vec3(0, 0, 1); //glm::normalize(glm::cross(this->shadowCameraUp, this->shadowCameraFront))*velocity;
+		}
+		else if (currentKey == ValidKeys::L) {
+			this->shadowCameraPosition += glm::vec3(0, 0, 1); //glm::normalize(glm::cross(this->shadowCameraUp, this->shadowCameraFront))*velocity;
+		}
+		this->shadowViewMatrix = glm::lookAt(this->shadowCameraPosition, this->shadowCameraUp, this->shadowCameraFront);
+	}
+
 	glm::vec3 temp = this->cameraPosition;
 	temp.y= yPos;
-	cameraPosition.y = yPos+1;
+	//cameraPosition.y = yPos+1;
 	this->viewMatrix = glm::lookAt(this->cameraPosition, this->cameraPosition + this->cameraFront, this->cameraUp);
 	
 }
@@ -120,4 +140,13 @@ void Camera::mouse_callback(GLFWwindow * window)// ,double xpos, double ypos)
 
 glm::mat4 Camera::getViewMatrix() const {
 	return this->viewMatrix;
+}
+
+glm::mat4 Camera::getshadowViewMatrix() const {
+	return this->shadowViewMatrix;
+}
+
+glm::vec3 Camera::getshadowPosition() const
+{
+	return this->shadowCameraPosition;
 }

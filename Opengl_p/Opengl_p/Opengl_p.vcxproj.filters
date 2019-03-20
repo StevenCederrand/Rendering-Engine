@@ -76,6 +76,9 @@
     <Filter Include="Source Files\Rendering\Acceleration">
       <UniqueIdentifier>{670ddc61-d457-45e3-b6f2-024599239307}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shader\ShadowPass">
+      <UniqueIdentifier>{aaffe171-f2f6-4697-9e38-6e19034dfa3d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Object.cpp">
@@ -228,6 +231,12 @@
     </None>
     <None Include="Acceleration.h">
       <Filter>Header Files\Rendering\Acceleration</Filter>
+    </None>
+    <None Include="..\..\Shader\ShadowPassFS.glsl">
+      <Filter>Shader\ShadowPass</Filter>
+    </None>
+    <None Include="..\..\Shader\ShadowPassVS.glsl">
+      <Filter>Shader\ShadowPass</Filter>
     </None>
   </ItemGroup>
 </Project>

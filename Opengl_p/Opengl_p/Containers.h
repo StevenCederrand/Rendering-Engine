@@ -31,7 +31,11 @@ enum ValidKeys {
 	Q, 
 	E,
 	ESC,
-	DUMMY
+	DUMMY,
+	I,
+	J,
+	K,
+	L
 };
 
 enum ObjectTypes {

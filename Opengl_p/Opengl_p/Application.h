@@ -51,7 +51,11 @@ public:
 private:
 	void start(); //Exists to reduce duplication
 	void loadObjects();
+
+	void depthMapFunction(unsigned int depthWidth, unsigned int depthHeight, unsigned int &depthMap, unsigned int &depthFramebuffer);
+
 	void end();
+
 	
 //Private data
 private:
@@ -64,6 +68,7 @@ private:
 	glm::mat4 worldMatrix = glm::mat4(1.f);
 	glm::mat4 prjMatrix = glm::mat4(1.f);
 
+
 	ValidKeys currentKey;
 	Renderer renderer;
 	ObjectManager* objectManager;
@@ -71,5 +76,6 @@ private:
 	ShaderManager *shaderManager;
 	Acceleration *acceleration;
 	double deltaT;
+	unsigned int depthMap;
 };
 #endif

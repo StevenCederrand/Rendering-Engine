@@ -11,7 +11,6 @@
 	>>Properties->VC++ Directories->Library Directories
 	>>Properties->C/C++->Preprocessor->Preprocessor Definitions->"_CRT_SECURE_NO_WARNINGS; GLFW_INCLUDE_NONE;"
 	>>Properties->Linker->Input->Additional Dependencies->"opengl32.lib;glfw3.lib;"
-
 */
 #include "Application.h" //Application. This is my head 
 #include <fstream>

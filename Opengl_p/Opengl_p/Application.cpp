@@ -59,6 +59,10 @@ void Application::setupShaders() {
 	lightPass->setInt("positionBuffer", 0);
 	lightPass->setInt("normalBuffer", 1);
 	lightPass->setInt("colourBuffer", 2);
+	lightPass->setInt("depthMap", 3);
+
+	Shader* shadowshader = this->shaderManager->insertShader(
+		SHADERPATH + "ShadowPassVS.glsl", SHADERPATH + "ShadowPassFS.glsl", "ShadowPass");
 }
 
 void Application::loadObjects() {
@@ -72,14 +76,38 @@ void Application::loadObjects() {
 void Application::update() {
 	this->setupShaders();
 	this->loadObjects();
-	
-	
+
+	//shadows
+	Shader* shadowPass = this->shaderManager->getSpecific("ShadowPass");
+	shadowPass->use();
+	//Automatically gets the screen resolution
+	unsigned int depthWidth = this->window->getResolution().first, depthHeight = this->window->getResolution().second;
+	unsigned int depthFramebuffer;
+
+	glGenFramebuffers(1, &depthFramebuffer);
+
+	glGenTextures(1, &this->depthMap);
+	glBindTexture(GL_TEXTURE_2D, this->depthMap);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, depthWidth, depthHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, depthFramebuffer);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, this->depthMap, 0);
+	glDrawBuffer(GL_NONE);
+	glReadBuffer(GL_NONE);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
 	Shader* geometryPass = this->shaderManager->getSpecific("GeometryPass");
 	geometryPass->use();
 	geometryPass->setInt("colorTexture", 0);
 	geometryPass->setInt("normalMap", 1);
 	
+
 	this->renderer.start(this->window->getResolution().first, this->window->getResolution().second);
+
 	this->start();
 	Shader* lightPass = this->shaderManager->getSpecific("LightPass");
 
@@ -97,12 +125,36 @@ void Application::update() {
 		lightPass->setVec3("cameraPos", camera->getCameraPosition());
 		lightPass->setInt("lightCount", this->objectManager->getLightCount());
 		//Render the VAO with the loaded shader
-		this->render();
 
+
+		//shadows 
+		glm::mat4 lightprjMatrix = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 50.0f);
+
+		glm::mat4 lightMatrixes = lightprjMatrix * camera->getshadowViewMatrix();
+		//lightPass->setMat4("lightMatrixes", lightMatrixes);
+		shadowPass->use();
+		shadowPass->setMat4("lightMatrixes", lightMatrixes);
+		
+		this->window->setViewport1(depthWidth, depthHeight);
+		glBindFramebuffer(GL_FRAMEBUFFER, depthFramebuffer);
+		glClear(GL_DEPTH_BUFFER_BIT);
+		this->renderer.render(this->objectManager->getObjects(), shadowPass, depthFramebuffer);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+		std::pair <int, int> temp;
+		temp = window->getResolution();
+		this->window->setViewport1(temp.first, temp.second);
+		lightPass->use();
+		this->renderer.clearBuffers();
+
+		lightPass->setMat4("lightMatrixes", camera->getshadowViewMatrix());
+
+		this->render();
 		//Deltatime in ms
 		this->deltaTime->end();
 
 		this->deltaT = this->deltaTime->deltaTime();
+
 	}
 	//Quit the program
 	this->end();
@@ -111,7 +163,8 @@ void Application::update() {
 void Application::render() {
 	this->renderer.clearBuffers();
 	this->acceleration->frontBackRendering(objectManager->handleObjects(), camera->getCameraPosition());
-	this->renderer.deferredRender(objectManager->getObjects(), this->shaderManager);
+	
+	this->renderer.deferredRender(objectManager->getObjects(), this->shaderManager, this->depthMap);
 }
 
 //Have this be in an object class
@@ -121,7 +174,9 @@ void Application::cameraHandler(Shader* geometryPass) {
 	if (this->currentKey != ValidKeys::DUMMY) {
 		glm::vec3 cameraPos = camera->getCameraPosition();
 		float yValue = objectManager->getElevation(cameraPos);
+
 		camera->handleKeys(this->currentKey, yValue, (float)this->deltaT);
+
 	}
 
 	this->currentKey = ValidKeys::DUMMY;
@@ -130,6 +185,29 @@ void Application::cameraHandler(Shader* geometryPass) {
 	// This is so that we can "walk" with wasd keys
 	geometryPass->setMat4("viewMatrix", this->camera->getViewMatrix());
 }
+
+
+
+
+void Application::depthMapFunction(unsigned int depthWidth, unsigned int depthHeight, unsigned int &depthMap, unsigned int &depthFramebuffer) {
+	glGenFramebuffers(1, &depthFramebuffer);
+
+	glGenTextures(1, &depthMap);
+	glBindTexture(GL_TEXTURE_2D, depthMap);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, depthWidth, depthHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	
+	glBindFramebuffer(GL_FRAMEBUFFER, depthFramebuffer);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
+	glDrawBuffer(GL_NONE);
+	glReadBuffer(GL_NONE);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+
 
 void Application::end() {
 	for (size_t i = 0; i < this->objectManager->getObjects().size(); i++) {
@@ -140,3 +218,4 @@ void Application::end() {
 	this->renderer.clear();
 	this->window->close();
 }
+

@@ -183,6 +183,8 @@
     <None Include="..\..\Shader\GeometryPassVS.glsl" />
     <None Include="..\..\Shader\LightPassFS.glsl" />
     <None Include="..\..\Shader\LightPassVS.glsl" />
+    <None Include="..\..\Shader\ShadowPassFS.glsl" />
+    <None Include="..\..\Shader\ShadowPassVS.glsl" />
     <None Include="Acceleration.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -56,9 +56,31 @@ void Renderer::start(int scrX, int scrY) {
 	this->initRenderQuad();
 }
 
-void Renderer::deferredRender(std::vector<Object> objects, ShaderManager* shaderManager) {
+void Renderer::render(std::vector<Object> objects, Shader* shader, unsigned int depthFramebuffer) {
+	//Use the framebuffer that we created
+	shader->use();
+	glBindFramebuffer(GL_FRAMEBUFFER, depthFramebuffer);
+	glEnable(GL_DEPTH_TEST);
+	this->clearBuffers();
+
+	
+	for (size_t i = 0; i < objects.size(); i++) {
+		ObjectTypes type = objects.at(i).type;
+
+		if (type != ObjectTypes::LightSource) {
+			
+			shader->setMat4("worldMatrix", objects.at(i).modelMatrix);
+
+			objects.at(i).draw(shader);
+		}
+	}
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+void Renderer::deferredRender(std::vector<Object> objects, ShaderManager* shaderManager, unsigned int depthMap) {
 	//Geometry Pass
 	//Use the framebuffer that we created
+	this->depthMap = depthMap;		
 	this->geometryPass(objects, shaderManager->getSpecific("GeometryPass"));
 
 	//LightPass
@@ -137,6 +159,8 @@ void Renderer::bindTextures(Shader* lightPass) {
 	glBindTexture(GL_TEXTURE_2D, this->normalBuffer);
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, this->colourBuffer);
+	glActiveTexture(GL_TEXTURE3);
+	glBindTexture(GL_TEXTURE_2D, this->depthMap);
 }
 
 void Renderer::clearBuffers() {

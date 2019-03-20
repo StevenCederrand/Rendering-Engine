@@ -10,8 +10,10 @@ public:
 	Renderer();
 	~Renderer();
 
+	void render(std::vector<Object> objects, Shader* shader, unsigned int depthFramebuffer);
 	void deferredRender(std::vector<Object> objects, 
-		ShaderManager* shaderManager);
+		ShaderManager* shaderManager,
+		unsigned int depthMap);
 
 	void start(int x, int y);
 	void clearBuffers();
@@ -34,6 +36,7 @@ private:
 	unsigned int positionBuffer;
 	unsigned int normalBuffer;
 	unsigned int colourBuffer;
+	unsigned int depthMap;
 
 	unsigned int attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2};	
 	

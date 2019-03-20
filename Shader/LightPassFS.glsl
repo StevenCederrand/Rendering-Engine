@@ -6,8 +6,10 @@ out vec4 FragColor;
 uniform sampler2D positionBuffer;
 uniform sampler2D normalBuffer;
 uniform sampler2D colourBuffer;
+uniform sampler2D depthMap; // depthmap for shadow mapping
 uniform vec3 cameraPos; //used to determine where in the world the camera is
 uniform int lightCount; //Used for looping through all of the lights
+uniform mat4 lightMatrixes; // VP matrixes for shadow mapping
 
 //Material values
 uniform vec3 ambientCol;
@@ -29,6 +31,22 @@ struct Pointlight {
 };
 
 uniform Pointlight pointLights[LIGHTS];
+
+
+
+float calculateShadow(vec4 positionLightSpace){
+	vec3 shadow = positionLightSpace.xyz / positionLightSpace.w;
+
+	shadow = shadow * 0.5 + 0.5;
+	float closestDepth = texture(depthMap, shadow.xy).r;
+	//return closestDepth;
+	float currentDepth = shadow.z;
+	//return currentDepth;
+
+	currentDepth -= 0.005;
+	return currentDepth > closestDepth ? 1.0 : 0.0;
+}
+
 
 vec3 lightCalc(Pointlight pl, vec3 normal, vec3 position, vec4 colour, vec3 viewDir) {
 	//diffuse
@@ -53,13 +71,16 @@ void main() {
 	vec3 position = texture(positionBuffer, frag_uv).rgb;
 	vec3 normal = normalize(texture(normalBuffer, frag_uv).rgb);
 	vec4 Diffuse = texture(colourBuffer, frag_uv);
+
+	vec4 shadowPos = lightMatrixes * vec4(position,1);
 	
 	vec3 result = vec3(0);
 	result = Diffuse.rgb * lightStr; //Ambience
 	vec3 viewDirection = normalize(cameraPos - position);
-	for(int i = 0; i < lightCount; i++) {
-		result += lightCalc(pointLights[i], normal, position, Diffuse, viewDirection);
-	}
 
+	for(int i = 0; i < lightCount; i++) {
+		result += (lightCalc(pointLights[i], normal, position, Diffuse, viewDirection) * (1 - calculateShadow(shadowPos)));
+	}
+	//result += (vec3(0.1) * (1 - calculateShadow(shadowPos)));
 	FragColor = vec4(result, 1);
 }
