@@ -83,6 +83,8 @@ void Renderer::geometryPass(std::vector<Object> objects, Shader* geometryPass) {
 			}
 			else if (type == ObjectTypes::Standard) {
 				geometryPass->setInt("type", 0);
+				objects.at(i).setRotation(this->angle, glm::vec3(0, 1, 0));
+				angle += 0.005f;
 			}
 			geometryPass->setMat4("worldMatrix", objects.at(i).modelMatrix);
 
@@ -105,7 +107,6 @@ void Renderer::lightPass(std::vector<Object> objects, Shader* lightPass) {
 			if (objects.at(i).name == "L2") {
 				glm::vec4 position = glm::vec4(objects.at(i).getPosition(), 0);
 				lightPass->setVec4("pointLights[0].position", position);
-				//std::cout << vec3ToString(position);
 				//Attenuation factors
 				lightPass->setVec4("pointLights[0].factors", objects.at(i).pointLight->factors);
 			}

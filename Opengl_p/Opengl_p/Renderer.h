@@ -54,6 +54,7 @@ private:
 
 	int scrX;
 	int scrY;
+	float angle = 0;
 
 };
 

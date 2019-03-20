@@ -23,6 +23,7 @@ Object::Object(const Object& other) {
 		this->pointLight = other.pointLight;
 		this->VAO = other.VAO;
 		this->VBO = other.VBO;
+		this->textures = other.textures;
 	}
 }
 
@@ -66,6 +67,11 @@ void Object::setPosition(glm::vec3 position) {
 	this->modelMatrix = glm::translate(this->position);
 }
 
+void Object::setRotation(float angle, glm::vec3 axis) {
+	this->rotation = rotation;
+	this->modelMatrix = glm::rotate(this->modelMatrix, angle, axis);
+}
+
 glm::vec3 Object::getPosition() const {
 	return this->position;
 }
@@ -87,7 +93,7 @@ void Object::init() {
 	//unbind the VAO & VBO
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	std::cout << "Init complete" << std::endl;
+	this->loadTextures();
 }
 
 void Object::bind() {
@@ -102,9 +108,6 @@ void Object::unbind() {
 
 //Bind-Draw-Unbind
 void Object::draw(Shader* drawShader) {
-	//drawShader->use();
-	//drawShader->setInt("colorTexture", 0);
-	//drawShader->setInt("normalMap", 1);
 
 	for (size_t i = 0; i < this->textures.size(); i++) {
 		glActiveTexture(GL_TEXTURE0 + i);
@@ -140,7 +143,7 @@ Object& Object::operator=(const Object &other) {
 		this->pointLight = other.pointLight;
 		this->VAO = other.VAO;
 		this->VBO = other.VBO;
-
+		this->textures = other.textures;
 	}
 	return *this;
 }
@@ -185,7 +188,7 @@ void Object::setupTextures(unsigned int& texture, std::string name) {
 	if (data) {
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 		glGenerateMipmap(GL_TEXTURE_2D);
-		std::cout << "GENERATED::TEXTURE" << std::endl;
+		//std::cout << "GENERATED::TEXTURE" << std::endl;
 	}
 	else {
 		std::cout << "ERROR::LOADING::TEXTURE" << std::endl;

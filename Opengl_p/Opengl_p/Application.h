@@ -41,12 +41,8 @@ public:
 	Application();
 	Application(int WNDW, int WNDH);
 	~Application();
-
-	#pragma region SETUP FUNCTIONS
-	void setupShaders();
-	void setupTextures(unsigned int &texture, std::string name);
-	#pragma endregion
 		
+	void setupShaders();
 	void update();
 	void render();
 	void cameraHandler(Shader* shader);	
@@ -63,8 +59,6 @@ private:
 	WND* window;
 	Camera* camera;
 	Fileloader fileloader;
-
-	std::vector<unsigned int> textures;
 
 	//the world matrix is used as a modelmatrix
 	glm::mat4 worldMatrix = glm::mat4(1.f);

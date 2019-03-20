@@ -184,7 +184,7 @@ Object Fileloader::loadMap(std::string path)
 			
 	meshMap.verts = mapPosition;
 	objMap.setMesh(meshMap);
-	objMap.setMaterial(loadMaterial(OBJECTSPATH + "ExampleObj.mtl"));
+	objMap.setMaterial(loadMaterial(OBJECTSPATH + "h_map.mtl"));
 		
 	return objMap;
 }

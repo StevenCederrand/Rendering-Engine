@@ -46,12 +46,13 @@ int WND::start()
 	}
 
 	glfwSetFramebufferSizeCallback(this->window, setViewport);
-
+	
 	return 0;
 }
 
 void WND::update() {
 	glfwSwapBuffers(this->window);
+	//glfwSwapInterval(1);
 	glfwPollEvents();
 }
 

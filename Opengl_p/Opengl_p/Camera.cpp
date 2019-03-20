@@ -57,7 +57,7 @@ void Camera::handleKeys(ValidKeys currentKey, float yPos, float deltaTime) {
 	}
 	glm::vec3 temp = this->cameraPosition;
 	temp.y= yPos;
-	//cameraPosition.y = yPos+1;
+	cameraPosition.y = yPos+1;
 	this->viewMatrix = glm::lookAt(this->cameraPosition, this->cameraPosition + this->cameraFront, this->cameraUp);
 	
 }

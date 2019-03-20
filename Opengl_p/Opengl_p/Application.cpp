@@ -40,6 +40,9 @@ void Application::start() {
 	this->shaderManager->getSpecific("GeometryPass")->setMat4("prjMatrix", this->prjMatrix);
 
 	this->currentKey = ValidKeys::DUMMY;
+	//Start the delta timer
+	this->deltaTime->start();
+	this->deltaTime->end();
 }
 
 void Application::setupShaders() {
@@ -65,65 +68,20 @@ void Application::loadObjects() {
 	this->objectManager->readFromFile("ExampleOBJ.obj", "L2", ObjectTypes::LightSource, this->shaderManager->getSpecific("LightPass"));
 }
 
-void Application::setupTextures(unsigned int &texture, std::string name) {
-	//Key-ShadowMap
-	glGenTextures(1, &texture);
-	glBindTexture(GL_TEXTURE_2D, texture);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	std::string path = OBJECTSPATH + name;
-
-	int width, height, nrChannels;
-
-	unsigned char *data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
-
-	if (data) {
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-		glGenerateMipmap(GL_TEXTURE_2D);
-		std::cout << "GENERATED::TEXTURE" << std::endl;
-	}
-	else {
-		std::cout << "ERROR::LOADING::TEXTURE" << std::endl;
-	}
-	stbi_image_free(data);
-}
-
 //Runs every tick while the window is open
 void Application::update() {
 	this->setupShaders();
 	this->loadObjects();
 	
 	
-	for (int i = 0; i < 2; i++) {
-		unsigned int tex;
-		if (i == 0) {
-			this->setupTextures(tex, this->objectManager->getObjects().at(0).getTexture(Texturetypes::Diffuse).name);
-		}
-		else {
-			this->setupTextures(tex, this->objectManager->getObjects().at(0).getTexture(Texturetypes::Normal).name);
-		}
-		this->textures.push_back(tex);
-	}
-
 	Shader* geometryPass = this->shaderManager->getSpecific("GeometryPass");
 	geometryPass->use();
 	geometryPass->setInt("colorTexture", 0);
 	geometryPass->setInt("normalMap", 1);
 	
 	this->renderer.start(this->window->getResolution().first, this->window->getResolution().second);
-
-
 	this->start();
-
-	this->deltaTime->start();
-	this->deltaTime->end();
-
 	Shader* lightPass = this->shaderManager->getSpecific("LightPass");
-	lightPass->use();
-
-	std::cout << this->objectManager->getLightCount();
 
 	while (!glfwWindowShouldClose(this->window->getWindow())) {
 		this->window->update();
@@ -153,13 +111,6 @@ void Application::update() {
 void Application::render() {
 	this->renderer.clearBuffers();
 	this->acceleration->frontBackRendering(objectManager->handleObjects(), camera->getCameraPosition());
-
-	//Assign Textures
-	for (int i = 0; i < this->textures.size(); i++) {
-		glActiveTexture(GL_TEXTURE0 + i);
-		glBindTexture(GL_TEXTURE_2D, textures.at(i));
-	}
-
 	this->renderer.deferredRender(objectManager->getObjects(), this->shaderManager);
 }
 
