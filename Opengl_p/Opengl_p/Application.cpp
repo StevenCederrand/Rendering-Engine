@@ -62,7 +62,8 @@ void Application::setupShaders() {
 	lightPass->setInt("depthMap", 3);
 
 	Shader* shadowshader = this->shaderManager->insertShader(
-		SHADERPATH + "ShadowPassVS.glsl", SHADERPATH + "ShadowPassFS.glsl", "ShadowPass");
+		SHADERPATH + "ShadowPassVS.glsl", 
+		SHADERPATH + "ShadowPassFS.glsl", "ShadowPass");
 }
 
 void Application::loadObjects() {
@@ -105,7 +106,6 @@ void Application::update() {
 	geometryPass->setInt("colorTexture", 0);
 	geometryPass->setInt("normalMap", 1);
 	
-
 	this->renderer.start(this->window->getResolution().first, this->window->getResolution().second);
 
 	this->start();
@@ -126,12 +126,10 @@ void Application::update() {
 		lightPass->setInt("lightCount", this->objectManager->getLightCount());
 		//Render the VAO with the loaded shader
 
-
 		//shadows 
 		glm::mat4 lightprjMatrix = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 50.0f);
 
 		glm::mat4 lightMatrixes = lightprjMatrix * camera->getshadowViewMatrix();
-		//lightPass->setMat4("lightMatrixes", lightMatrixes);
 		shadowPass->use();
 		shadowPass->setMat4("lightMatrixes", lightMatrixes);
 		
@@ -144,17 +142,11 @@ void Application::update() {
 		std::pair <int, int> temp;
 		temp = window->getResolution();
 		this->window->setViewport1(temp.first, temp.second);
+
 		lightPass->use();
 		this->renderer.clearBuffers();
-
 		lightPass->setMat4("lightMatrixes", camera->getshadowViewMatrix());
-
 		this->render();
-		//Deltatime in ms
-		this->deltaTime->end();
-
-		this->deltaT = this->deltaTime->deltaTime();
-
 	}
 	//Quit the program
 	this->end();
@@ -163,8 +155,11 @@ void Application::update() {
 void Application::render() {
 	this->renderer.clearBuffers();
 	this->acceleration->frontBackRendering(objectManager->handleObjects(), camera->getCameraPosition());
-	
 	this->renderer.deferredRender(objectManager->getObjects(), this->shaderManager, this->depthMap);
+
+	//Deltatime in ms
+	this->deltaTime->end();
+	this->deltaT = this->deltaTime->deltaTime();
 }
 
 //Have this be in an object class
@@ -186,9 +181,6 @@ void Application::cameraHandler(Shader* geometryPass) {
 	geometryPass->setMat4("viewMatrix", this->camera->getViewMatrix());
 }
 
-
-
-
 void Application::depthMapFunction(unsigned int depthWidth, unsigned int depthHeight, unsigned int &depthMap, unsigned int &depthFramebuffer) {
 	glGenFramebuffers(1, &depthFramebuffer);
 
@@ -206,8 +198,6 @@ void Application::depthMapFunction(unsigned int depthWidth, unsigned int depthHe
 	glReadBuffer(GL_NONE);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
-
-
 
 void Application::end() {
 	for (size_t i = 0; i < this->objectManager->getObjects().size(); i++) {

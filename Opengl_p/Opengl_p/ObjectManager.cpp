@@ -44,7 +44,7 @@ void ObjectManager::readFromFile(std::string filename, std::string objName, Obje
 		obj.setPosition(glm::vec3(0, 10, 0));
 		
 		obj.pointLight = new PointLight();
-		obj.pointLight->factors = glm::vec4(1.0f, 0.09f, 0.032f, 0);
+		obj.pointLight->factors = glm::vec4(1.0f, 0.09f, 0.032f, 0.1f);
 
 		this->lightcount++;
 	}

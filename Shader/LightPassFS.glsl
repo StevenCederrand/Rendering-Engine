@@ -19,14 +19,13 @@ uniform float transparency;
 uniform float specularWeight;
 
 
-float lightStr = 0.2f;
 vec3 lightColour = vec3(1);
 
 const int LIGHTS = 32;
 
 struct Pointlight {
 	vec4 position;
-	//Attenuation Values are here; x = constant, y = linear, z = quadratic
+	//Attenuation Values are here; x = constant, y = linear, z = quadratic, w = lightStrength
 	vec4 factors;
 };
 
@@ -75,10 +74,11 @@ void main() {
 	vec4 shadowPos = lightMatrixes * vec4(position,1);
 	
 	vec3 result = vec3(0);
-	result = Diffuse.rgb * lightStr; //Ambience
+	//result = Diffuse.rgb * lightStr; //Ambience
 	vec3 viewDirection = normalize(cameraPos - position);
 
 	for(int i = 0; i < lightCount; i++) {
+		result += Diffuse.rgb * pointLights[i].factors.w;
 		result += (lightCalc(pointLights[i], normal, position, Diffuse, viewDirection) * (1 - calculateShadow(shadowPos)));
 	}
 	//result += (vec3(0.1) * (1 - calculateShadow(shadowPos)));
