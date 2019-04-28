@@ -19,6 +19,7 @@ uniform float transparency;
 uniform float specularWeight;
 
 
+
 float lightStr = 0.2f;
 vec3 lightColour = vec3(1);
 
@@ -26,7 +27,7 @@ const int LIGHTS = 32;
 
 struct Pointlight {
 	vec4 position;
-	//Attenuation Values are here; x = constant, y = linear, z = quadratic
+	//Attenuation Values are here; x = constant, y = linear, z = quadratic, w = lightStrength
 	vec4 factors;
 };
 
@@ -40,8 +41,6 @@ float calculateShadow(vec4 positionLightSpace){
 	shadow = shadow * 0.5 + 0.5;
 	float closestDepth = texture(depthMap, shadow.xy).r;
 	float currentDepth = shadow.z;
-	//return closestDepth;
-	//return currentDepth;
 
 	if(currentDepth > 1.0){
 		return 0.0;
@@ -78,16 +77,14 @@ void main() {
 	vec4 shadowPos = lightMatrixes * vec4(position,1);
 	
 	vec3 result = vec3(0);
-	result = Diffuse.rgb * lightStr; //Ambience
+	//result = Diffuse.rgb * lightStr; //Ambience
 	vec3 viewDirection = normalize(cameraPos - position);
+
 	for(int i = 0; i < lightCount; i++) {
-		result +=20 * (lightCalc(pointLights[i], normal, position, Diffuse, viewDirection) * (1 - calculateShadow(shadowPos)));
+		result += Diffuse.rgb * pointLights[i].factors.w;
+		result += (lightCalc(pointLights[i], normal, position, Diffuse, viewDirection) * (1 - calculateShadow(shadowPos)));
 	}
-	//result *= (1 - calculateShadow(shadowPos));
 
 	FragColor = vec4(result, 1);
-
-
-	float closestDepth = texture(depthMap, frag_uv).r;
-	//FragColor = vec4(closestDepth, closestDepth, closestDepth, 1);
+	
 }

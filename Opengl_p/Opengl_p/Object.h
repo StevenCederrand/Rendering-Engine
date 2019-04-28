@@ -21,9 +21,9 @@ public:
 	//Set functions
 	//Automatically translates the model matrix
 	void setPosition(glm::vec3 position);
+	void setRotation(float angle, glm::vec3 axis);
 	void setMesh(Mesh mesh);
 	void setMaterial(Material material);
-
 	
 	void assignMaterial(Shader* shader);
 	void destroyLight();
@@ -49,9 +49,8 @@ private:
 	Material material;
 	Mesh mesh;
 
-	std::vector<glm::vec3> tangents;
-	std::vector<glm::vec3> bitangents;
 	glm::vec3 position = glm::vec3(0, 0, 0);
+	glm::vec3 rotation = glm::vec3(0, 0, 0);
 
 	//Functions related to drawing 
 	void bind();

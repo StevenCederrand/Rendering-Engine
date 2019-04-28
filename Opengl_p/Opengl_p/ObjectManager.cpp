@@ -31,20 +31,22 @@ void ObjectManager::readFromFile(std::string filename, std::string objName, Obje
 	}
 	else if(objectType == ObjectTypes::Standard){
 		obj = fileloader->readFile(OBJECTSPATH + filename);
-		obj.setPosition(glm::vec3(6, 4, 6));
+
+		obj.setPosition(glm::vec3(10, 2, 10));
+		obj.setRotation(45, glm::vec3(0, 1, 1));
+
 	}
 	else {
 		obj = fileloader->readFile(OBJECTSPATH + filename);
 	}
 	obj.type = objectType;
-	//this->objectloader->loadObject(obj, shader);
 	obj.init();
 
 	if (objectType == ObjectTypes::LightSource) {
 		obj.setPosition(glm::vec3(0, 10, 0));
 		
 		obj.pointLight = new PointLight();
-		obj.pointLight->factors = glm::vec4(1.0f, 0.09f, 0.032f, 0);
+		obj.pointLight->factors = glm::vec4(1.0f, 0.09f, 0.032f, 0.1f);
 
 		this->lightcount++;
 	}

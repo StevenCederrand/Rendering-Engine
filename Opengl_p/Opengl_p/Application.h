@@ -41,12 +41,8 @@ public:
 	Application();
 	Application(int WNDW, int WNDH);
 	~Application();
-
-	#pragma region SETUP FUNCTIONS
-	void setupShaders();
-	void setupTextures(unsigned int &texture, std::string name);
-	#pragma endregion
 		
+	void setupShaders();
 	void update();
 	void render();
 	void cameraHandler(Shader* shader);	
@@ -56,7 +52,7 @@ private:
 	void start(); //Exists to reduce duplication
 	void loadObjects();
 
-	void depthMapFunction(unsigned int depthWidth, unsigned int depthHeight, unsigned int &depthMap, unsigned int &depthFramebuffer);
+//	void depthMapFunction(unsigned int depthWidth, unsigned int depthHeight, unsigned int &depthMap, unsigned int &depthFramebuffer);
 
 	void end();
 
@@ -68,11 +64,10 @@ private:
 	Camera* camera;
 	Fileloader fileloader;
 
-	std::vector<unsigned int> textures;
-
 	//the world matrix is used as a modelmatrix
 	glm::mat4 worldMatrix = glm::mat4(1.f);
 	glm::mat4 prjMatrix = glm::mat4(1.f);
+
 
 	ValidKeys currentKey;
 	Renderer renderer;
