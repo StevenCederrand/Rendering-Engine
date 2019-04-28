@@ -38,7 +38,7 @@ private:
 	bool firstTime = true;
 
 	glm::mat4 shadowViewMatrix;
-	glm::vec3 shadowCameraPosition = glm::vec3(-2.0f, 4.0f, -1.0f);
+	glm::vec3 shadowCameraPosition = glm::vec3(-2.0f, 6.0f, -1.0f);
 	glm::vec3 shadowCameraUp = glm::vec3(10.0f, 0.0f, 6.0f);
 	glm::vec3 shadowCameraFront = glm::vec3(0.0f, 1.0f, 0.0f);
 

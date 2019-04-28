@@ -118,27 +118,11 @@ void Application::update() {
 	Shader* shadowPass = this->shaderManager->getSpecific("ShadowPass");
 	shadowPass->use();
 
+	
 	unsigned int depthWidth = 1280, depthHeight = 900;
 	unsigned int depthFramebuffer;
 
-	glGenFramebuffers(1, &depthFramebuffer);
-
-	glGenTextures(1, &this->depthMap);
-	glBindTexture(GL_TEXTURE_2D, this->depthMap);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, depthWidth, depthHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-	glBindFramebuffer(GL_FRAMEBUFFER, depthFramebuffer);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, this->depthMap, 0);
-	glDrawBuffer(GL_NONE);
-	glReadBuffer(GL_NONE);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-
-	//depthMapFunction(depthWidth, depthHeight, this->depthMap, depthFramebuffer);
+	depthMapFunction(depthWidth, depthHeight, this->depthMap, depthFramebuffer);
 
 	//shadows end
 
@@ -182,10 +166,9 @@ void Application::update() {
 
 
 		//shadows 
-		glm::mat4 lightprjMatrix = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 50.0f);
+		glm::mat4 lightprjMatrix = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.3f, 30.0f);
 
 		glm::mat4 lightMatrixes = lightprjMatrix * camera->getshadowViewMatrix();
-		//lightPass->setMat4("lightMatrixes", lightMatrixes);
 		shadowPass->use();
 		shadowPass->setMat4("lightMatrixes", lightMatrixes);
 		
@@ -193,7 +176,7 @@ void Application::update() {
 		glBindFramebuffer(GL_FRAMEBUFFER, depthFramebuffer);
 		glClear(GL_DEPTH_BUFFER_BIT);
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, textures.at(1));
+		glBindTexture(GL_TEXTURE_2D, textures.at(0));
 		this->renderer.render(this->objectManager->getObjects(), shadowPass, depthFramebuffer);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -203,19 +186,9 @@ void Application::update() {
 		lightPass->use();
 		this->renderer.clearBuffers();
 
-		lightPass->setMat4("lightMatrixes", camera->getshadowViewMatrix());
-	//	this->lightPass->setMat4("viewMatrix", this->camera->getViewMatrix());
-		std::cout << camera->getshadowPosition().x << " ";
-		std::cout << camera->getshadowPosition().y << " ";
-		std::cout << camera->getshadowPosition().z << std::endl;
+		lightPass->setMat4("lightMatrixes", lightMatrixes);
 
-		std::cout << camera->getCameraPosition().x << " ";
-		std::cout << camera->getCameraPosition().y << " ";
-		std::cout << camera->getCameraPosition().z << std::endl;
-
-		std::cout << camera->getCameraFront().x << " ";
-		std::cout << camera->getCameraFront().y << " ";
-		std::cout << camera->getCameraFront().z << std::endl;
+		
 		//shadows End
 
 
@@ -273,22 +246,23 @@ void Application::cameraHandler(Shader* geometryPass) {
 
 void Application::depthMapFunction(unsigned int depthWidth, unsigned int depthHeight, unsigned int &depthMap, unsigned int &depthFramebuffer)
 {
-	//unsigned int depthWidth = 1024, depthHeight = 1024;
 
-	//unsigned int depthMap;
-	//unsigned int depthFramebuffer;
+
 	glGenFramebuffers(1, &depthFramebuffer);
 
-	glGenTextures(1, &depthMap);
-	glBindTexture(GL_TEXTURE_2D, depthMap);
+	glGenTextures(1, &this->depthMap);
+	glBindTexture(GL_TEXTURE_2D, this->depthMap);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, depthWidth, depthHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+
+
 	glBindFramebuffer(GL_FRAMEBUFFER, depthFramebuffer);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, this->depthMap, 0);
 	glDrawBuffer(GL_NONE);
 	glReadBuffer(GL_NONE);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);

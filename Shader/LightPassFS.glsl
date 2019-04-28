@@ -19,7 +19,7 @@ uniform float transparency;
 uniform float specularWeight;
 
 
-float lightStr = 0.6f;
+float lightStr = 0.2f;
 vec3 lightColour = vec3(1);
 
 const int LIGHTS = 32;
@@ -39,10 +39,13 @@ float calculateShadow(vec4 positionLightSpace){
 
 	shadow = shadow * 0.5 + 0.5;
 	float closestDepth = texture(depthMap, shadow.xy).r;
-	//return closestDepth;
 	float currentDepth = shadow.z;
+	//return closestDepth;
 	//return currentDepth;
 
+	if(currentDepth > 1.0){
+		return 0.0;
+	}
 	currentDepth -= 0.005;
 	return currentDepth > closestDepth ? 1.0 : 0.0;
 }
@@ -78,8 +81,13 @@ void main() {
 	result = Diffuse.rgb * lightStr; //Ambience
 	vec3 viewDirection = normalize(cameraPos - position);
 	for(int i = 0; i < lightCount; i++) {
-		result += (lightCalc(pointLights[i], normal, position, Diffuse, viewDirection) * (1 - calculateShadow(shadowPos)));
+		result +=20 * (lightCalc(pointLights[i], normal, position, Diffuse, viewDirection) * (1 - calculateShadow(shadowPos)));
 	}
-	//result += (vec3(0.1) * (1 - calculateShadow(shadowPos)));
+	//result *= (1 - calculateShadow(shadowPos));
+
 	FragColor = vec4(result, 1);
+
+
+	float closestDepth = texture(depthMap, frag_uv).r;
+	//FragColor = vec4(closestDepth, closestDepth, closestDepth, 1);
 }

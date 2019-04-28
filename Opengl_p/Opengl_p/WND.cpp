@@ -78,6 +78,19 @@ void WND::inputKey(ValidKeys & key) {
 		glfwSetWindowShouldClose(this->window, true);
 		key = ValidKeys::ESC;
 	}
+
+	if (glfwGetKey(this->window, GLFW_KEY_I) == GLFW_PRESS) {
+		key = ValidKeys::I;
+	}
+	if (glfwGetKey(this->window, GLFW_KEY_J) == GLFW_PRESS) {
+		key = ValidKeys::J;
+	}
+	if (glfwGetKey(this->window, GLFW_KEY_K) == GLFW_PRESS) {
+		key = ValidKeys::K;
+	}
+	if (glfwGetKey(this->window, GLFW_KEY_L) == GLFW_PRESS) {
+		key = ValidKeys::L;
+	}
 }
 
 GLFWwindow* WND::getWindow() const {
