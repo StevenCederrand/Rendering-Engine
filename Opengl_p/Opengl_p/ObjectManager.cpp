@@ -31,9 +31,9 @@ void ObjectManager::readFromFile(std::string filename, std::string objName, Obje
 	}
 	else if(objectType == ObjectTypes::Standard){
 		obj = fileloader->readFile(OBJECTSPATH + filename);
-
-		obj.setPosition(glm::vec3(10, 2, 10));
-		obj.setRotation(45, glm::vec3(0, 1, 1));
+		obj.setPosition(this->position);
+		position.x += 10;
+		//obj.setRotation(45, glm::vec3(0, 1, 1));
 
 	}
 	else {
@@ -43,15 +43,15 @@ void ObjectManager::readFromFile(std::string filename, std::string objName, Obje
 	obj.init();
 
 	if (objectType == ObjectTypes::LightSource) {
-		obj.setPosition(glm::vec3(0, 10, 0));
+		obj.setPosition(glm::vec3(0, 3, 0));
 		
 		obj.pointLight = new PointLight();
-		obj.pointLight->factors = glm::vec4(1.0f, 0.09f, 0.032f, 0.1f);
+		obj.pointLight->factors = glm::vec4(1.0f, 0.1f, 0.04f, 0.1f);
 
 		this->lightcount++;
 	}
 	if (objName == "L1") {
-		obj.setPosition(glm::vec3(45, 3, 10));
+		obj.setPosition(glm::vec3(0, 3, 0)); //glm::vec3(45, 3, 10));
 	}
 	obj.name = objName;
 	this->objects.push_back(obj);

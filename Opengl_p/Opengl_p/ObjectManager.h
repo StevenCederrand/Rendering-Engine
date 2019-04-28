@@ -25,6 +25,8 @@ private:
 	std::vector<Object> objects;
 	Fileloader* fileloader;
 	int lightcount = 0;
+	glm::vec3 position = glm::vec3(10, 2, 10);
+
 };
 
 

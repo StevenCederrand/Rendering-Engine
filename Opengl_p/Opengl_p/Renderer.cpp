@@ -9,6 +9,13 @@ Renderer::~Renderer() {
 }
 
 void Renderer::clear() {
+	glDeleteTextures(1, &this->positionBuffer);
+	glDeleteTextures(1, &this->normalBuffer);
+	glDeleteTextures(1, &this->colourBuffer);
+	glDeleteTextures(1, &this->depthMap);
+	glDeleteFramebuffers(1, &this->FBO);
+	glDeleteFramebuffers(1, &this->shadowBuffer);
+
 	glDeleteVertexArrays(1, &this->rQuadVAO);
 	glDeleteBuffers(1, &this->rQUadVBO);
 
@@ -53,6 +60,8 @@ void Renderer::start(int scrX, int scrY) {
 		std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+
+	this->initShadowBuffers();
 	this->initRenderQuad();
 }
 
@@ -62,8 +71,7 @@ void Renderer::render(std::vector<Object> objects, Shader* shader, unsigned int 
 	glBindFramebuffer(GL_FRAMEBUFFER, depthFramebuffer);
 	glEnable(GL_DEPTH_TEST);
 	this->clearBuffers();
-
-	
+		
 	for (size_t i = 0; i < objects.size(); i++) {
 		ObjectTypes type = objects.at(i).type;
 
@@ -105,9 +113,13 @@ void Renderer::geometryPass(std::vector<Object> objects, Shader* geometryPass) {
 			}
 			else if (type == ObjectTypes::Standard) {
 				geometryPass->setInt("type", 0);
-				objects.at(i).setRotation(this->angle, glm::vec3(0, 1, 0));
-				angle += 0.01f;
-			}
+				if (objects.at(i).name == "RCube") {
+					objects.at(i).setRotation(this->angle, glm::vec3(0, 1, 0));
+					angle += 0.01f;
+				}
+				//objects.at(i).setRotation(this->angle, glm::vec3(0, 1, 0));
+				//angle += 0.01f;
+			} 
 			geometryPass->setMat4("worldMatrix", objects.at(i).modelMatrix);
 
 			objects.at(i).draw(geometryPass);
@@ -135,9 +147,10 @@ void Renderer::lightPass(std::vector<Object> objects, Shader* lightPass) {
 
 			if (objects.at(i).name == "L2") {
 				glm::vec4 position = glm::vec4(objects.at(i).getPosition(), 0);
-				lightPass->setVec3("pointLights[1].position", position);
-				//Attenuation factors
-				lightPass->setVec4("pointLights[1].factors", objects.at(i).pointLight->factors);
+
+				//lightPass->setVec3("pointLights[0].position", position);
+				////Attenuation factors
+				//lightPass->setVec4("pointLights[0].factors", objects.at(i).pointLight->factors);
 			}
 		}
 	}
@@ -184,4 +197,29 @@ void Renderer::initRenderQuad() {
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));	
+}
+
+//Creates the shadow buffer and the depth map texture
+void Renderer::initShadowBuffers() {
+	glGenFramebuffers(1, &this->shadowBuffer);
+	//Bind the shadow buffer -> then we create the actual buffer data
+	glBindFramebuffer(GL_FRAMEBUFFER, this->shadowBuffer);
+	glGenTextures(1, &this->depthMap);
+	glBindTexture(GL_TEXTURE_2D, this->depthMap);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 1280, 900, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+
+	float borderColor[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, this->depthMap, 0);
+	glDrawBuffer(GL_NONE);
+	glBindFramebuffer(GL_FRAMEBUFFER, NULL);
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+		printf("ERROR GENERATING SHADOW FRAMEBUFFER OBJECT");
+	}
+	glReadBuffer(GL_NONE);
 }
