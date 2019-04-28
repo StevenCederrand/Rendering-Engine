@@ -67,8 +67,10 @@ void Application::setupShaders() {
 }
 
 void Application::loadObjects() {
+	this->objectManager->readFromFile("ExampleOBJ.obj", "RCube", ObjectTypes::Standard, this->shaderManager->getSpecific("GeometryPass"));
 	this->objectManager->readFromFile("ExampleOBJ.obj", "Cube", ObjectTypes::Standard, this->shaderManager->getSpecific("GeometryPass"));
-	this->objectManager->readFromFile("HeightMap3.png", "Terrain", ObjectTypes::HeightMapBased, this->shaderManager->getSpecific("GeometryPass"));
+	this->objectManager->readFromFile("ExampleOBJ.obj", "Cube", ObjectTypes::Standard, this->shaderManager->getSpecific("GeometryPass"));
+	//this->objectManager->readFromFile("HeightMap3.png", "Terrain", ObjectTypes::HeightMapBased, this->shaderManager->getSpecific("GeometryPass"));
 	this->objectManager->readFromFile("ExampleOBJ.obj", "L1", ObjectTypes::LightSource, this->shaderManager->getSpecific("LightPass"));
 	this->objectManager->readFromFile("ExampleOBJ.obj", "L2", ObjectTypes::LightSource, this->shaderManager->getSpecific("LightPass"));
 }
@@ -119,33 +121,36 @@ void Application::update() {
 		//Check input
 		this->window->inputKey(this->currentKey);
 
+		this->mousePick();
 		//Camera function 
 		this->cameraHandler(geometryPass);
 		lightPass->use();
 		lightPass->setVec3("cameraPos", camera->getCameraPosition());
 		lightPass->setInt("lightCount", this->objectManager->getLightCount());
 		//Render the VAO with the loaded shader
-
+		#pragma region Shadows
 		//shadows 
 		glm::mat4 lightprjMatrix = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 50.0f);
-
 		glm::mat4 lightMatrixes = lightprjMatrix * camera->getshadowViewMatrix();
 		shadowPass->use();
 		shadowPass->setMat4("lightMatrixes", lightMatrixes);
-		
+
+		//For shadow mapping
 		this->window->setViewport1(depthWidth, depthHeight);
 		glBindFramebuffer(GL_FRAMEBUFFER, depthFramebuffer);
 		glClear(GL_DEPTH_BUFFER_BIT);
 		this->renderer.render(this->objectManager->getObjects(), shadowPass, depthFramebuffer);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
 		std::pair <int, int> temp;
 		temp = window->getResolution();
 		this->window->setViewport1(temp.first, temp.second);
+		#pragma endregion
+
 
 		lightPass->use();
 		this->renderer.clearBuffers();
 		lightPass->setMat4("lightMatrixes", camera->getshadowViewMatrix());
+		
 		this->render();
 	}
 	//Quit the program
@@ -209,3 +214,40 @@ void Application::end() {
 	this->window->close();
 }
 
+void Application::mousePick() {
+	float x = this->camera->getMousePosition().first;
+	float y = this->camera->getMousePosition().second;
+
+
+	if (x != -1 && y != -1) {
+		if (this->currentKey == ValidKeys::LEFT_MOUSE_BUTTON) {
+			//Go from the viewport space to NDC space
+			x = (2 * x) / this->window->getResolution().first - 1;
+			y = (2 * y) / this->window->getResolution().second - 1;
+			y *= -1;
+
+
+			//NDC in clips space
+			glm::vec4 coords = glm::vec4(x, y, -1.0f, 1.0f);
+			std::cout << "x: " << coords.x << "| y: " << coords.y << std::endl;
+
+			//Get view space coords
+			//Inverse projection matrix
+			glm::mat4 inversePRJ = glm::inverse(this->prjMatrix);
+
+			coords = coords * inversePRJ;
+			coords.z = -1;
+			coords.w = 0;
+
+			//inverse view matrix
+			glm::mat4 inverseVM = glm::inverse(this->camera->getViewMatrix());
+			coords = coords * inverseVM;
+
+
+
+			std::cout << "x: " << coords.x << "| y: " << coords.y << std::endl;
+		}
+	}
+
+
+}

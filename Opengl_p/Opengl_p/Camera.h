@@ -26,7 +26,10 @@ public:
 	glm::vec3 getCameraPosition() const;
 	glm::vec3 getCameraUp() const;
 	glm::vec3 getCameraFront() const;
+	std::pair<double, double> getMousePosition() const;
+
 private:
+	bool cursorHidden;
 	glm::mat4 viewMatrix;
 	//Variables from Applcation.h
 	glm::vec3 cameraPosition = glm::vec3(6.0f, 3.0f, 3.0f);
@@ -36,12 +39,12 @@ private:
 	float yaw = -90.0f;
 	float pitch = 0.0f;
 	bool firstTime = true;
+	double xpos, ypos;
 
 	glm::mat4 shadowViewMatrix;
 	glm::vec3 shadowCameraPosition = glm::vec3(-2.0f, 4.0f, -1.0f);
 	glm::vec3 shadowCameraUp = glm::vec3(10.0f, 0.0f, 6.0f);
 	glm::vec3 shadowCameraFront = glm::vec3(0.0f, 1.0f, 0.0f);
-
 
 	void mouse_callback(GLFWwindow* window);//, double xpos, double ypos);
 	//save the window so that we can use it in the class

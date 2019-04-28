@@ -51,7 +51,7 @@ public:
 private:
 	void start(); //Exists to reduce duplication
 	void loadObjects();
-
+	void mousePick();
 	void depthMapFunction(unsigned int depthWidth, unsigned int depthHeight, unsigned int &depthMap, unsigned int &depthFramebuffer);
 
 	void end();

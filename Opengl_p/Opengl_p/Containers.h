@@ -35,7 +35,9 @@ enum ValidKeys {
 	I,
 	J,
 	K,
-	L
+	L, 
+	H, 
+	LEFT_MOUSE_BUTTON,
 };
 
 enum ObjectTypes {

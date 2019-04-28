@@ -59,26 +59,43 @@ void WND::update() {
 void WND::inputKey(ValidKeys & key) {
 	if (glfwGetKey(this->window, GLFW_KEY_W) == GLFW_PRESS) {
 		key = ValidKeys::W;
+		return;
 	}
 	if (glfwGetKey(this->window, GLFW_KEY_S) == GLFW_PRESS) {
 		key = ValidKeys::S;
+		return;
 	}
 	if (glfwGetKey(this->window, GLFW_KEY_A) == GLFW_PRESS) {
 		key = ValidKeys::A;
+		return;
 	}
 	if (glfwGetKey(this->window, GLFW_KEY_D) == GLFW_PRESS) {
 		key = ValidKeys::D;
+		return;
 	}
 	if (glfwGetKey(this->window, GLFW_KEY_Q) == GLFW_PRESS) {
 		key = ValidKeys::Q;
+		return;
+	}
+	if (glfwGetKey(this->window, GLFW_KEY_H) == GLFW_PRESS) {
+		key = ValidKeys::H;
+		return;
 	}
 	if (glfwGetKey(this->window, GLFW_KEY_E) == GLFW_PRESS) {
 		key = ValidKeys::E;
+		return;
 	}
 	if (glfwGetKey(this->window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
 		glfwSetWindowShouldClose(this->window, true);
 		key = ValidKeys::ESC;
+		return;
 	}
+	if (glfwGetMouseButton(this->window, GLFW_MOUSE_BUTTON_LEFT)) {
+		key = ValidKeys::LEFT_MOUSE_BUTTON;
+		return;
+	}
+	//if we're not pressing anything then we just set the current key to inactive.
+	key = ValidKeys::DUMMY;
 }
 
 GLFWwindow* WND::getWindow() const {
