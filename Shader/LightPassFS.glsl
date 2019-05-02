@@ -19,6 +19,8 @@ uniform float transparency;
 uniform float specularWeight;
 
 
+
+float lightStr = 0.2f;
 vec3 lightColour = vec3(1);
 
 const int LIGHTS = 32;
@@ -38,11 +40,13 @@ float calculateShadow(vec4 positionLightSpace){
 
 	shadow = shadow * 0.5 + 0.5;
 	float closestDepth = texture(depthMap, shadow.xy).r;
-	//return closestDepth;
 	float currentDepth = shadow.z;
-	//return currentDepth;
 
-	currentDepth -= 0.005;
+	if(currentDepth >= 1.0){
+		return 1.0;
+	}
+	float bias = 0.1f;
+	currentDepth -= bias;
 	return currentDepth > closestDepth ? 1.0 : 0.0;
 }
 
@@ -58,7 +62,7 @@ vec3 lightCalc(Pointlight pl, vec3 normal, vec3 position, vec4 colour, vec3 view
 	vec3 specular = lightColour * spec * 0.5f;
 	//Attenuation
 	float dist = length(pl.position.xyz - position);
-	float attenuation = 1.0 / (pl.factors.x + pl.factors.y * dist + pl.factors.z * (dist * dist)); 
+	float attenuation = 1.0 / (pl.factors.x + pl.factors.y * dist + pl.factors.z * (dist * dist));
 	diffuse *= attenuation;
 	specular *= attenuation;
 
@@ -66,21 +70,25 @@ vec3 lightCalc(Pointlight pl, vec3 normal, vec3 position, vec4 colour, vec3 view
 }
 
 void main() {
-	//Set the output colour to be that of the texture coming in. 
+	//Set the output colour to be that of the texture coming in.
 	vec3 position = texture(positionBuffer, frag_uv).rgb;
 	vec3 normal = normalize(texture(normalBuffer, frag_uv).rgb);
 	vec4 Diffuse = texture(colourBuffer, frag_uv);
 
 	vec4 shadowPos = lightMatrixes * vec4(position,1);
-	
+
 	vec3 result = vec3(0);
 	//result = Diffuse.rgb * lightStr; //Ambience
 	vec3 viewDirection = normalize(cameraPos - position);
 
-	for(int i = 0; i < lightCount; i++) {
+	result += Diffuse.rgb * pointLights[0].factors.w;
+	result += (lightCalc(pointLights[0], normal, position, Diffuse, viewDirection) * (1 - calculateShadow(shadowPos)));
+/*
+	for(int i = 1; i < 2; i++) {
 		result += Diffuse.rgb * pointLights[i].factors.w;
 		result += (lightCalc(pointLights[i], normal, position, Diffuse, viewDirection) * (1 - calculateShadow(shadowPos)));
-	}
-	//result += (vec3(0.1) * (1 - calculateShadow(shadowPos)));
+	}*/
+
 	FragColor = vec4(result, 1);
+
 }

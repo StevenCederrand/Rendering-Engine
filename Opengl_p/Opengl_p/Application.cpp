@@ -68,6 +68,9 @@ void Application::setupShaders() {
 
 void Application::loadObjects() {
 	this->objectManager->readFromFile("ExampleOBJ.obj", "RCube", ObjectTypes::Standard, this->shaderManager->getSpecific("GeometryPass"));
+
+	this->objectManager->readFromFile("ExampleOBJ.obj", "Cube", ObjectTypes::Standard, this->shaderManager->getSpecific("GeometryPass"));
+
 	this->objectManager->readFromFile("ExampleOBJ.obj", "Cube", ObjectTypes::Standard, this->shaderManager->getSpecific("GeometryPass"));
 	this->objectManager->readFromFile("ExampleOBJ.obj", "Cube", ObjectTypes::Standard, this->shaderManager->getSpecific("GeometryPass"));
 	//this->objectManager->readFromFile("HeightMap3.png", "Terrain", ObjectTypes::HeightMapBased, this->shaderManager->getSpecific("GeometryPass"));
@@ -83,6 +86,7 @@ void Application::update() {
 	//shadows
 	Shader* shadowPass = this->shaderManager->getSpecific("ShadowPass");
 	shadowPass->use();
+
 	//Automatically gets the screen resolution
 	unsigned int depthWidth = this->window->getResolution().first, depthHeight = this->window->getResolution().second;
 	unsigned int depthFramebuffer;
@@ -92,16 +96,20 @@ void Application::update() {
 	glGenTextures(1, &this->depthMap);
 	glBindTexture(GL_TEXTURE_2D, this->depthMap);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, depthWidth, depthHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+
+	float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, depthFramebuffer);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, this->depthMap, 0);
 	glDrawBuffer(GL_NONE);
 	glReadBuffer(GL_NONE);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
 
 	Shader* geometryPass = this->shaderManager->getSpecific("GeometryPass");
 	geometryPass->use();
@@ -126,11 +134,14 @@ void Application::update() {
 		this->cameraHandler(geometryPass);
 		lightPass->use();
 		lightPass->setVec3("cameraPos", camera->getCameraPosition());
-		lightPass->setInt("lightCount", this->objectManager->getLightCount());
+		//lightPass->setInt("lightCount", this->objectManager->getLightCount());
 		//Render the VAO with the loaded shader
 		#pragma region Shadows
 		//shadows 
+
 		glm::mat4 lightprjMatrix = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 50.0f);
+		//glm::mat4 lightprjMatrix = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.3f, 30.0f);
+
 		glm::mat4 lightMatrixes = lightprjMatrix * camera->getshadowViewMatrix();
 		shadowPass->use();
 		shadowPass->setMat4("lightMatrixes", lightMatrixes);
@@ -149,8 +160,11 @@ void Application::update() {
 
 		lightPass->use();
 		this->renderer.clearBuffers();
-		lightPass->setMat4("lightMatrixes", camera->getshadowViewMatrix());
-		
+
+		//lightPass->setMat4("lightMatrixes", camera->getshadowViewMatrix());
+
+		lightPass->setMat4("lightMatrixes", lightMatrixes);
+
 		this->render();
 	}
 	//Quit the program
@@ -185,24 +199,29 @@ void Application::cameraHandler(Shader* geometryPass) {
 	// This is so that we can "walk" with wasd keys
 	geometryPass->setMat4("viewMatrix", this->camera->getViewMatrix());
 }
-
+/*
 void Application::depthMapFunction(unsigned int depthWidth, unsigned int depthHeight, unsigned int &depthMap, unsigned int &depthFramebuffer) {
+
 	glGenFramebuffers(1, &depthFramebuffer);
 
-	glGenTextures(1, &depthMap);
-	glBindTexture(GL_TEXTURE_2D, depthMap);
+	glGenTextures(1, &this->depthMap);
+	glBindTexture(GL_TEXTURE_2D, this->depthMap);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, depthWidth, depthHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+
+
 	glBindFramebuffer(GL_FRAMEBUFFER, depthFramebuffer);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, this->depthMap, 0);
 	glDrawBuffer(GL_NONE);
 	glReadBuffer(GL_NONE);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
+*/
 
 void Application::end() {
 	for (size_t i = 0; i < this->objectManager->getObjects().size(); i++) {

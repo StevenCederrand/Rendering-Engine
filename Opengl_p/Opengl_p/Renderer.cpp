@@ -9,6 +9,12 @@ Renderer::~Renderer() {
 }
 
 void Renderer::clear() {
+	glDeleteTextures(1, &this->positionBuffer);
+	glDeleteTextures(1, &this->normalBuffer);
+	glDeleteTextures(1, &this->colourBuffer);
+	glDeleteTextures(1, &this->depthMap);
+	glDeleteFramebuffers(1, &this->FBO);
+
 	glDeleteVertexArrays(1, &this->rQuadVAO);
 	glDeleteBuffers(1, &this->rQUadVBO);
 
@@ -62,8 +68,7 @@ void Renderer::render(std::vector<Object> objects, Shader* shader, unsigned int 
 	glBindFramebuffer(GL_FRAMEBUFFER, depthFramebuffer);
 	glEnable(GL_DEPTH_TEST);
 	this->clearBuffers();
-
-	
+		
 	for (size_t i = 0; i < objects.size(); i++) {
 		ObjectTypes type = objects.at(i).type;
 
@@ -110,11 +115,14 @@ void Renderer::geometryPass(std::vector<Object> objects, Shader* geometryPass) {
 					angle += 0.01f;
 				}
 			}
+				//objects.at(i).setRotation(this->angle, glm::vec3(0, 1, 0));
+				//angle += 0.01f;
+		} 
 			geometryPass->setMat4("worldMatrix", objects.at(i).modelMatrix);
 
 			objects.at(i).draw(geometryPass);
-		}
 	}
+	
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
@@ -137,9 +145,10 @@ void Renderer::lightPass(std::vector<Object> objects, Shader* lightPass) {
 
 			if (objects.at(i).name == "L2") {
 				glm::vec4 position = glm::vec4(objects.at(i).getPosition(), 0);
-				lightPass->setVec3("pointLights[1].position", position);
-				//Attenuation factors
-				lightPass->setVec4("pointLights[1].factors", objects.at(i).pointLight->factors);
+
+				//lightPass->setVec3("pointLights[0].position", position);
+				////Attenuation factors
+				//lightPass->setVec4("pointLights[0].factors", objects.at(i).pointLight->factors);
 			}
 		}
 	}
@@ -187,3 +196,4 @@ void Renderer::initRenderQuad() {
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));	
 }
+

@@ -94,6 +94,22 @@ void WND::inputKey(ValidKeys & key) {
 		key = ValidKeys::LEFT_MOUSE_BUTTON;
 		return;
 	}
+	if (glfwGetKey(this->window, GLFW_KEY_I) == GLFW_PRESS) {
+		key = ValidKeys::I;
+		return;
+	}
+	if (glfwGetKey(this->window, GLFW_KEY_J) == GLFW_PRESS) {
+		key = ValidKeys::J;
+		return;
+	}
+	if (glfwGetKey(this->window, GLFW_KEY_K) == GLFW_PRESS) {
+		key = ValidKeys::K;
+		return;
+	}
+	if (glfwGetKey(this->window, GLFW_KEY_L) == GLFW_PRESS) {
+		key = ValidKeys::L;
+		return;
+	}
 	//if we're not pressing anything then we just set the current key to inactive.
 	key = ValidKeys::DUMMY;
 }

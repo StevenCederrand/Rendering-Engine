@@ -21,6 +21,7 @@ public:
 
 
 private:
+	void initShadowBuffers();
 	void initRenderQuad();
 	void geometryPass(std::vector<Object> objects, Shader* geometryPass);
 	void lightPass(std::vector<Object> objects, Shader* lightPass);
@@ -36,7 +37,6 @@ private:
 	unsigned int positionBuffer;
 	unsigned int normalBuffer;
 	unsigned int colourBuffer;
-	unsigned int depthMap;
 
 	unsigned int attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2};	
 	
@@ -54,7 +54,8 @@ private:
 		1.0f,  1.0f,  1.0f, 1.0f
 	};
 #pragma endregion
-
+	//Shadow Mapping Related stuff
+	unsigned int depthMap;
 	int scrX;
 	int scrY;
 	float angle = 0;
