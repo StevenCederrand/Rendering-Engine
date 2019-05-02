@@ -70,3 +70,17 @@ void ObjectManager::destroyLight(int at) {
 	this->objects.at(at).destroyLight();
 }
 
+bool ObjectManager::checkMousePicking(glm::vec3 cameraPosition, glm::vec3 ray) {
+
+	/*
+		insert stuff for mouse picking
+	*/
+
+
+
+
+
+
+	return false;
+}
+

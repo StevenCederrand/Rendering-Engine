@@ -68,12 +68,10 @@ void Application::setupShaders() {
 
 void Application::loadObjects() {
 	this->objectManager->readFromFile("ExampleOBJ.obj", "RCube", ObjectTypes::Standard, this->shaderManager->getSpecific("GeometryPass"));
+	this->objectManager->readFromFile("sphere.obj", "Sphere", ObjectTypes::Standard, this->shaderManager->getSpecific("GeometryPass"));
 
 	this->objectManager->readFromFile("ExampleOBJ.obj", "Cube", ObjectTypes::Standard, this->shaderManager->getSpecific("GeometryPass"));
-
-	this->objectManager->readFromFile("ExampleOBJ.obj", "Cube", ObjectTypes::Standard, this->shaderManager->getSpecific("GeometryPass"));
-	this->objectManager->readFromFile("ExampleOBJ.obj", "Cube", ObjectTypes::Standard, this->shaderManager->getSpecific("GeometryPass"));
-	//this->objectManager->readFromFile("HeightMap3.png", "Terrain", ObjectTypes::HeightMapBased, this->shaderManager->getSpecific("GeometryPass"));
+	this->objectManager->readFromFile("HeightMap3.png", "Terrain", ObjectTypes::HeightMapBased, this->shaderManager->getSpecific("GeometryPass"));
 	this->objectManager->readFromFile("ExampleOBJ.obj", "L1", ObjectTypes::LightSource, this->shaderManager->getSpecific("LightPass"));
 	this->objectManager->readFromFile("ExampleOBJ.obj", "L2", ObjectTypes::LightSource, this->shaderManager->getSpecific("LightPass"));
 }
@@ -134,13 +132,11 @@ void Application::update() {
 		this->cameraHandler(geometryPass);
 		lightPass->use();
 		lightPass->setVec3("cameraPos", camera->getCameraPosition());
-		//lightPass->setInt("lightCount", this->objectManager->getLightCount());
 		//Render the VAO with the loaded shader
 		#pragma region Shadows
 		//shadows 
 
 		glm::mat4 lightprjMatrix = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 50.0f);
-		//glm::mat4 lightprjMatrix = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.3f, 30.0f);
 
 		glm::mat4 lightMatrixes = lightprjMatrix * camera->getshadowViewMatrix();
 		shadowPass->use();
@@ -199,29 +195,6 @@ void Application::cameraHandler(Shader* geometryPass) {
 	// This is so that we can "walk" with wasd keys
 	geometryPass->setMat4("viewMatrix", this->camera->getViewMatrix());
 }
-/*
-void Application::depthMapFunction(unsigned int depthWidth, unsigned int depthHeight, unsigned int &depthMap, unsigned int &depthFramebuffer) {
-
-	glGenFramebuffers(1, &depthFramebuffer);
-
-	glGenTextures(1, &this->depthMap);
-	glBindTexture(GL_TEXTURE_2D, this->depthMap);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, depthWidth, depthHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-	float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
-
-
-	glBindFramebuffer(GL_FRAMEBUFFER, depthFramebuffer);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, this->depthMap, 0);
-	glDrawBuffer(GL_NONE);
-	glReadBuffer(GL_NONE);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-}
-*/
 
 void Application::end() {
 	for (size_t i = 0; i < this->objectManager->getObjects().size(); i++) {
@@ -242,29 +215,30 @@ void Application::mousePick() {
 		if (this->currentKey == ValidKeys::LEFT_MOUSE_BUTTON) {
 			//Go from the viewport space to NDC space
 			x = (2 * x) / this->window->getResolution().first - 1;
-			y = (2 * y) / this->window->getResolution().second - 1;
-			y *= -1;
+			y = 1 - (2 * y) / this->window->getResolution().second;
 
 
-			//NDC in clips space
+			//Clip-space
 			glm::vec4 coords = glm::vec4(x, y, -1.0f, 1.0f);
-			std::cout << "x: " << coords.x << "| y: " << coords.y << std::endl;
 
 			//Get view space coords
 			//Inverse projection matrix
 			glm::mat4 inversePRJ = glm::inverse(this->prjMatrix);
 
-			coords = coords * inversePRJ;
-			coords.z = -1;
-			coords.w = 0;
-
+			glm::vec4 mouseRay = inversePRJ * coords;
+			mouseRay.z = -1;
+			mouseRay.w = 0;
+			
 			//inverse view matrix
 			glm::mat4 inverseVM = glm::inverse(this->camera->getViewMatrix());
-			coords = coords * inverseVM;
+			mouseRay = inverseVM * mouseRay;
 
+			glm::vec3 rayInWorldSpace = glm::normalize(glm::vec3(mouseRay.x, mouseRay.y, mouseRay.z));
 
+			this->objectManager->checkMousePicking(this->camera->getCameraPosition, rayInWorldSpace);
 
-			std::cout << "x: " << coords.x << "| y: " << coords.y << std::endl;
+			std::cout << "x: " << rayInWorldSpace.x << "| y: " << rayInWorldSpace.y << 
+				"| z: " << rayInWorldSpace.z << std::endl;
 		}
 	}
 

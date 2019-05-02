@@ -103,11 +103,8 @@ glm::vec3 Camera::getCameraFront() const
 	return this->cameraFront;
 }
 
-
 void Camera::mouse_callback(GLFWwindow * window)// ,double xpos, double ypos)
 {
-	//double xpos;
-	//double ypos;
 	float mouse_x = 640.0f;
 	float mouse_y = 450.0f;
 

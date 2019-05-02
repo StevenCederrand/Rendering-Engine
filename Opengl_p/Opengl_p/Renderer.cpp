@@ -110,10 +110,10 @@ void Renderer::geometryPass(std::vector<Object> objects, Shader* geometryPass) {
 			}
 			else if (type == ObjectTypes::Standard) {
 				geometryPass->setInt("type", 0);
-				if (objects.at(i).name == "RCube") {
-					objects.at(i).setRotation(this->angle, glm::vec3(0, 1, 0));
-					angle += 0.01f;
-				}
+				//if (objects.at(i).name == "RCube") {
+				//	objects.at(i).setRotation(this->angle, glm::vec3(0, 1, 0));
+				//	angle += 0.01f;
+				//}
 			}
 				//objects.at(i).setRotation(this->angle, glm::vec3(0, 1, 0));
 				//angle += 0.01f;

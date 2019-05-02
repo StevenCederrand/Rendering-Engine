@@ -20,6 +20,7 @@
 #include "ShaderManager.h"
 #include "Deltatime.h"
 #include "Acceleration.h"
+#include <glm/gtx/transform.hpp>
 #pragma endregion
 
 #pragma region Default_Includes 
@@ -52,8 +53,7 @@ private:
 	void start(); //Exists to reduce duplication
 	void loadObjects();
 	void mousePick();
-	void depthMapFunction(unsigned int depthWidth, unsigned int depthHeight, unsigned int &depthMap, unsigned int &depthFramebuffer);
-
+	
 	void end();
 
 	
