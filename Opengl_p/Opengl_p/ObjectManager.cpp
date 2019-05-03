@@ -75,11 +75,27 @@ bool ObjectManager::checkMousePicking(glm::vec3 cameraPosition, glm::vec3 ray) {
 	/*
 		insert stuff for mouse picking
 	*/
+	float point1, point2, b, c;
+	glm::vec3 rayToCenter;
+	
+	for (int i = 0; i < objects.size(); i++)
+	{
+		float radius = (objects[i].getMaxMin().x - objects[i].getMaxMin().y) *0.5f;
 
+		rayToCenter = cameraPosition-objects[i].getPosition();
+		b = glm::dot(ray, rayToCenter);
+		c = glm::dot(rayToCenter, rayToCenter) - (radius*radius); //here should be sphere radius
 
+		if ((b * b - c) > 0)
+		{
+			point1 = (-b + sqrt(b*b - c));
+			point2 = (-b - sqrt(b*b - c));
 
-
-
+			if (point1 > 0 || point2 > 0) {
+				return true;
+			}
+		}
+	}
 
 	return false;
 }

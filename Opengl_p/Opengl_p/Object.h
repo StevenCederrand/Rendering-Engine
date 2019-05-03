@@ -17,6 +17,7 @@ public:
 	Texture getTexture(Texturetypes type);
 	Material getMaterial() const;
 	glm::vec3 getPosition() const;
+	glm::vec2 getMaxMin() const;
 
 	//Set functions
 	//Automatically translates the model matrix
@@ -24,6 +25,7 @@ public:
 	void setRotation(float angle, glm::vec3 axis);
 	void setMesh(Mesh mesh);
 	void setMaterial(Material material);
+	void setMaxMin(glm::vec2 maxMin);
 	
 	void assignMaterial(Shader* shader);
 	void destroyLight();
@@ -63,6 +65,9 @@ private:
 	unsigned int VAO;
 	unsigned int VBO;	
 
+	float xMin;
+	float xMax;
+	
 
 	//Textures
 	void loadTextures();

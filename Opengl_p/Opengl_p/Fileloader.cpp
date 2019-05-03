@@ -207,6 +207,8 @@ Object Fileloader::readFile(std::string path) {
 	int vertex = 0;
 	int uvs = 0;
 	int ns = 0;
+	float xMin = 1000;
+	float xMax = -1000;
 
 	std::vector<Vertex> tmpVerts;
 	while (std::getline(file, line)) {
@@ -215,8 +217,18 @@ Object Fileloader::readFile(std::string path) {
 		std::string l = line.substr(0, dataStart);
 		if (l == "v") {
 			l = line.substr(++dataStart, line.length());
-			temp.v.push_back(interpretVec3(l));
+			glm::vec3 tempVec = interpretVec3(l);
+			temp.v.push_back(tempVec);
 			vertex++;
+
+			if (tempVec.x < xMin) //get the max and min x values and save them for mouse picking
+			{
+				xMin = tempVec.x;
+			}
+			if (tempVec.x > xMax)
+			{
+				xMax = tempVec.x;
+			}
 		}
 		else if (l == "vt") {
 			l = line.substr(++dataStart, line.length());
@@ -241,6 +253,7 @@ Object Fileloader::readFile(std::string path) {
 	}
 	mesh.verts = tmpVerts;
 	temp.setMesh(mesh);
+	temp.setMaxMin(glm::vec2(xMax, xMin));
 
 	return temp;
 }

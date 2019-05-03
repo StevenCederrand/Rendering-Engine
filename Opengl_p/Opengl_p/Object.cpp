@@ -24,6 +24,8 @@ Object::Object(const Object& other) {
 		this->VAO = other.VAO;
 		this->VBO = other.VBO;
 		this->textures = other.textures;
+		this->xMax = other.xMax;
+		this->xMin = other.xMin;
 	}
 }
 
@@ -74,6 +76,11 @@ void Object::setRotation(float angle, glm::vec3 axis) {
 
 glm::vec3 Object::getPosition() const {
 	return this->position;
+}
+
+glm::vec2 Object::getMaxMin() const
+{
+	return glm::vec2(this->xMax, this->xMin);
 }
 
 void Object::init() {
@@ -144,6 +151,8 @@ Object& Object::operator=(const Object &other) {
 		this->VAO = other.VAO;
 		this->VBO = other.VBO;
 		this->textures = other.textures;
+		this->xMax = other.xMax;
+		this->xMin = other.xMin;
 	}
 	return *this;
 }
@@ -154,6 +163,13 @@ void Object::assignMaterial(Shader* shader) {
 	shader->setVec3("specCol", this->getMaterial().specularCol);
 	shader->setFloat("transparency", this->getMaterial().transparency);
 	shader->setFloat("specularWeight", this->getMaterial().specularWeight);
+}
+
+void Object::setMaxMin(glm::vec2 maxMin)
+{
+	this->xMax = maxMin.x;
+	this->xMin = maxMin.y;
+
 }
 
 void Object::loadTextures() {

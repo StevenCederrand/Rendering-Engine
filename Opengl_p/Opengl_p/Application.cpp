@@ -235,10 +235,14 @@ void Application::mousePick() {
 
 			glm::vec3 rayInWorldSpace = glm::normalize(glm::vec3(mouseRay.x, mouseRay.y, mouseRay.z));
 
-			this->objectManager->checkMousePicking(this->camera->getCameraPosition, rayInWorldSpace);
+			bool hit = this->objectManager->checkMousePicking(this->camera->getCameraPosition(), rayInWorldSpace);
 
 			std::cout << "x: " << rayInWorldSpace.x << "| y: " << rayInWorldSpace.y << 
 				"| z: " << rayInWorldSpace.z << std::endl;
+			if (hit)
+			{
+				std::cout << "HIT" << std::endl;
+			}
 		}
 	}
 
