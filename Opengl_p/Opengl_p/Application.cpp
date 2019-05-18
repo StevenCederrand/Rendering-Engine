@@ -15,6 +15,7 @@ Application::Application(int WNDW, int WNDH) {
 	this->objectManager = new ObjectManager();
 	this->deltaTime = new Deltatime();
 	this->shaderManager = new ShaderManager();
+	this->particleManager = new ParticleManager();
 
 }
 
@@ -25,6 +26,7 @@ Application::~Application() {
 	delete this->objectManager;
 	delete this->deltaTime;
 	delete this->shaderManager;
+	delete this->particleManager;
 }
 
 //Setup the matrixes
@@ -34,6 +36,8 @@ void Application::start() {
 
 	this->prjMatrix = glm::perspective(glm::radians(65.0f), (float)this->window->getResolution().first / (float)this->window->getResolution().second, 0.1f, 50.0f);
 	
+
+
 	//Set View Matrix
 	this->shaderManager->getSpecific("GeometryPass")->setMat4("viewMatrix", this->camera->getViewMatrix());
 	//Set Projection Matrix
@@ -64,6 +68,11 @@ void Application::setupShaders() {
 	Shader* shadowshader = this->shaderManager->insertShader(
 		SHADERPATH + "ShadowPassVS.glsl", 
 		SHADERPATH + "ShadowPassFS.glsl", "ShadowPass");
+
+	Shader* particleshader = this->shaderManager->insertShader(
+		SHADERPATH + "ParticleVS.glsl",
+		SHADERPATH + "ParticleFS.glsl", "ParticlePass");
+	
 }
 
 void Application::loadObjects() {
@@ -153,7 +162,7 @@ void Application::update() {
 		this->window->setViewport1(temp.first, temp.second);
 		#pragma endregion
 
-
+		this->particleManager->update();
 		lightPass->use();
 		this->renderer.clearBuffers();
 
@@ -172,6 +181,8 @@ void Application::render() {
 	this->acceleration->frontBackRendering(objectManager->handleObjects(), camera->getCameraPosition());
 	this->renderer.deferredRender(objectManager->getObjects(), this->shaderManager, this->depthMap);
 
+	Shader* particlePass = this->shaderManager->getSpecific("ParticlePass");
+	this->renderer.particlesRender(this->particleManager, particlePass, camera->getViewMatrix(), this->prjMatrix);
 	//Deltatime in ms
 	this->deltaTime->end();
 	this->deltaT = this->deltaTime->deltaTime();
@@ -241,6 +252,7 @@ void Application::mousePick() {
 				"| z: " << rayInWorldSpace.z << std::endl;
 			if (hit)
 			{
+				this->particleManager->addParticles(rayInWorldSpace, glm::vec3(1.0f), 10);
 				std::cout << "HIT" << std::endl;
 			}
 		}

@@ -92,6 +92,31 @@ void Renderer::deferredRender(std::vector<Object> objects, ShaderManager* shader
 	this->lightPass(objects, shaderManager->getSpecific("LightPass"));
 }
 
+void Renderer::particlesRender(ParticleManager * particleManager, Shader * shader, glm::mat4 viewMatrix, glm::mat4 projMatrix)
+{
+	glEnable(GL_BLEND);
+	shader->use();
+	shader->setMat4("viewMatrix", viewMatrix);
+	shader->setMat4("projectionMatrix", projMatrix);
+
+	glBindVertexArray(particleManager->getVAO());
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(2);
+
+	//glActiveTexture(GL_TEXTURE0);
+	//glBindTexture(GL_TEXTURE_2D, this->colourBuffer);
+	glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 3, particleManager->getNumberOfParticles());
+	//glBindTexture(GL_TEXTURE_2D, NULL);
+	
+	glDisableVertexAttribArray(0);
+	glDisableVertexAttribArray(1);
+	glDisableVertexAttribArray(2);
+
+	glBindVertexArray(0);
+
+	glDisable(GL_BLEND);
+}
 
 void Renderer::geometryPass(std::vector<Object> objects, Shader* geometryPass) {
 	geometryPass->use();

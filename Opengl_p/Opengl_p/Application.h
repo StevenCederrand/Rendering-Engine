@@ -21,6 +21,7 @@
 #include "Deltatime.h"
 #include "Acceleration.h"
 #include <glm/gtx/transform.hpp>
+#include "ParticleManager.h"
 #pragma endregion
 
 #pragma region Default_Includes 
@@ -75,6 +76,7 @@ private:
 	Deltatime* deltaTime;
 	ShaderManager *shaderManager;
 	Acceleration *acceleration;
+	ParticleManager* particleManager;
 	double deltaT;
 	unsigned int depthMap;
 };

@@ -79,6 +79,15 @@
     <Filter Include="Shader\ShadowPass">
       <UniqueIdentifier>{aaffe171-f2f6-4697-9e38-6e19034dfa3d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Particle">
+      <UniqueIdentifier>{24fe666c-6f3c-4e0a-8ca9-b970c27b41db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Particle">
+      <UniqueIdentifier>{5283070f-5dfc-4896-8079-66b2b4d2999a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader\ParticlePass">
+      <UniqueIdentifier>{6c7aabb2-18a7-47b3-97bd-66450565f98c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Object.cpp">
@@ -147,6 +156,12 @@
     <ClCompile Include="Acceleration.cpp">
       <Filter>Source Files\Rendering\Acceleration</Filter>
     </ClCompile>
+    <ClCompile Include="Particle.cpp">
+      <Filter>Source Files\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleManager.cpp">
+      <Filter>Source Files\Particle</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stb_image.h">
@@ -212,6 +227,12 @@
     <ClInclude Include="ShaderManager.h">
       <Filter>Shader\CShader</Filter>
     </ClInclude>
+    <ClInclude Include="Particle.h">
+      <Filter>Header Files\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleManager.h">
+      <Filter>Header Files\Particle</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Shader\GeometryPassFS.glsl">
@@ -237,6 +258,12 @@
     </None>
     <None Include="..\..\Shader\ShadowPassVS.glsl">
       <Filter>Shader\ShadowPass</Filter>
+    </None>
+    <None Include="..\..\Shader\ParticleFS.glsl">
+      <Filter>Shader\ParticlePass</Filter>
+    </None>
+    <None Include="..\..\Shader\ParticleVS.glsl">
+      <Filter>Shader\ParticlePass</Filter>
     </None>
   </ItemGroup>
 </Project>

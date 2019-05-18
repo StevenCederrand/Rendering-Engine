@@ -144,6 +144,8 @@
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="ObjectLoader.cpp" />
     <ClCompile Include="ObjectManager.cpp" />
+    <ClCompile Include="Particle.cpp" />
+    <ClCompile Include="ParticleManager.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShaderManager.cpp" />
@@ -171,6 +173,8 @@
     <ClInclude Include="Object.h" />
     <ClInclude Include="ObjectLoader.h" />
     <ClInclude Include="ObjectManager.h" />
+    <ClInclude Include="Particle.h" />
+    <ClInclude Include="ParticleManager.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="ShaderManager.h" />
@@ -183,6 +187,8 @@
     <None Include="..\..\Shader\GeometryPassVS.glsl" />
     <None Include="..\..\Shader\LightPassFS.glsl" />
     <None Include="..\..\Shader\LightPassVS.glsl" />
+    <None Include="..\..\Shader\ParticleFS.glsl" />
+    <None Include="..\..\Shader\ParticleVS.glsl" />
     <None Include="..\..\Shader\ShadowPassFS.glsl" />
     <None Include="..\..\Shader\ShadowPassVS.glsl" />
     <None Include="Acceleration.h" />

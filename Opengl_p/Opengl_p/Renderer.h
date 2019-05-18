@@ -4,6 +4,7 @@
 #include "ObjectLoader.h"
 #include "ObjectManager.h"
 #include "ShaderManager.h"
+#include "ParticleManager.h"
 
 class Renderer {
 public:
@@ -14,6 +15,7 @@ public:
 	void deferredRender(std::vector<Object> objects, 
 		ShaderManager* shaderManager,
 		unsigned int depthMap);
+	void particlesRender(ParticleManager* particleManager, Shader* shader, glm::mat4 viewMatrix, glm::mat4 projMatrix);
 
 	void start(int x, int y);
 	void clearBuffers();
