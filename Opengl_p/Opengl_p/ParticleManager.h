@@ -16,12 +16,15 @@ public:
 	void addParticles(const glm::vec3& pos, const glm::vec3& velocity, int numberOfParticles);
 	unsigned int getVAO();
 private:
+	int findUnusedParticle();
+private:
 	
 	std::vector<Particle> particles;
 	std::vector<glm::vec3> positionBuffer;
 	std::vector<glm::vec4> colourBuffer;
 
 	int numberOfParticles;
+	
 	unsigned int VAO;
 
 	unsigned int verticesVBO;

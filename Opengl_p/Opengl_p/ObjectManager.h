@@ -21,7 +21,7 @@ public:
 	int getLightCount() const;
 	void destroyLight(int at);
 
-	bool checkMousePicking(glm::vec3 cameraPosition, glm::vec3 ray);
+	int checkMousePicking(glm::vec3 cameraPosition, glm::vec3 ray);
 
 private:
 	std::vector<Object> objects;

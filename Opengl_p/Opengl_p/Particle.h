@@ -7,6 +7,7 @@
 class Particle
 {
 public:
+	Particle();
 	Particle(glm::vec3 position, glm::vec3 velocity);
 	~Particle();
 	void update();
@@ -16,6 +17,7 @@ public:
 	glm::vec3 getVel();
 	glm::vec4 getColor();
 	bool remainingTime();
+	void renewParticle(Particle p);
 private:
 
 	glm::vec3 position;

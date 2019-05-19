@@ -1,10 +1,10 @@
 #include "ParticleManager.h"
-
+#include <cstdlib>
 
 ParticleManager::ParticleManager()
 {
 	this->numberOfParticles = 0;
-	float sizeOfAnParticle = 5.0f;
+	float sizeOfAnParticle = 0.15f;
 	vertex_buffer_data[0] = -sizeOfAnParticle;
 	vertex_buffer_data[1] = -sizeOfAnParticle;
 	vertex_buffer_data[2] = 0.0f;
@@ -20,6 +20,11 @@ ParticleManager::ParticleManager()
 	vertex_buffer_data[9] = sizeOfAnParticle;
 	vertex_buffer_data[10] = sizeOfAnParticle;
 	vertex_buffer_data[11] = 0.0f;
+
+	/*for (size_t i = 0; i < PARTICLES_MAX; i++) {
+		particles.emplace_back(Particle());
+	}*/
+
 	this->setupBuffers();
 }
 
@@ -33,9 +38,13 @@ ParticleManager::~ParticleManager()
 
 void ParticleManager::update()
 {
+	if (this->numberOfParticles < 0)
+	{
+		this->numberOfParticles = 0;
+	}
 	positionBuffer.clear();
 	colourBuffer.clear();
-	for (int i = 0; i < particles.size(); i++)
+	for (int i = 0; i < this->numberOfParticles; i++)
 	{
 		if (!particles.at(i).remainingTime()) {
 			this->numberOfParticles--;
@@ -68,18 +77,33 @@ int ParticleManager::getNumberOfParticles()
 
 void ParticleManager::addParticles(const glm::vec3 & pos, const glm::vec3 & velocity, int particlesNumber)
 {
+	std::cout << this->numberOfParticles << std::endl;
 	for (int i = 0; i < particlesNumber; i++)
 	{
 		if (this->numberOfParticles == PARTICLES_MAX)
 			return;
 		
+		//give the pos and the velocity a little change
 		glm::vec3 newPos = pos;
-		newPos.x += i;
-		newPos.y += i;
-		newPos.z += i;
-		Particle p(newPos, velocity);
+		newPos.x += (rand() % 2) / 2.0f;
+		newPos.y += (rand() % 2) / 2.0f;
+		newPos.z += (rand() % 2) / 2.0f;
 
-		particles.emplace_back(p);
+		glm::vec3 newVel = velocity;
+		newVel.x += (rand() % 2) / 5.0f;
+		newVel.z += (rand() % 2) / 5.0f;
+	
+		Particle p(newPos, newVel);
+
+		if (findUnusedParticle() != -1)
+		{
+			this->particles.at(i).renewParticle(p);
+		}
+		else 
+		{
+			particles.emplace_back(p);
+
+		}
 		this->numberOfParticles++;
 
 	}
@@ -88,6 +112,19 @@ void ParticleManager::addParticles(const glm::vec3 & pos, const glm::vec3 & velo
 unsigned int ParticleManager::getVAO()
 {
 	return this->VAO;
+}
+
+int ParticleManager::findUnusedParticle()
+{
+	for (int i = 0; i < this->particles.size(); i++)
+	{
+		if (!this->particles.at(i).remainingTime())
+		{
+			return i;
+
+		}
+	}
+	return -1;
 }
 
 void ParticleManager::setupBuffers()
@@ -101,7 +138,7 @@ void ParticleManager::setupBuffers()
 	glBindVertexArray(this->VAO);
 
 	glBindBuffer(GL_ARRAY_BUFFER, verticesVBO);
-	glBufferData(GL_ARRAY_BUFFER, 12, vertex_buffer_data, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertex_buffer_data), vertex_buffer_data, GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, NULL, NULL);
 	glBindBuffer(GL_ARRAY_BUFFER, NULL);
 
@@ -109,14 +146,14 @@ void ParticleManager::setupBuffers()
 	// Buffer for centerPositions
 	glBindBuffer(GL_ARRAY_BUFFER, positionVBO);
 	glBufferData(GL_ARRAY_BUFFER, PARTICLES_MAX * sizeof(glm::vec3), NULL, GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, NULL, NULL);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, NULL, NULL);
 	glBindBuffer(GL_ARRAY_BUFFER, NULL);
 	glVertexAttribDivisor(1, 1);
 
 	// Buffer for color
 	glBindBuffer(GL_ARRAY_BUFFER, colourVBO);
 	glBufferData(GL_ARRAY_BUFFER, PARTICLES_MAX * sizeof(glm::vec4), NULL, GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, NULL, NULL);
+	glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, NULL, NULL);
 	glBindBuffer(GL_ARRAY_BUFFER, NULL);
 	glVertexAttribDivisor(2, 1);
 

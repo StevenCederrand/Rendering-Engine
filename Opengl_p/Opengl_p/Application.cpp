@@ -162,7 +162,9 @@ void Application::update() {
 		this->window->setViewport1(temp.first, temp.second);
 		#pragma endregion
 
+
 		this->particleManager->update();
+		
 		lightPass->use();
 		this->renderer.clearBuffers();
 
@@ -171,6 +173,9 @@ void Application::update() {
 		lightPass->setMat4("lightMatrixes", lightMatrixes);
 
 		this->render();
+		Shader* particlePass = this->shaderManager->getSpecific("ParticlePass");
+		this->renderer.particlesRender(this->particleManager, particlePass, camera->getViewMatrix(), this->prjMatrix);
+
 	}
 	//Quit the program
 	this->end();
@@ -181,8 +186,6 @@ void Application::render() {
 	this->acceleration->frontBackRendering(objectManager->handleObjects(), camera->getCameraPosition());
 	this->renderer.deferredRender(objectManager->getObjects(), this->shaderManager, this->depthMap);
 
-	Shader* particlePass = this->shaderManager->getSpecific("ParticlePass");
-	this->renderer.particlesRender(this->particleManager, particlePass, camera->getViewMatrix(), this->prjMatrix);
 	//Deltatime in ms
 	this->deltaTime->end();
 	this->deltaT = this->deltaTime->deltaTime();
@@ -246,13 +249,15 @@ void Application::mousePick() {
 
 			glm::vec3 rayInWorldSpace = glm::normalize(glm::vec3(mouseRay.x, mouseRay.y, mouseRay.z));
 
-			bool hit = this->objectManager->checkMousePicking(this->camera->getCameraPosition(), rayInWorldSpace);
+			int hit = this->objectManager->checkMousePicking(this->camera->getCameraPosition(), rayInWorldSpace);
 
 			std::cout << "x: " << rayInWorldSpace.x << "| y: " << rayInWorldSpace.y << 
 				"| z: " << rayInWorldSpace.z << std::endl;
-			if (hit)
+			if (hit > 0)
 			{
-				this->particleManager->addParticles(rayInWorldSpace, glm::vec3(1.0f), 10);
+				std::vector<Object> obj = this->objectManager->getObjects();
+
+				this->particleManager->addParticles(obj.at(hit).getPosition(), glm::vec3(0.0f, 0.1f, 0.0f), 5);
 				std::cout << "HIT" << std::endl;
 			}
 		}

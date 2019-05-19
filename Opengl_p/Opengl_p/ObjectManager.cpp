@@ -70,7 +70,7 @@ void ObjectManager::destroyLight(int at) {
 	this->objects.at(at).destroyLight();
 }
 
-bool ObjectManager::checkMousePicking(glm::vec3 cameraPosition, glm::vec3 ray) {
+int ObjectManager::checkMousePicking(glm::vec3 cameraPosition, glm::vec3 ray) {
 
 	/*
 		insert stuff for mouse picking
@@ -92,11 +92,11 @@ bool ObjectManager::checkMousePicking(glm::vec3 cameraPosition, glm::vec3 ray) {
 			point2 = (-b - sqrt(b*b - c));
 
 			if (point1 > 0 || point2 > 0) {
-				return true;
+				return i;
 			}
 		}
 	}
 
-	return false;
+	return -1;
 }
 

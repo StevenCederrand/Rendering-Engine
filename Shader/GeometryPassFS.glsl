@@ -28,7 +28,7 @@ void main() {
 	normals = normalize(normals * 2 - 1);
 	normals = normalize(vec3(frag_data.TBN * normals));
 
-	colourBuffer = texture(colorTexture, frag_data.frag_uv);
+	colourBuffer = texture(colorTexture, frag_data.frag_uv)*3;
 	normalBuffer = normals; //normals;
 	//normalBuffer = normalize(frag_data.frag_normals);
 	positionBuffer = frag_data.frag_position;
