@@ -14,7 +14,7 @@ public:
 	void updateLife();
 
 
-	glm::vec3 getVel();
+	glm::vec3 getPosition();
 	glm::vec4 getColor();
 	bool remainingTime();
 	void renewParticle(Particle p);
@@ -24,10 +24,7 @@ private:
 	glm::vec3 velocity;
 	glm::vec4 color;
 
-	float rotation;
 	float time;
-	//float lifetime = 5.0f;
-
 
 
 };

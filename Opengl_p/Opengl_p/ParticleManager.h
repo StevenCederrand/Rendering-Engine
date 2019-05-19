@@ -4,7 +4,7 @@
 #include "Containers.h"
 #include "Shader.h"
 
-#define PARTICLES_MAX 50
+#define PARTICLES_MAX 500
 class ParticleManager
 {
 public:
@@ -28,7 +28,7 @@ private:
 	unsigned int VAO;
 
 	unsigned int verticesVBO;
-	unsigned int positionVBO;
+	unsigned int positionCenterVBO;
 	unsigned int colourVBO;
 
 	//Mesh mesh;

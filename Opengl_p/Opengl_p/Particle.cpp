@@ -10,9 +10,7 @@ Particle::Particle(glm::vec3 position, glm::vec3 velocity)
 	this->position = position;
 	this->velocity = velocity;
 	this->color = glm::vec4(1.0f);
-	//this->rotation = rotation;
 	this->time = TIMELIFE;
-
 }
 
 Particle::~Particle()
@@ -23,16 +21,14 @@ void Particle::update()
 {
 	this->position += this->velocity;
 	this->color.a = this->time / TIMELIFE;
-	//std::cout << this->color.a << std::endl;
 }
 
 void Particle::updateLife()
 {
 	this->time -= 0.2f;
-	//std::cout << this->time << std::endl;
 }
 
-glm::vec3 Particle::getVel()
+glm::vec3 Particle::getPosition()
 {
 	return this->position;
 }
@@ -59,5 +55,4 @@ void Particle::renewParticle(Particle p)
 	this->velocity = p.velocity;
 	this->color = p.color;
 	this->time = p.time;
-	this->rotation = p.rotation;
 }

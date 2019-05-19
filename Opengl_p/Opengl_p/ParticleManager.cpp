@@ -31,26 +31,18 @@ ParticleManager::ParticleManager()
 ParticleManager::~ParticleManager()
 {
 	glDeleteBuffers(1, &verticesVBO);
-	glDeleteBuffers(1, &positionVBO);
+	glDeleteBuffers(1, &positionCenterVBO);
 	glDeleteBuffers(1, &colourVBO);
 	glDeleteVertexArrays(1, &VAO);
 }
 
 void ParticleManager::update()
 {
-	if (this->numberOfParticles < 0)
-	{
-		this->numberOfParticles = 0;
-	}
+
 	positionBuffer.clear();
 	colourBuffer.clear();
 	for (int i = 0; i < this->numberOfParticles; i++)
 	{
-		if (!particles.at(i).remainingTime()) {
-			this->numberOfParticles--;
-			continue;
-		}
-
 		particles.at(i).updateLife();
 
 		if (!particles.at(i).remainingTime())
@@ -61,7 +53,7 @@ void ParticleManager::update()
 		particles.at(i).update();
 
 
-		positionBuffer.emplace_back(particles.at(i).getVel());
+		positionBuffer.emplace_back(particles.at(i).getPosition());
 		colourBuffer.emplace_back(particles.at(i).getColor());
 
 	}
@@ -77,7 +69,6 @@ int ParticleManager::getNumberOfParticles()
 
 void ParticleManager::addParticles(const glm::vec3 & pos, const glm::vec3 & velocity, int particlesNumber)
 {
-	std::cout << this->numberOfParticles << std::endl;
 	for (int i = 0; i < particlesNumber; i++)
 	{
 		if (this->numberOfParticles == PARTICLES_MAX)
@@ -90,15 +81,19 @@ void ParticleManager::addParticles(const glm::vec3 & pos, const glm::vec3 & velo
 		newPos.z += (rand() % 2) / 2.0f;
 
 		glm::vec3 newVel = velocity;
-		newVel.x += (rand() % 2) / 5.0f;
-		newVel.z += (rand() % 2) / 5.0f;
+		newVel.x += (rand() % 2) / 10.0f;
+		newVel.z += (rand() % 2) / 10.0f;
 	
 		Particle p(newPos, newVel);
 
-		if (findUnusedParticle() != -1)
+		//find if there is a particle in the vector
+		//that is not used and use that
+		int unUsed = findUnusedParticle();
+		if (unUsed != -1)
 		{
-			this->particles.at(i).renewParticle(p);
+			this->particles.at(unUsed).renewParticle(p);
 		}
+		//or send the particle to the back of the vector
 		else 
 		{
 			particles.emplace_back(p);
@@ -113,12 +108,12 @@ unsigned int ParticleManager::getVAO()
 {
 	return this->VAO;
 }
-
+//return the UnusedParticle position in the vector
 int ParticleManager::findUnusedParticle()
 {
 	for (int i = 0; i < this->particles.size(); i++)
 	{
-		if (!this->particles.at(i).remainingTime())
+		if (!(this->particles.at(i).remainingTime()))
 		{
 			return i;
 
@@ -132,19 +127,19 @@ void ParticleManager::setupBuffers()
 	glGenVertexArrays(1, &this->VAO);
 
 	glGenBuffers(1, &verticesVBO);
-	glGenBuffers(1, &positionVBO);
+	glGenBuffers(1, &positionCenterVBO);
 	glGenBuffers(1, &colourVBO);
 
 	glBindVertexArray(this->VAO);
-
+	
 	glBindBuffer(GL_ARRAY_BUFFER, verticesVBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertex_buffer_data), vertex_buffer_data, GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, NULL, NULL);
 	glBindBuffer(GL_ARRAY_BUFFER, NULL);
 
 
-	// Buffer for centerPositions
-	glBindBuffer(GL_ARRAY_BUFFER, positionVBO);
+	// Buffer for Positions center
+	glBindBuffer(GL_ARRAY_BUFFER, positionCenterVBO);
 	glBufferData(GL_ARRAY_BUFFER, PARTICLES_MAX * sizeof(glm::vec3), NULL, GL_DYNAMIC_DRAW);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, NULL, NULL);
 	glBindBuffer(GL_ARRAY_BUFFER, NULL);
@@ -164,7 +159,7 @@ void ParticleManager::setupBuffers()
 
 void ParticleManager::updateBuffers()
 {
-	glBindBuffer(GL_ARRAY_BUFFER, positionVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, positionCenterVBO);
 	glBufferData(GL_ARRAY_BUFFER, PARTICLES_MAX * sizeof(glm::vec3), NULL, GL_DYNAMIC_DRAW);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, positionBuffer.size() * sizeof(glm::vec3), positionBuffer.data());
 
