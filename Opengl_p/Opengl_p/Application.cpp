@@ -257,7 +257,7 @@ void Application::mousePick() {
 			{
 				std::vector<Object> obj = this->objectManager->getObjects();
 
-				this->particleManager->addParticles(obj.at(hit).getPosition(), glm::vec3(0.0f, 0.1f, 0.0f), 5);
+				this->particleManager->addParticles(obj.at(hit).getPosition(), glm::vec3(0.0f, 0.1f, 0.0f), 1);
 				std::cout << "HIT" << std::endl;
 			}
 		}

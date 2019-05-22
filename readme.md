@@ -65,8 +65,19 @@ the cameratovertex([i]) and the normal is > 0. If it is then we render
 the emit the vertex/primitive. Otherwise we skip emitting the 
 primitive. NOTE! Although this is marked as done there is a weird glitch 
 with the floor. Which has to be solved before we show this to Francisco!
-- [ ] Billboarded Particles - Steven
-- [ ] Glow Effect - Ludwig
+- [x] Billboarded Particles - Ludwig
+>I create 3 Vertex buffers 1 with the size of corners of a particle 
+1 with the centerPosition of the particles and 1 with the colour.
+The vectors with the centerPosition and the colour gets cleared and filled 
+again every update so that we have the updated position and the colour of every 
+particle. Then we update the vetexbuffers with the new vectors.
+- [x] Mouse Picking - Ludwig
+>I transform the mouse cordinates to a ray i worldspace by multiply it
+by the invers of the projection matrix and the invers of the view matrix.
+The check to see if the mouse hit anything is done by assuming that every
+object is a sphere. I then do the check to see if the ray hits the object
+that i assume is a sphere and then send back the objects place in the array.
+
 
 
 

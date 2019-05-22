@@ -21,9 +21,6 @@ ParticleManager::ParticleManager()
 	vertex_buffer_data[10] = sizeOfAnParticle;
 	vertex_buffer_data[11] = 0.0f;
 
-	/*for (size_t i = 0; i < PARTICLES_MAX; i++) {
-		particles.emplace_back(Particle());
-	}*/
 
 	this->setupBuffers();
 }

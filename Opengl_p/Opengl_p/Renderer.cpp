@@ -104,12 +104,7 @@ void Renderer::particlesRender(ParticleManager * particleManager, Shader * shade
 	glEnableVertexAttribArray(1);
 	glEnableVertexAttribArray(2);
 
-	//glActiveTexture(GL_TEXTURE0);
-	//glBindTexture(GL_TEXTURE_2D, this->colourBuffer);
 	glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 12, particleManager->getNumberOfParticles());
-
-	//glDrawArrays(GL_TRIANGLES, 0, 3);
-	//glBindTexture(GL_TEXTURE_2D, NULL);
 	
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);

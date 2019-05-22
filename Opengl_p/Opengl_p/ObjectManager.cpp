@@ -66,15 +66,13 @@ int ObjectManager::getLightCount() const
 	return this->lightcount;
 }
 
-void ObjectManager::destroyLight(int at) {
+void ObjectManager::destroyLight(int at) 
+{
 	this->objects.at(at).destroyLight();
 }
 
-int ObjectManager::checkMousePicking(glm::vec3 cameraPosition, glm::vec3 ray) {
-
-	/*
-		insert stuff for mouse picking
-	*/
+int ObjectManager::checkMousePicking(glm::vec3 cameraPosition, glm::vec3 ray) 
+{
 	float point1, point2, b, c;
 	glm::vec3 rayToCenter;
 	
@@ -84,7 +82,7 @@ int ObjectManager::checkMousePicking(glm::vec3 cameraPosition, glm::vec3 ray) {
 
 		rayToCenter = cameraPosition-objects[i].getPosition();
 		b = glm::dot(ray, rayToCenter);
-		c = glm::dot(rayToCenter, rayToCenter) - (radius*radius); //here should be sphere radius
+		c = glm::dot(rayToCenter, rayToCenter) - (radius*radius);
 
 		if ((b * b - c) > 0)
 		{
