@@ -65,7 +65,6 @@ void Renderer::start(int scrX, int scrY) {
 void Renderer::render(std::vector<Object> objects, Shader* shader, unsigned int depthFramebuffer) {
 	//Use the framebuffer that we created
 	shader->use();
-	glBindFramebuffer(GL_FRAMEBUFFER, depthFramebuffer);
 	glEnable(GL_DEPTH_TEST);
 
 		
@@ -117,7 +116,7 @@ void Renderer::particlesRender(ParticleManager * particleManager, Shader * shade
 
 void Renderer::geometryPass(std::vector<Object> objects, Shader* geometryPass) {
 	geometryPass->use();
-	glBindFramebuffer(GL_FRAMEBUFFER, this->FBO);
+	glBindFramebuffer(GL_FRAMEBUFFER, this->FBO); 
 	glEnable(GL_DEPTH_TEST);
 
 	this->clearBuffers();
@@ -128,21 +127,16 @@ void Renderer::geometryPass(std::vector<Object> objects, Shader* geometryPass) {
 		if (type != ObjectTypes::LightSource) {
 			
 			if (type == ObjectTypes::HeightMapBased) {
+				//The type is important so that we sample outside of the 'texture'
 				geometryPass->setInt("type", 1);
 			}
 			else if (type == ObjectTypes::Standard) {
 				geometryPass->setInt("type", 0);
-				//if (objects.at(i).name == "RCube") {
-				//	objects.at(i).setRotation(this->angle, glm::vec3(0, 1, 0));
-				//	angle += 0.01f;
-				//}
 			}
-				//objects.at(i).setRotation(this->angle, glm::vec3(0, 1, 0));
-				//angle += 0.01f;
 		} 
-			geometryPass->setMat4("worldMatrix", objects.at(i).modelMatrix);
+		geometryPass->setMat4("worldMatrix", objects.at(i).modelMatrix);
 
-			objects.at(i).draw(geometryPass);
+		objects.at(i).draw(geometryPass);
 	}
 	
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -168,9 +162,6 @@ void Renderer::lightPass(std::vector<Object> objects, Shader* lightPass) {
 			if (objects.at(i).name == "L2") {
 				glm::vec4 position = glm::vec4(objects.at(i).getPosition(), 0);
 
-				//lightPass->setVec3("pointLights[0].position", position);
-				////Attenuation factors
-				//lightPass->setVec4("pointLights[0].factors", objects.at(i).pointLight->factors);
 			}
 		}
 	}

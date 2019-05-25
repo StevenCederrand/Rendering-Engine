@@ -104,21 +104,7 @@ void Acceleration::test(std::vector<glm::vec3>& positions, glm::vec3 cameraPos) 
 		distances.push_back(Data(distance, i));
 	}
 	
-	//std::cout << "Pre sort" << std::endl;
-	//for (int i = 0; i < distances.size(); i++) {
-	//	std::cout << distances.at(i).tag;
-	//	std::cout << " : ";
-	//	std::cout << distances.at(i).distance << std::endl;
-	//}
-
 	this->quickSort(distances, 0, distances.size() - 1);
-
-	//std::cout << "Post sort" << std::endl;
-	//for (int i = 0; i < distances.size(); i++) {
-	//	std::cout << distances.at(i).tag;
-	//	std::cout << " : ";
-	//	std::cout << distances.at(i).distance << std::endl;
-	//}
 
 	std::vector<glm::vec3> newPositions;
 

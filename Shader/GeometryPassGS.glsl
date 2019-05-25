@@ -37,11 +37,11 @@ vec3 getNormal() {
 
 	for(int i = 0; i < 3; i++) {
 		vertices[i] = prjMatrix * viewMatrix * worldMatrix * vec4(geom_data[i].position, 1);
-	} 
-	
+	}
+
 	vec4 edge1 = vertices[1] - vertices[0];
 	vec4 edge2 = vertices[2] - vertices[0];
-	
+
 	vec3 normal = normalize(cross(vec3(edge1), vec3(edge2)));
 
 	return normal;
@@ -50,40 +50,40 @@ vec3 getNormal() {
 mat3 calculateTangentBasis(vec3 normal) {
 	vec3 positions[3];
 	vec2 uvs[3];
-	
+
 	for(int i = 0; i < 3; i++) {
 		uvs[i] = geom_data[i].uv;
-		positions[i] = geom_data[i].position;
+		positions[i] = vec3(worldMatrix * vec4(geom_data[i].position, 1));
 	}
 
 	//Triangle edges
 	vec3 edges[2];
 	edges[0] = positions[1] - positions[0];
 	edges[1] = positions[2] - positions[0];
-
+	vec3 localNormal = normalize(cross(edges[0], edges[1]));
 	//Delta uvs
 	vec2 deltaUVs[2];
 	deltaUVs[0] = uvs[1] - uvs[0];
 	deltaUVs[1] = uvs[2] - uvs[0];
 	//Division formula
 	float formula = 1.0f / (deltaUVs[0].x * deltaUVs[1].y - deltaUVs[1].x * deltaUVs[0].y);
-	//Tangent 
+	//Tangent
 	vec3 tangent;
 	tangent.x = formula * (deltaUVs[1].y * edges[0].x - deltaUVs[0].y * edges[1].x);
 	tangent.y = formula * (deltaUVs[1].y * edges[0].y - deltaUVs[0].y * edges[1].y);
-	tangent.y = formula * (deltaUVs[1].y * edges[0].z - deltaUVs[0].y * edges[1].z);
+	tangent.z = formula * (deltaUVs[1].y * edges[0].z - deltaUVs[0].y * edges[1].z);
 	tangent = normalize(tangent);
 	//Bitangent
 	vec3 bitangent;
 	bitangent.x = formula * (-deltaUVs[1].x * edges[0].x + deltaUVs[0].x * edges[1].x);
 	bitangent.y = formula * (-deltaUVs[1].x * edges[0].y + deltaUVs[0].x * edges[1].y);
-	bitangent.y = formula * (-deltaUVs[1].x * edges[0].z + deltaUVs[0].x * edges[1].z);
+	bitangent.z = formula * (-deltaUVs[1].x * edges[0].z + deltaUVs[0].x * edges[1].z);
 	bitangent = normalize(bitangent);
 
 	vec3 T = normalize(vec3(worldMatrix*vec4(tangent, 0.0)));
 	vec3 B = normalize(vec3(worldMatrix*vec4(bitangent, 0.0)));
-	vec3 N = normalize(vec3(worldMatrix*vec4(normal, 0.0)));
-	
+	vec3 N = normalize(vec3(worldMatrix*vec4(localNormal, 0.0)));
+
 	return mat3(T, B, N);
 }
 
@@ -91,10 +91,11 @@ mat3 calculateTangentBasis(vec3 normal) {
 void culling() {
 	bool emit = true;
 	vec4 vertex;
-	//Commit to this loop so long as we emit the vertex 
+	//Commit to this loop so long as we emit the vertex
 	for(int i = 0; i < 3 && emit; i++) {
 		//this vertex is in projection space
 		vertex = prjMatrix * viewMatrix * worldMatrix * vec4(geom_data[i].position, 1);
+		//Camera posiion is vec3(0) because we move the world around position(0)
 		vec3 camToSurface = normalize(vec3(vertex) - cameraPosition);
 		if(dot(camToSurface, getNormal()) <= 0) {
 			emit = false;
@@ -103,7 +104,7 @@ void culling() {
 			gl_Position = vertex;
 			frag_data.frag_uv = geom_data[i].uv;
 			frag_data.frag_position = vec3(worldMatrix * vec4(geom_data[i].position, 1));
-			
+
 			frag_data.TBN = calculateTangentBasis(geom_data[i].normals);
 
 			frag_data.frag_normals = mat3(transpose(inverse(matrices.mat_world))) * geom_data[i].normals;

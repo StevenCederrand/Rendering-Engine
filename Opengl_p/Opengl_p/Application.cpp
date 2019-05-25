@@ -95,7 +95,8 @@ void Application::update() {
 	shadowPass->use();
 
 	//Automatically gets the screen resolution
-	unsigned int depthWidth = this->window->getResolution().first, depthHeight = this->window->getResolution().second;
+	unsigned int depthWidth = this->window->getResolution().first;
+	unsigned int depthHeight = this->window->getResolution().second;
 	unsigned int depthFramebuffer;
 
 	glGenFramebuffers(1, &depthFramebuffer);
@@ -144,7 +145,6 @@ void Application::update() {
 		//Render the VAO with the loaded shader
 		#pragma region Shadows
 		//shadows 
-
 		glm::mat4 lightprjMatrix = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 50.0f);
 
 		glm::mat4 lightMatrixes = lightprjMatrix * camera->getshadowViewMatrix();
