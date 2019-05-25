@@ -47,7 +47,7 @@ vec3 getNormal() {
 	return normal;
 }
 
-mat3 calculateTangentBasis(vec3 normal) {
+mat3 calculateTangentBasis() {
 	vec3 positions[3];
 	vec2 uvs[3];
 
@@ -105,7 +105,7 @@ void culling() {
 			frag_data.frag_uv = geom_data[i].uv;
 			frag_data.frag_position = vec3(worldMatrix * vec4(geom_data[i].position, 1));
 
-			frag_data.TBN = calculateTangentBasis(geom_data[i].normals);
+			frag_data.TBN = calculateTangentBasis();
 
 			frag_data.frag_normals = mat3(transpose(inverse(matrices.mat_world))) * geom_data[i].normals;
 			frag_data.frag_type = geom_data[i].type;
